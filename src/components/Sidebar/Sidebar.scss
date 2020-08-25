@@ -1,0 +1,40 @@
+.id__header{
+    display: flex;
+    justify-content: center;
+    
+}
+.id__btn{
+    background-color: #6ed89c;
+    // margin: 14%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+.eth{
+    display: flex;
+}
+.value{
+    margin-left: 10px;
+}
+.id{
+    margin-bottom: 20px;
+    width: 80%;
+    margin-left: 10%;
+    
+     border-radius: 5%;
+}
+h3{
+    font-weight: bold;
+}
+.avatar__pic{
+    img{
+        border-radius: 50%;
+        height: 50px;
+        margin-left: 20px;
+    }
+}
+.avatar__name{
+    margin:5%;
+}

@@ -1,0 +1,33 @@
+.header{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+
+    img{
+        height:150px;
+    }
+}
+
+.notfound{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    
+    
+}
+h1{
+    font-size: 4.5rem;
+    font-weight:bold;
+}
+.input{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.buttn{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    
+}

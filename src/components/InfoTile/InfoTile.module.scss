@@ -1,0 +1,58 @@
+@import '../../styles/app';
+
+
+
+.title {
+  margin-top: 0;
+  color: "#fff";
+  background-color: red($color: #000000);
+}
+
+
+.priAmnt  {
+  margin-top: 0;
+  font-size: 12px;
+  font-family: $font-family-base;
+}
+
+
+
+
+.body {
+  
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 8px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+
+
+.infoTile {
+  color: $content-color;
+  display: block;
+  position: relative;
+  margin-bottom: "5px";
+  border-radius: 5;
+  background: "red";
+  > header {
+    transition: padding .3s linear;
+    padding: 4 4 0;
+    color: "#fff";
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+      color: $text-color;
+    }
+  }
+
+
+}
+
+
