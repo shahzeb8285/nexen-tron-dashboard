@@ -1,4 +1,4 @@
-const MLM = artifacts.require("MLM");
+var MLM = artifacts.require("./MLM.sol");
 
 module.exports = function(deployer) {
   deployer.deploy(MLM);
