@@ -24,6 +24,9 @@ class App extends React.Component {
         loggedIn: false,
       },
     };
+
+
+    
     this.register = this.register.bind(this);
     this.buyLevel = this.buyLevel.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
@@ -312,16 +315,16 @@ class App extends React.Component {
       .then((res) => {
         let levelFund = res.levelFund.toNumber() / 1000000;
         let recycleFund = res.recycleFund.toNumber() / 1000000;
-        let add = TronWeb.address.fromHex(res.add);
+        let walletAddress = TronWeb.address.fromHex(res.add);
 
         this.setState({
           levelFund: levelFund,
           recycleFund: recycleFund,
-          add: add,
+          walletAddress: walletAddress,
         });
         console.log(levelFund);
         console.log(recycleFund);
-        console.log(add);
+        console.log(walletAddress);
       });
   }
 
@@ -351,6 +354,8 @@ class App extends React.Component {
       });
   }
 
+
+
   async autoBuyLevel() {
     Utils.contract
       .autoBuyLevel(window.tronWeb.defaultAddress.base58)
@@ -377,6 +382,8 @@ class App extends React.Component {
         console.log("error while distributing levelReward", err);
       });
   }
+
+
   async getLevelWinners() {
     Utils.contract
       .getLevelWinners()
@@ -401,6 +408,8 @@ class App extends React.Component {
         console.log("error while fetching winners", err);
       });
   }
+
+  
   render() {
     if (!this.state.tronWeb.installed) return <TronLinkGuide />;
 

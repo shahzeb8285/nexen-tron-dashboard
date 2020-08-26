@@ -71,6 +71,7 @@
     "echarts": "^4.8.0",
     "echarts-for-react": "^2.0.16",
     "font-awesome": "4.7.0",
+    "global": "^4.4.0",
     "glyphicons-halflings": "^1.9.1",
     "highcharts": "^8.1.2",
     "highcharts-react-official": "^3.0.0",
@@ -108,6 +109,7 @@
     "styled-components": "^5.1.1",
     "sweetalert": "^2.1.2",
     "tabler-icons": "^1.10.0",
+    "tronbox": "^2.7.13",
     "web3": "^1.2.11",
     "yarn": "^1.22.4"
   },

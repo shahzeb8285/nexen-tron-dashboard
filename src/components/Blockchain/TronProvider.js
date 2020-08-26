@@ -2,12 +2,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Badge, Col, Row, Table, Button, Modal,Spinner,
-  ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import {
+  Badge, Col, Row, Table, Button, Modal, Spinner,
+  ModalHeader, ModalBody, ModalFooter
+} from 'reactstrap';
 import { incomeFetched, userFetched, onLevelUpdated } from "../../actions/web3Actions";
 import { toast } from 'react-toastify';
 import { compose } from 'redux';
-import  Level from '../../pages/dashboard/components/Level/Level'
+import Level from '../../pages/dashboard/components/Level/Level'
+
+import TronWeb from "tronweb";
+import Utils from "../../utils";
+
+const FOUNDATION_ADDRESS = "TWiWt5SEDzaEqS6kE5gandWMNfxR2B5xzg";
 
 class TronProvider extends React.Component {
 
@@ -22,13 +29,13 @@ class TronProvider extends React.Component {
       user: {},
       income: {},
       mlm: null,
-      selectedLevel:{
+      selectedLevel: {
         position: 1,
         amount: 50000000000000000,
         icon: require("../../images/levels/l1.png"),
-        isBought:  1,
+        isBought: 1,
         amountTag: "0.05",
-  
+
         bgStartColor: "#621e94",
         bgEndColor: "#240b36"
       }
@@ -49,24 +56,289 @@ class TronProvider extends React.Component {
 
 
 
+    await this.initTron();
+    console.log("tronnn",this.state)
 
 
   }
 
 
 
+  async initTron() {
+    await new Promise((resolve) => {
+      const tronWebState = {
+        installed: !!window.tronWeb,
+        loggedIn: window.tronWeb && window.tronWeb.ready,
+      };
 
-  showBuyLevelDialog(level){
-    this.setState({visibleBuyModal:true,selectedLevel:level})
-   
+      if (tronWebState.installed) {
+        this.setState({
+          tronWeb: tronWebState,
+        });
 
+        return resolve();
+      }
+
+      let tries = 0;
+
+      const timer = setInterval(() => {
+        if (tries >= 10) {
+          const TRONGRID_API = "https://api.trongrid.io";
+
+          window.tronWeb = new TronWeb(
+            TRONGRID_API,
+            TRONGRID_API,
+            TRONGRID_API
+          );
+
+          this.setState({
+            tronWeb: {
+              installed: false,
+              loggedIn: false,
+            },
+          });
+
+          clearInterval(timer);
+          return resolve();
+        }
+
+        tronWebState.installed = !!window.tronWeb;
+        tronWebState.loggedIn = window.tronWeb && window.tronWeb.ready;
+
+        if (!tronWebState.installed) return tries++;
+
+        this.setState({
+          tronWeb: tronWebState,
+        });
+
+        resolve();
+      }, 100);
+    });
+
+
+
+    
+
+    if (!this.state.tronWeb.loggedIn) {
+      // Set default address (foundation address) used for contract calls
+      // Directly overwrites the address object as TronLink disabled the
+      // function call
+      window.tronWeb.defaultAddress = {
+        hex: window.tronWeb.address.toHex(FOUNDATION_ADDRESS),
+        base58: FOUNDATION_ADDRESS,
+      };
+
+      window.tronWeb.on("addressChanged", () => {
+        if (this.state.tronWeb.loggedIn) {
+          return;
+        }
+        this.setState({
+          tronWeb: {
+            installed: true,
+            loggedIn: true,
+          },
+        });
+      });
+    }
+    await Utils.setTronWeb(window.tronWeb);
+    this.fetchPlatformData();
+    // this.startRegisterEventListener();
+    this.startBuyLevelEventListner();
+    this.setState({ account: window.tronWeb.defaultAddress.base58 });
+  }
+
+  startBuyLevelEventListner() {
+    Utils.contract.buyLevelEvent().watch((err) => {
+      if (err) {
+        return console.log("Failed to BuyLevel", err);
+      }
+
+      window.location.reload();
+    });
+  }
+
+
+
+
+  async buyLevel(level) {
+
+    Utils.contract
+      .buyLevel(level)
+      .send({
+        from: window.tronWeb.defaultAddress.base58,
+        callValue: this.state.levelsPrice[level - 1],
+        shouldPollResponse: true,
+      })
+      .then((receipt) => {
+        console.log(receipt);
+      })
+      .catch((err) => {
+        console.log("error in buying ", err);
+      });
+  }
+
+
+  async fetchPlatformData() {
+    const totalUsers = (await Utils.contract.totalUsers().call()).toNumber();
+    const entryFees = (await Utils.contract.levels(0).call()).toNumber();
+    this.setState({
+      entryFees: entryFees,
+    });
+
+
+    const levels = []
+
+    for (var i = 1; i <= 10; i++) {
+      let tempLevelsPrice = (await Utils.contract.levels(i).call()).toNumber();
+      // console.log(tempLevelsPrice);
+      levels.push(tempLevelsPrice)
+
+    }
+
+    this.setState({
+      levelsPrice: levels,
+    });
+    const totalAmountDistributed = (
+      await Utils.contract.totalAmountDistributed().call()
+    ).toNumber();
+    const rewardWallet = (
+      await Utils.contract.rewardWallet().call()
+    ).toNumber();
+    const levelRewardWallet = (
+      await Utils.contract.levelRewardWallet().call()
+    ).toNumber();
+    this.setState({
+      totalUsers: totalUsers,
+      totalAmountDistributed: totalAmountDistributed,
+      rewardWallet: rewardWallet,
+      levelRewardWallet: levelRewardWallet,
+    });
+    // console.log("totalUsers", totalUsers);
+    // console.log("totalAmountDistributed", totalAmountDistributed / 1000000);
+    // console.log("rewardWallet", rewardWallet / 1000000);
+    // console.log("levelRewardWallet", levelRewardWallet / 1000000);
+  }
+
+
+
+  async getUserInfo(id) {
+    Utils.contract
+      .getUserInfo(id)
+      .call()
+      .then((res) => {
+        // console.log(res);
+        const inviter = TronWeb.address.fromHex(res.inviter);
+        const totalReferals = res.totalReferals.toNumber();
+        const totalRecycles = res.totalRecycles.toNumber();
+        const totalWins = res.totalWins.toNumber();
+        const levelsPurchased = res.levelsPurchased.toNumber();
+        const loss = res.loss.toNumber() / 1000000;
+
+        this.setState({
+          inviter: inviter,
+          totalReferals: totalReferals,
+          totalRecycles: totalRecycles,
+          totalWins: totalWins,
+          levelsPurchased: levelsPurchased,
+          loss: loss,
+        });
+        // console.log(
+        //   "inviter",
+        //   inviter,
+        //   "totalReferals",
+        //   totalReferals,
+        //   "totalRecycles",
+        //   totalRecycles,
+        //   "totalWins",
+        //   totalWins,
+        //   "levelsPurchased",
+        //   levelsPurchased,
+        //   "loss",
+        //   loss
+        // );
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  }
+
+
+
+  async getUsersIncomes(id) {
+    Utils.contract
+      .getUsersIncomes(id)
+      .call()
+      .then((res) => {
+        let directIncome = res.directIncome.toNumber() / 1000000;
+        let rewardIncome = res.rewardIncome.toNumber() / 1000000;
+        let levelIncome = res.levelIncome.toNumber() / 1000000;
+        let recycleIncome = res.recycleIncome.toNumber() / 1000000;
+        let upgradeIncome = res.upgradeIncome.toNumber() / 1000000;
+        let levelRewardIncome = res.levelRewardIncome.toNumber() / 1000000;
+
+        this.setState({
+          directIncome: directIncome,
+          rewardIncome: rewardIncome,
+          levelIncome: levelIncome,
+          recycleIncome: recycleIncome,
+          upgradeIncome: upgradeIncome,
+          levelRewardIncome: levelRewardIncome,
+        });
+        // console.log("directIncome", directIncome);
+        // console.log("rewardIncome", rewardIncome);
+        // console.log("levelIncome", levelIncome);
+        // console.log("recycleIncome", recycleIncome);
+        // console.log("upgradeIncome", upgradeIncome);
+        // console.log("levelRewardIncome", levelRewardIncome);
+      });
+  }
+
+  async getUsersFunds(id) {
+    Utils.contract
+      .getUsersFundsAndUserAddress(id)
+      .call()
+      .then((res) => {
+        let levelFund = res.levelFund.toNumber() / 1000000;
+        let recycleFund = res.recycleFund.toNumber() / 1000000;
+        let walletAddress = TronWeb.address.fromHex(res.add);
+
+        this.setState({
+          levelFund: levelFund,
+          recycleFund: recycleFund,
+          walletAddress: walletAddress,
+        });
+        console.log(levelFund);
+        console.log(recycleFund);
+        console.log(walletAddress);
+      });
+  }
+
+
+  async getUserReferrals(id) {
+    Utils.contract
+      .viewUserReferral(id)
+      .call()
+      .then((res) => {
+        for (let i = 0; i < res.length; i++) {
+          console.log(res[i].toNumber());
+        }
+      })
+      .catch((err) => {
+        console.log("error while fetching referrals", err);
+      });
+  }
+
+
+
+
+  showBuyLevelDialog(level) {
+    this.setState({ visibleBuyModal: true, selectedLevel: level })
 
   }
 
 
-  async loadBlockchainData() {
 
-  }
+
 
 
 
@@ -198,15 +470,15 @@ class TronProvider extends React.Component {
       bgStartColor: "#961516",
       bgEndColor: "#d63031"
     })
-var level = null;
-    if(levelNumber == 10){
+    var level = null;
+    if (levelNumber == 10) {
       level = levels[9]
       level.isThisNextLevel = true
-    }else{
-     level = levels[levelNumber]
-    level.isThisNextLevel = true
+    } else {
+      level = levels[levelNumber]
+      level.isThisNextLevel = true
     }
-    
+
 
 
     // this.setState({selectedLevel:level})
@@ -214,7 +486,7 @@ var level = null;
 
   }
 
-  
+
 
 
   makeErrorToast(error) {
@@ -250,7 +522,7 @@ var level = null;
 
                 levelData={this.state.selectedLevel}
                 enable={true}
-                onLevelClicked={()=>{
+                onLevelClicked={() => {
 
                 }}
               /></Col>
@@ -259,26 +531,26 @@ var level = null;
 
             <Col>
 
-            <h2>Buy Level {this.state.selectedLevel.position}+ {" "}</h2>
-            <hr className="solid" />
-            <Row>
+              <h2>Buy Level {this.state.selectedLevel.position}+ {" "}</h2>
+              <hr className="solid" />
+              <Row>
 
 
-              <Col>
-              <h4>Buy Level {this.state.selectedLevel.position}+ {" "}</h4>
-              <h4>Buy Level {this.state.selectedLevel.position}+ {" "}</h4>
+                <Col>
+                  <h4>Buy Level {this.state.selectedLevel.position}+ {" "}</h4>
+                  <h4>Buy Level {this.state.selectedLevel.position}+ {" "}</h4>
 
-              </Col>
+                </Col>
 
-              {/* <Spinner color="secondary" /> */}
+                {/* <Spinner color="secondary" /> */}
 
 
-              <Col>
-              <h4>Buy Level {this.state.selectedLevel.position}+ {" "}</h4>
-              <h4>Buy Level {this.state.selectedLevel.position}+ {" "}</h4>
+                <Col>
+                  <h4>Buy Level {this.state.selectedLevel.position}+ {" "}</h4>
+                  <h4>Buy Level {this.state.selectedLevel.position}+ {" "}</h4>
 
-              </Col>
-            </Row>
+                </Col>
+              </Row>
 
             </Col>
 
@@ -289,20 +561,20 @@ var level = null;
 
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={()=>{
-             this.buyLevel(this.state.selectedLevel.position,this.state.selectedLevel.amount,(receipt=>{
-                console.log("gffgfgg",receipt)
-                toast.success("Successfully bought level "+this.state.selectedLevel.position, {
-                  position: "bottom-center",
-                  autoClose: 7000,
-                  hideProgressBar: true,
-                  closeOnClick: false,
-                  pauseOnHover: true,
-                  draggable: false
-                });
+          <Button color="primary" onClick={() => {
+            this.buyLevel(this.state.selectedLevel.position, this.state.selectedLevel.amount, (receipt => {
+              console.log("gffgfgg", receipt)
+              toast.success("Successfully bought level " + this.state.selectedLevel.position, {
+                position: "bottom-center",
+                autoClose: 7000,
+                hideProgressBar: true,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: false
+              });
 
-                this.setState({ visibleBuyModal: false })
-                window.location.reload();
+              this.setState({ visibleBuyModal: false })
+              window.location.reload();
 
             }))
           }} >Pay
@@ -326,7 +598,7 @@ var level = null;
 
       <>
 
-          {this.state.visibleBuyModal ? this.renderBuyDialog() : null}
+        {this.state.visibleBuyModal ? this.renderBuyDialog() : null}
       </>
     );
   }
@@ -334,7 +606,7 @@ var level = null;
 
 function mapStateToProps(store) {
   return {
-    auth:store.auth
+    auth: store.auth
   };
 }
 

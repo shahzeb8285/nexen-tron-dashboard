@@ -658,8 +658,9 @@ class Dashboard extends React.Component {
 
         <TronProvider
           ref={this.Web3Ref}
-
         />
+
+
         <Row style={{ padding: "0px", marginBottom: "5px" }}>
           <Col lg={7} xs={7} style={{ paddingTop: 5, marginTop: "15px" }}>
             {/* <h3>Today's <span className="fw-semi-bold">Winners</span></h3> */}
@@ -1310,4 +1311,3 @@ function mapStateToProps(store) {
 
 export default withRouter(connect(mapStateToProps)(Dashboard));
 
-// export default Dashboard;
