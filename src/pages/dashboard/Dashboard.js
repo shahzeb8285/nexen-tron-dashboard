@@ -11,7 +11,7 @@ import Calendar from './components/calendar/Calendar';
 import s from './Dashboard.module.scss';
 import Particles from 'react-particles-js';
 // import BlockchainManager from '../../utils/BlockchainManager';
-import Web3Provider from "../../components/Blockchain/Web3Provider"
+import TronProvider from "../../components/Blockchain/TronProvider"
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
 import Level from "./components/Level/Level";
@@ -656,7 +656,7 @@ class Dashboard extends React.Component {
     return (
       <>
 
-        <Web3Provider
+        <TronProvider
           ref={this.Web3Ref}
 
         />
