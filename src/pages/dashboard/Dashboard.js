@@ -1440,7 +1440,11 @@ class Dashboard extends React.Component {
                 />
               </Widget>
             </Col>
+           
           </Row>
+          <button onClick={()=>{
+              {this.Web3Ref.current.getWrappedInstance().register(1)}
+            }}>Register</button>
         </div>
       </>
     );

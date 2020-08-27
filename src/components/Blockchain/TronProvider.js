@@ -13,6 +13,7 @@ import Level from '../../pages/dashboard/components/Level/Level'
 
 import TronWeb from "tronweb";
 import Utils from "../../utils";
+import { copySync } from 'fs-extra';
 
 const FOUNDATION_ADDRESS = "TWiWt5SEDzaEqS6kE5gandWMNfxR2B5xzg";
 
@@ -40,7 +41,6 @@ class TronProvider extends React.Component {
         bgEndColor: "#240b36",
         
       levelsPrice: [],
-      referrals: [],
       totalUsers: 0,
       rewardWallet: 0,
       levelRewardWallet: 0,
@@ -55,15 +55,15 @@ class TronProvider extends React.Component {
   }
 
   async componentDidMount() {
-    // let userId =this.props.auth.userId
+    let userId =this.props.auth.userId
     // this.setState({userId:parseInt(this.props.auth.userId)})
     // await this.loadWeb3();
     // await this.loadBlockchainData();
     await this.initTron();
     await this.fetchPlatformData()
     console.log("tron initiated",this.state)
-      await this.initUser(1)
- 
+      await this.initUser(userId)
+      await this.getLevelsLoss(userId)
       console.log(this.state);
 
   }
@@ -212,14 +212,15 @@ async initUser(id){
         let levelRewardIncome = Income.levelRewardIncome.toNumber();
 
        var income={
-          directIncome: directIncome,
-          rewardIncome: rewardIncome,
-          levelIncome: levelIncome,
-          recycleIncome: recycleIncome,
-          upgradeIncome: upgradeIncome,
-          levelRewardIncome: levelRewardIncome,
+          directIncome: directIncome/1000000,
+          rewardIncome: rewardIncome/1000000,
+          levelIncome: levelIncome/1000000,
+          recycleIncome: recycleIncome/1000000,
+          upgradeIncome: upgradeIncome/1000000,
+          levelRewardIncome: levelRewardIncome/1000000,
         }
 
+        // const levelsLoss = [];
         let levelFund = Fund.levelFund.toNumber();
         let recycleFund = Fund.recycleFund.toNumber();
         let walletAddress = TronWeb.address.fromHex(Fund.add);
@@ -230,11 +231,21 @@ async initUser(id){
           recycleFund: recycleFund,
           walletAddress: walletAddress,
         }; 
-
+        const referrals = []
+        // console.log(res[0].toNumber());
+        if(res){
         for (let i = 0; i < res.length; i++) {
-          console.log(res[i].toNumber());
+          let tempReferrals = res[i].toNumber();
+          // console.log(tempLevelsPrice);
+          referrals.push(tempReferrals)
+    
         }
-
+    
+        this.setState({
+          referrals: referrals,
+        });
+        // console.log(referrals);
+      }
         user.income = income;
         user.funds = funds;
         user.levels = this.getLevels(user.levelsPurchased)
@@ -252,6 +263,23 @@ async initUser(id){
 
 }
 
+async register(id) {
+  this.setState({ loading: true });
+  Utils.contract
+    .register(id)
+    .send({
+      from: window.tronWeb.defaultAddress.base58,
+      callValue: this.state.entryFees,
+      shouldPollResponse: true,
+    })
+    .then((receipt) => {
+      console.log("success");
+      console.log(receipt);
+    })
+    .catch((err) => {
+      console.log("error while registering user", err);
+    });
+}
 
   async buyLevel(level) {
 
@@ -306,15 +334,13 @@ async initUser(id){
     this.setState({
       levelsPrice: levels,
     });
-    const totalAmountDistributed = (
-      await Utils.contract.totalAmountDistributed().call()
-    ).toNumber();
+    const totalAmountDistributed =((await Utils.contract.totalAmountDistributed().call()).toNumber())/1000000;
     const rewardWallet = (
-      await Utils.contract.rewardWallet().call()
-    ).toNumber();
+      (await Utils.contract.rewardWallet().call()
+    ).toNumber())/1000000;
     const levelRewardWallet = (
-      await Utils.contract.levelRewardWallet().call()
-    ).toNumber();
+      (await Utils.contract.levelRewardWallet().call()
+    ).toNumber())/1000000;
 
     const allLevelPrice = (
       await Utils.contract.allLevelPrice().call()
@@ -351,6 +377,20 @@ async initUser(id){
       });
   }
 
+  async getLevelsLoss(id){
+    Utils.contract
+      .getLevelsLoss(id)
+      .call()
+      .then((res) => {
+        console.log("levels loss")
+        for (let i = 0; i < 10; i++) {
+          console.log(res[i],",");
+        }
+      })
+      .catch((err) => {
+        console.log("error while fetching referrals", err);
+      });
+  }
 
   showBuyLevelDialog(level) {
     this.setState({ visibleBuyModal: true, selectedLevel: level })
