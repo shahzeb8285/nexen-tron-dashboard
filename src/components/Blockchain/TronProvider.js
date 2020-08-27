@@ -64,7 +64,7 @@ class TronProvider extends React.Component {
     console.log("tron initiated",this.state)
       await this.initUser(1)
  
-
+      console.log(this.state);
 
   }
 
@@ -189,7 +189,7 @@ async initUser(id){
         const totalRecycles = User.totalRecycles.toNumber();
         const totalWins = User.totalWins.toNumber();
         const levelsPurchased = User.levelsPurchased.toNumber();
-        const loss = User.loss.toNumber() / 1000000;
+        const loss = User.loss.toNumber();
 
         user={
           inviter: inviter,
@@ -204,12 +204,12 @@ async initUser(id){
         };
 
       
-        let directIncome = Income.directIncome.toNumber() / 1000000;
-        let rewardIncome = Income.rewardIncome.toNumber() / 1000000;
-        let levelIncome = Income.levelIncome.toNumber() / 1000000;
-        let recycleIncome = Income.recycleIncome.toNumber() / 1000000;
-        let upgradeIncome = Income.upgradeIncome.toNumber() / 1000000;
-        let levelRewardIncome = Income.levelRewardIncome.toNumber() / 1000000;
+        let directIncome = Income.directIncome.toNumber();
+        let rewardIncome = Income.rewardIncome.toNumber();
+        let levelIncome = Income.levelIncome.toNumber();
+        let recycleIncome = Income.recycleIncome.toNumber();
+        let upgradeIncome = Income.upgradeIncome.toNumber();
+        let levelRewardIncome = Income.levelRewardIncome.toNumber();
 
        var income={
           directIncome: directIncome,
@@ -220,8 +220,8 @@ async initUser(id){
           levelRewardIncome: levelRewardIncome,
         }
 
-        let levelFund = Fund.levelFund.toNumber() / 1000000;
-        let recycleFund = Fund.recycleFund.toNumber() / 1000000;
+        let levelFund = Fund.levelFund.toNumber();
+        let recycleFund = Fund.recycleFund.toNumber();
         let walletAddress = TronWeb.address.fromHex(Fund.add);
 
         user.walletAddress=walletAddress;
@@ -231,13 +231,17 @@ async initUser(id){
           walletAddress: walletAddress,
         }; 
 
-        // for (let i = 0; i < res.length; i++) {
-        //   console.log(res[i].toNumber());
-        // }
+        for (let i = 0; i < res.length; i++) {
+          console.log(res[i].toNumber());
+        }
 
         user.income = income;
         user.funds = funds;
         user.levels = this.getLevels(user.levelsPurchased)
+        user.totalUsers = this.state.totalUsers;
+        user.totalAmountDistributed = this.state.totalAmountDistributed;
+        user.rewardWallet = this.state.rewardWallet;
+        user.levelRewardWallet = this.state.levelRewardWallet;
         this.setState({ user })
         this.props.dispatch(userFetched(user));
         console.log(this.state);
@@ -266,6 +270,21 @@ async initUser(id){
       });
   }
 
+  async buyAllLevel(){
+    Utils.contract
+    .buyAllLevel()
+    .send({
+      from: window.tronWeb.defaultAddress.base58,
+      callValue: this.state.allLevelPrice,
+      shouldPollResponse: true,
+    })
+    .then((receipt) => {
+      console.log(receipt);
+    })
+    .catch((err) => {
+      console.log("error in buying ", err);
+    });
+  }
 
   async fetchPlatformData() {
     const totalUsers = (await Utils.contract.totalUsers().call()).toNumber();
@@ -296,11 +315,16 @@ async initUser(id){
     const levelRewardWallet = (
       await Utils.contract.levelRewardWallet().call()
     ).toNumber();
+
+    const allLevelPrice = (
+      await Utils.contract.allLevelPrice().call()
+    ).toNumber();
     this.setState({
       totalUsers: totalUsers,
       totalAmountDistributed: totalAmountDistributed,
       rewardWallet: rewardWallet,
       levelRewardWallet: levelRewardWallet,
+      allLevelPrice: allLevelPrice,
     });
 
    let contractAddress = await TronWeb.address.fromHex(Utils.contract.address);
