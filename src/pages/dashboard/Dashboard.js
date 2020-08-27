@@ -82,6 +82,7 @@ class Dashboard extends React.Component {
 
   componentWillReceiveProps(props) {
     console.log("Ggggggg", props)
+    console.log(this.state.user);
   }
 
 
