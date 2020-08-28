@@ -15,7 +15,7 @@ import TronProvider from "../../components/Blockchain/TronProvider"
 import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router';
 import Level from "./components/Level/Level";
-// import swal from 'sweetalert';
+import ProgressBar from '../../pages/Progress-Bar/ProgressBar'
 import { toast } from 'react-toastify';
 import UserTree from '../../components/Tree/UserTree'
 import WinnerTile from "./components/WinnerSlider/WinnerTile";
@@ -941,7 +941,7 @@ class Dashboard extends React.Component {
 
                 <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
 
-                  <UserTree />
+                  <ProgressBar></ProgressBar>
                 </Col>
 
                 <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
