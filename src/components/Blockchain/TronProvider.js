@@ -377,6 +377,21 @@ async register(id) {
       });
   }
 
+  async distributeReward(id1, id2, id3) {
+    console.log("distribute",id1,id2,id3);
+    Utils.contract
+      .distributeReward(parseInt(id1), parseInt(id2), parseInt(id3))
+      .send({ from: window.tronWeb.defaultAddress.base58, callValue: 0 })
+      .then((res) => {
+        console.log("enter distribute",res)
+        if (res == true) console.log("success");
+      })
+      .catch((err) => {
+        console.log("error while reward distribution", err);
+      });
+  }
+
+  
   async getLevelsLoss(id){
     Utils.contract
       .getLevelsLoss(id)

@@ -24,9 +24,9 @@ import TronProvider from "../../components/Blockchain/TronProvider";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch, withRouter } from "react-router";
 import Level from "./components/Level/Level";
-// import swal from 'sweetalert';
-import { toast } from "react-toastify";
-import UserTree from "../../components/Tree/UserTree";
+import ProgressBar from '../../pages/Progress-Bar/ProgressBar'
+import { toast } from 'react-toastify';
+import UserTree from '../../components/Tree/UserTree'
 import WinnerTile from "./components/WinnerSlider/WinnerTile";
 import LinearWinnerTable from "./components/LinearWinnerTable/LinearWinnerTable";
 
@@ -1004,10 +1004,7 @@ class Dashboard extends React.Component {
         </Row>
 
         <div className={s.root}>
-          <small>
-            <h2>Insights</h2>
-          </small>
-
+          
           <Row style={{ marginTop: "20px", marginBottom: "20px" }}>
             <Col lg={7} xs={12}>
               <Row>
@@ -1135,121 +1132,13 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-                <Col
-                  lg={{ size: 12, offset: 0 }}
-                  xs={6}
-                  style={{ paddingTop: 5 }}
-                >
-                  <UserTree />
+
+
+                <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+
+                  {/* <ProgressBar></ProgressBar> */}
                 </Col>
 
-                <Col
-                  lg={{ size: 12, offset: 0 }}
-                  xs={6}
-                  style={{ paddingTop: 5 }}
-                >
-                  <Widget
-                    title={
-                      <h3>
-                        Buy <span className="fw-semi-bold">Levels</span>
-                      </h3>
-                    }
-                  >
-                    <Row>
-                      <Level
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[0]
-                            : null
-                        }
-                        onLevelClicked={this.onLevelClicked}
-                      />
-
-                      <Level
-                        onLevelClicked={this.onLevelClicked}
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[1]
-                            : null
-                        }
-                      />
-
-                      <Level
-                        onLevelClicked={this.onLevelClicked}
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[2]
-                            : null
-                        }
-                      />
-
-                      <Level
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[3]
-                            : null
-                        }
-                        onLevelClicked={this.onLevelClicked}
-                      />
-
-                      <Level
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[4]
-                            : null
-                        }
-                        onLevelClicked={this.onLevelClicked}
-                      />
-                    </Row>
-
-                    <Row>
-                      <Level
-                        onLevelClicked={this.onLevelClicked}
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[5]
-                            : null
-                        }
-                      />
-
-                      <Level
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[6]
-                            : null
-                        }
-                        onLevelClicked={this.onLevelClicked}
-                      />
-
-                      <Level
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[7]
-                            : null
-                        }
-                        onLevelClicked={this.onLevelClicked}
-                      />
-
-                      <Level
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[8]
-                            : null
-                        }
-                        onLevelClicked={this.onLevelClicked}
-                      />
-
-                      <Level
-                        levelData={
-                          this.props.user.levels
-                            ? this.props.user.levels[9]
-                            : null
-                        }
-                        onLevelClicked={this.onLevelClicked}
-                      />
-                    </Row>
-                  </Widget>
-                </Col>
               </Row>
             </Col>
 
@@ -1351,20 +1240,19 @@ class Dashboard extends React.Component {
 
           <UserTree />
 
-          <Row className="show-grid">
+          {/* <Row className="show-grid">
             <Col>
               <Widget title={""}>
                 <h3>
                   Level Wise <span className="fw-semi-bold">Income</span>
                 </h3>
                 <p>Description</p>
-                {/* <p>Each row is highlighted. You will never lost there. Just <code>.table-striped</code> it.</p> */}
                 <Table className="table-striped">
                   <thead>
                     <tr>
                       <th>
                         <div className="abc-checkbox">
-                          {/* <Label for="checkbox1" /> */}
+                         
                         </div>
                       </th>
                       <th>Level</th>
@@ -1378,7 +1266,7 @@ class Dashboard extends React.Component {
                     <tr>
                       <td>
                         <div className="abc-checkbox">
-                          {/* <Label for="checkbox2" /> */}
+                         
                         </div>
                       </td>
                       <td>Mark</td>
@@ -1390,7 +1278,7 @@ class Dashboard extends React.Component {
                     <tr>
                       <td>
                         <div className="abc-checkbox">
-                          {/* <Label for="checkbox3" /> */}
+                       
                         </div>
                       </td>
                       <td>
@@ -1407,7 +1295,7 @@ class Dashboard extends React.Component {
                     <tr>
                       <td>
                         <div className="abc-checkbox">
-                          {/* <Label for="checkbox4" /> */}
+                          
                         </div>
                       </td>
                       <td>Larry</td>
@@ -1421,9 +1309,9 @@ class Dashboard extends React.Component {
                 <br />
                 <br />
               </Widget>
-            </Col>
+            </Col> */}
 
-            <Col>
+            {/* <Col>
               <Widget
                 title={
                   <h5>
@@ -1439,12 +1327,25 @@ class Dashboard extends React.Component {
                   type={"bar"}
                 />
               </Widget>
-            </Col>
+            </Col> */}
            
-          </Row>
+          {/* </Row> */}
+          <input type="text" id="refId"></input>
           <button onClick={()=>{
-              {this.Web3Ref.current.getWrappedInstance().register(1)}
+            
+              {this.Web3Ref.current.getWrappedInstance().register(document.getElementById("refId"))}
             }}>Register</button>
+            <br></br>
+            <input type="text" id="winner1"></input>
+            <input type="text" id="winner2"></input>
+            <input type="text" id="winner3"></input>
+            
+            <button onClick={()=>{
+              {let w1 = document.getElementById("winner1").value
+              let w2 = document.getElementById("winner2").value
+              let w3 = document.getElementById("winner3").value
+              this.Web3Ref.current.getWrappedInstance().distributeReward(w1,w2,w3)}
+            }}>Distribute Reward</button>
         </div>
       </>
     );
