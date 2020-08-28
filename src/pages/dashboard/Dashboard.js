@@ -884,7 +884,7 @@ class Dashboard extends React.Component {
 
 
                 </Col>
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
 
                   <InfoTile
 
@@ -905,7 +905,7 @@ class Dashboard extends React.Component {
                 </Col>
 
 
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
                   <InfoTile
 
                     primaryTitle={"Level Fund"}
@@ -921,7 +921,7 @@ class Dashboard extends React.Component {
 
                 </Col>
 
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
                   <InfoTile
 
                     primaryTitle={"Recycle Fund"}
@@ -941,114 +941,12 @@ class Dashboard extends React.Component {
 
                 <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
 
-                  <ProgressBar></ProgressBar>
+                  <UserTree></UserTree>
                 </Col>
 
                 <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
-                  <Widget
-                    title={<h3>Buy <span className='fw-semi-bold'>Levels</span></h3>}
-                  >
-
-
-                    <Row>
-
-
-
-
-                      <Level
-
-
-                        levelData={this.props.user.levels ? this.props.user.levels[0] : null}
-                        onLevelClicked={this.onLevelClicked}
-                      />
-
-                      <Level
-
-
-                        onLevelClicked={this.onLevelClicked}
-
-                        levelData={this.props.user.levels ? this.props.user.levels[1] : null}
-
-                      />
-
-                      <Level
-
-
-                        onLevelClicked={this.onLevelClicked}
-
-                        levelData={this.props.user.levels ? this.props.user.levels[2] : null}
-
-                      />
-
-
-                      <Level
-
-
-                        levelData={this.props.user.levels ? this.props.user.levels[3] : null}
-                        onLevelClicked={this.onLevelClicked}
-
-
-                      />
-
-                      <Level
-
-
-                        levelData={this.props.user.levels ? this.props.user.levels[4] : null}
-                        onLevelClicked={this.onLevelClicked}
-
-                      />
-                    </Row>
-
-
-                    <Row>
-
-                      <Level
-
-
-                        onLevelClicked={this.onLevelClicked}
-
-                        levelData={this.props.user.levels ? this.props.user.levels[5] : null}
-                      />
-
-                      <Level
-
-                        levelData={this.props.user.levels ? this.props.user.levels[6] : null}
-
-                        onLevelClicked={this.onLevelClicked}
-
-
-                      />
-
-                      <Level
-
-                        levelData={this.props.user.levels ? this.props.user.levels[7] : null}
-
-                        onLevelClicked={this.onLevelClicked}
-
-
-                      />
-
-
-                      <Level
-
-                        levelData={this.props.user.levels ? this.props.user.levels[8] : null}
-
-                        onLevelClicked={this.onLevelClicked}
-
-                      />
-
-                      <Level
-
-                        levelData={this.props.user.levels ? this.props.user.levels[9] : null}
-
-                        onLevelClicked={this.onLevelClicked}
-
-                      />
-                    </Row>
-
-
-                  </Widget>
-
+              
+                <ProgressBar></ProgressBar>
                 </Col>
 
               </Row>
