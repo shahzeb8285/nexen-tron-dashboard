@@ -49,14 +49,6 @@ class Web3Provider extends React.Component {
       await this.initUser(userId)
     }
 
-
-
-
-
-
-
-
-
   }
 
 
@@ -446,11 +438,6 @@ var level = null;
       })
   }
 
-
-
-
-
-
   makeErrorToast(error) {
     toast.error(error, {
       position: "bottom-center",
@@ -462,8 +449,6 @@ var level = null;
     });
 
   }
-
-
 
   renderBuyDialog() {
     return <>
@@ -551,8 +536,6 @@ var level = null;
 
     </>
   }
-
-
 
 
   render() {

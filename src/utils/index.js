@@ -1,4 +1,4 @@
-const contractAddress = 'TU88KuyQkaoyUaGLkSnfa9yaqENtGZEwer'
+const contractAddress = 'TAynoxVMVxPfWZZp4uMxUCKWWq8zQV7td2'
 
 const utils = {
     tronWeb: false,
@@ -6,7 +6,7 @@ const utils = {
 
     async setTronWeb(tronWeb) {
         this.tronWeb = tronWeb;
-        this.contract = await tronWeb.contract().at(contractAddress)
+        this.contract = await tronWeb.contract().at(contractAddress);
     },
 
 };

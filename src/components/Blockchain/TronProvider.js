@@ -13,6 +13,7 @@ import Level from '../../pages/dashboard/components/Level/Level'
 
 import TronWeb from "tronweb";
 import Utils from "../../utils";
+import { copySync } from 'fs-extra';
 
 const FOUNDATION_ADDRESS = "TWiWt5SEDzaEqS6kE5gandWMNfxR2B5xzg";
 
@@ -37,32 +38,35 @@ class TronProvider extends React.Component {
         amountTag: "0.05",
 
         bgStartColor: "#621e94",
-        bgEndColor: "#240b36"
+        bgEndColor: "#240b36",
+        
+      levelsPrice: [],
+      totalUsers: 0,
+      rewardWallet: 0,
+      levelRewardWallet: 0,
+      totalAmountDistributed: 0,
+      loading: false,
+      tronWeb: {
+        installed: false,
+        loggedIn: false,
+      },
       }
     };
   }
 
-
   async componentDidMount() {
-    // let userId =this.props.auth.userId
-    // // this.setState({userId:parseInt(this.props.auth.userId)})
+    let userId =this.props.auth.userId
+    // this.setState({userId:parseInt(this.props.auth.userId)})
     // await this.loadWeb3();
     // await this.loadBlockchainData();
-
-    // if (!this.state.InitError) {
-    //   await this.initUsersFunds(userId);
-    //   await this.initUser(userId)
-    // }
-
-
-
     await this.initTron();
-    console.log("tronnn",this.state)
-
+    await this.fetchPlatformData()
+    console.log("tron initiated",this.state)
+      await this.initUser(userId)
+      await this.getLevelsLoss(userId)
+      console.log(this.state);
 
   }
-
-
 
   async initTron() {
     await new Promise((resolve) => {
@@ -144,7 +148,7 @@ class TronProvider extends React.Component {
     this.fetchPlatformData();
     // this.startRegisterEventListener();
     this.startBuyLevelEventListner();
-    this.setState({ account: window.tronWeb.defaultAddress.base58 });
+    this.setState({ InitError: true })
   }
 
   startBuyLevelEventListner() {
@@ -157,8 +161,125 @@ class TronProvider extends React.Component {
     });
   }
 
+async initUser(id){
+  if(!Utils.contract){
+    return;
+  }
+  console.log("initUser", "Gggg");
+  
+  Utils.contract
+  .getUserInfo(id)
+  .call()
+  .then((User) => {
+    Utils.contract
+      .getUsersIncomes(id)
+      .call()
+      .then((Income) => {
+        Utils.contract
+      .getUsersFundsAndUserAddress(id)
+      .call()
+      .then((Fund) => {
+        Utils.contract
+        .viewUserReferral(id)
+        .call()
+        .then((res) => {
+        var user = {}
+        const inviter = TronWeb.address.fromHex(User.inviter);
+        const totalReferals = User.totalReferals.toNumber();
+        const totalRecycles = User.totalRecycles.toNumber();
+        const totalWins = User.totalWins.toNumber();
+        const levelsPurchased = User.levelsPurchased.toNumber();
+        const loss = User.loss.toNumber();
 
+        user={
+          inviter: inviter,
+          totalReferals: totalReferals,
+          totalRecycles: totalRecycles,
+          totalWins: totalWins,
+          levelsPurchased: levelsPurchased,
+          loss: loss,
 
+          // walletAddress: this.state.walletAddress,
+          contractAddress: this.state.contractAddress
+        };
+
+      
+        let directIncome = Income.directIncome.toNumber();
+        let rewardIncome = Income.rewardIncome.toNumber();
+        let levelIncome = Income.levelIncome.toNumber();
+        let recycleIncome = Income.recycleIncome.toNumber();
+        let upgradeIncome = Income.upgradeIncome.toNumber();
+        let levelRewardIncome = Income.levelRewardIncome.toNumber();
+
+       var income={
+          directIncome: directIncome/1000000,
+          rewardIncome: rewardIncome/1000000,
+          levelIncome: levelIncome/1000000,
+          recycleIncome: recycleIncome/1000000,
+          upgradeIncome: upgradeIncome/1000000,
+          levelRewardIncome: levelRewardIncome/1000000,
+        }
+
+        // const levelsLoss = [];
+        let levelFund = Fund.levelFund.toNumber();
+        let recycleFund = Fund.recycleFund.toNumber();
+        let walletAddress = TronWeb.address.fromHex(Fund.add);
+
+        user.walletAddress=walletAddress;
+       var funds={
+          levelFund: levelFund,
+          recycleFund: recycleFund,
+          walletAddress: walletAddress,
+        }; 
+        const referrals = []
+        // console.log(res[0].toNumber());
+        if(res){
+        for (let i = 0; i < res.length; i++) {
+          let tempReferrals = res[i].toNumber();
+          // console.log(tempLevelsPrice);
+          referrals.push(tempReferrals)
+    
+        }
+    
+        this.setState({
+          referrals: referrals,
+        });
+        // console.log(referrals);
+      }
+        user.income = income;
+        user.funds = funds;
+        user.levels = this.getLevels(user.levelsPurchased)
+        user.totalUsers = this.state.totalUsers;
+        user.totalAmountDistributed = this.state.totalAmountDistributed;
+        user.rewardWallet = this.state.rewardWallet;
+        user.levelRewardWallet = this.state.levelRewardWallet;
+        this.setState({ user })
+        this.props.dispatch(userFetched(user));
+        console.log(this.state);
+      });
+      });
+    });
+  });
+
+}
+
+async register(id) {
+  this.setState({ loading: true });
+  Utils.contract
+    .register(id)
+    .send({
+      from: window.tronWeb.defaultAddress.base58,
+      callValue: this.state.entryFees,
+      shouldPollResponse: true,
+    })
+    .then((receipt) => {
+      console.log("success");
+      console.log(receipt);
+    })
+    .catch((err) => {
+      console.log("error while registering user", err);
+    });
+}
 
   async buyLevel(level) {
 
@@ -177,6 +298,21 @@ class TronProvider extends React.Component {
       });
   }
 
+  async buyAllLevel(){
+    Utils.contract
+    .buyAllLevel()
+    .send({
+      from: window.tronWeb.defaultAddress.base58,
+      callValue: this.state.allLevelPrice,
+      shouldPollResponse: true,
+    })
+    .then((receipt) => {
+      console.log(receipt);
+    })
+    .catch((err) => {
+      console.log("error in buying ", err);
+    });
+  }
 
   async fetchPlatformData() {
     const totalUsers = (await Utils.contract.totalUsers().call()).toNumber();
@@ -198,119 +334,32 @@ class TronProvider extends React.Component {
     this.setState({
       levelsPrice: levels,
     });
-    const totalAmountDistributed = (
-      await Utils.contract.totalAmountDistributed().call()
-    ).toNumber();
+    const totalAmountDistributed =((await Utils.contract.totalAmountDistributed().call()).toNumber())/1000000;
     const rewardWallet = (
-      await Utils.contract.rewardWallet().call()
-    ).toNumber();
+      (await Utils.contract.rewardWallet().call()
+    ).toNumber())/1000000;
     const levelRewardWallet = (
-      await Utils.contract.levelRewardWallet().call()
+      (await Utils.contract.levelRewardWallet().call()
+    ).toNumber())/1000000;
+
+    const allLevelPrice = (
+      await Utils.contract.allLevelPrice().call()
     ).toNumber();
     this.setState({
       totalUsers: totalUsers,
       totalAmountDistributed: totalAmountDistributed,
       rewardWallet: rewardWallet,
       levelRewardWallet: levelRewardWallet,
+      allLevelPrice: allLevelPrice,
     });
+
+   let contractAddress = await TronWeb.address.fromHex(Utils.contract.address);
+    console.log(contractAddress);
+    this.setState({contractAddress:contractAddress})
     // console.log("totalUsers", totalUsers);
     // console.log("totalAmountDistributed", totalAmountDistributed / 1000000);
     // console.log("rewardWallet", rewardWallet / 1000000);
     // console.log("levelRewardWallet", levelRewardWallet / 1000000);
-  }
-
-
-
-  async getUserInfo(id) {
-    Utils.contract
-      .getUserInfo(id)
-      .call()
-      .then((res) => {
-        // console.log(res);
-        const inviter = TronWeb.address.fromHex(res.inviter);
-        const totalReferals = res.totalReferals.toNumber();
-        const totalRecycles = res.totalRecycles.toNumber();
-        const totalWins = res.totalWins.toNumber();
-        const levelsPurchased = res.levelsPurchased.toNumber();
-        const loss = res.loss.toNumber() / 1000000;
-
-        this.setState({
-          inviter: inviter,
-          totalReferals: totalReferals,
-          totalRecycles: totalRecycles,
-          totalWins: totalWins,
-          levelsPurchased: levelsPurchased,
-          loss: loss,
-        });
-        // console.log(
-        //   "inviter",
-        //   inviter,
-        //   "totalReferals",
-        //   totalReferals,
-        //   "totalRecycles",
-        //   totalRecycles,
-        //   "totalWins",
-        //   totalWins,
-        //   "levelsPurchased",
-        //   levelsPurchased,
-        //   "loss",
-        //   loss
-        // );
-      })
-      .catch((err) => {
-        console.log("error", err);
-      });
-  }
-
-
-
-  async getUsersIncomes(id) {
-    Utils.contract
-      .getUsersIncomes(id)
-      .call()
-      .then((res) => {
-        let directIncome = res.directIncome.toNumber() / 1000000;
-        let rewardIncome = res.rewardIncome.toNumber() / 1000000;
-        let levelIncome = res.levelIncome.toNumber() / 1000000;
-        let recycleIncome = res.recycleIncome.toNumber() / 1000000;
-        let upgradeIncome = res.upgradeIncome.toNumber() / 1000000;
-        let levelRewardIncome = res.levelRewardIncome.toNumber() / 1000000;
-
-        this.setState({
-          directIncome: directIncome,
-          rewardIncome: rewardIncome,
-          levelIncome: levelIncome,
-          recycleIncome: recycleIncome,
-          upgradeIncome: upgradeIncome,
-          levelRewardIncome: levelRewardIncome,
-        });
-        // console.log("directIncome", directIncome);
-        // console.log("rewardIncome", rewardIncome);
-        // console.log("levelIncome", levelIncome);
-        // console.log("recycleIncome", recycleIncome);
-        // console.log("upgradeIncome", upgradeIncome);
-        // console.log("levelRewardIncome", levelRewardIncome);
-      });
-  }
-
-  async getUsersFunds(id) {
-    Utils.contract
-      .getUsersFundsAndUserAddress(id)
-      .call()
-      .then((res) => {
-        let levelFund = res.levelFund.toNumber() / 1000000;
-        let recycleFund = res.recycleFund.toNumber() / 1000000;
-        let walletAddress = TronWeb.address.fromHex(res.add);
-
-        this.setState({
-          levelFund: levelFund,
-          recycleFund: recycleFund,
-          walletAddress: walletAddress,
-        });
-        console.log(levelFund);
-        console.log(recycleFund);
-        console.log(walletAddress);
-      });
   }
 
 
@@ -328,20 +377,40 @@ class TronProvider extends React.Component {
       });
   }
 
+  async distributeReward(id1, id2, id3) {
+    console.log("distribute",id1,id2,id3);
+    Utils.contract
+      .distributeReward(parseInt(id1), parseInt(id2), parseInt(id3))
+      .send({ from: window.tronWeb.defaultAddress.base58, callValue: 0 })
+      .then((res) => {
+        console.log("enter distribute",res)
+        if (res == true) console.log("success");
+      })
+      .catch((err) => {
+        console.log("error while reward distribution", err);
+      });
+  }
 
-
+  
+  async getLevelsLoss(id){
+    Utils.contract
+      .getLevelsLoss(id)
+      .call()
+      .then((res) => {
+        console.log("levels loss")
+        for (let i = 0; i < 10; i++) {
+          console.log(res[i],",");
+        }
+      })
+      .catch((err) => {
+        console.log("error while fetching referrals", err);
+      });
+  }
 
   showBuyLevelDialog(level) {
     this.setState({ visibleBuyModal: true, selectedLevel: level })
 
   }
-
-
-
-
-
-
-
 
 
   getLevels(levelNumber) {
@@ -487,8 +556,6 @@ class TronProvider extends React.Component {
   }
 
 
-
-
   makeErrorToast(error) {
     toast.error(error, {
       position: "bottom-center",
@@ -591,8 +658,6 @@ class TronProvider extends React.Component {
   }
 
 
-
-
   render() {
     return (
 
@@ -612,7 +677,3 @@ function mapStateToProps(store) {
 
 export default connect(mapStateToProps, null, null, { withRef: true })(TronProvider);
 
-// export default compose(
-//   connect(mapStateToProps, null, null, { withRef: true }),
-//     Web3Provider
-// );

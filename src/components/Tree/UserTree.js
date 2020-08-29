@@ -11,14 +11,14 @@ export default class UserTree extends Component{
           return(
             <Widget className="tree--main">
               <Row>
-              <Col lg={2}>
+              <Col lg={2} xs={2}>
               <div className="prev--button">
                   <Button color="primary">
                     Prev
                   </Button>
               </div>
               </Col>
-              <Col lg={8}>
+              <Col lg={8} xs={8}>
                 <Tree
             lineWidth={'2px'}
             lineColor={'green'}
@@ -99,7 +99,7 @@ export default class UserTree extends Component{
               
               </Col>
 
-              <Col lg={2}>
+              <Col lg={2} xs={2}>
               <div className="prev--button">
                   <Button color="primary">
                     Next
