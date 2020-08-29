@@ -158,7 +158,7 @@ class TronProvider extends React.Component {
       if (err) {
         return console.log("Failed Register", err);
       }
-
+      // window.alert("Registered");
       window.location.reload();
     });
   }

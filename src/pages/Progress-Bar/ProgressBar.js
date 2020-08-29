@@ -17,7 +17,7 @@ export default class ProgressBar extends Component {
     return (
       <Widget>
         <Row>
-          <Col lg={4}>
+          <Col lg={4} xs={6}>
             <CircularProgressbar
               value={this.state.percentage}
               text={`${this.state.percentage}%`}

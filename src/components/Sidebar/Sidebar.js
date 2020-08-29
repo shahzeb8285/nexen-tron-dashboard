@@ -203,7 +203,7 @@ class Sidebar extends React.Component {
                             </div>
                         </div>
                         <div className="id__btn">
-                            <h4>{this.props.user.income?(this.props.user.income.directIncome+this.props.user.income.levelIncome+this.props.user.income.recycleIncome):0 } trx</h4>
+                            <h4>35 Tron</h4>
                         </div>
                     </div>
 

@@ -1011,11 +1011,7 @@ class Dashboard extends React.Component {
                     }
                   />
                 </Col>
-                <Col
-                  lg={{ size: 4, offset: 0 }}
-                  xs={6}
-                  style={{ paddingTop: 5 }}
-                >
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{  paddingTop: 15 }}>
                   <InfoTile
                     primaryTitle={"Reward Income"}
                     secondaryTitle={"Total Win"}
@@ -1032,11 +1028,9 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-                <Col
-                  lg={{ size: 4, offset: 0 }}
-                  xs={6}
-                  style={{ paddingTop: 5 }}
-                >
+
+
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
                   <InfoTile
                     primaryTitle={"Level Income"}
                     secondaryTitle={"Loss"}
@@ -1107,12 +1101,27 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
+                  <InfoTile
+                    primaryTitle={"Upgrade Income"}
+                    secondaryTitle={""}
+                    primaryAmount={
+                      this.props.user.income
+                        ? this.props.user.income.upgradeIncome
+                        : "0x"
+                    }
+                    secondaryAmount={
+                      ""
+                    }
+                    bgStartColor={"#d35400"}
+                    bgEndColor={"#a1511b"}
+                  />
+                </Col>
 
-
-                <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                {/* <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
 
                   <UserTree></UserTree>
-                </Col>
+                </Col> */}
 
                 <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
               
