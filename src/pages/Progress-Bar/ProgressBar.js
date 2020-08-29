@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import 'react-circular-progressbar/dist/styles.css';
-
+import InfoTile from "../../components/InfoTile/InfoTile";
 import { Row, Col } from "reactstrap";
 import "./ProgressBar.scss";
 import Widget from "../../components/Widget";
 
 export default class ProgressBar extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       percentage: 66,
     };
@@ -17,6 +17,7 @@ export default class ProgressBar extends Component {
     return (
       <Widget>
         <Row>
+    
           <Col lg={4} xs={6}>
             <CircularProgressbar
               value={this.state.percentage}
@@ -61,11 +62,33 @@ export default class ProgressBar extends Component {
               }}
             />
           </Col>
-          <Col lg={4}>
-            <div className="circle"></div>
+          <Col lg={4} style={{ paddingTop: 5}}>
+          <InfoTile
+                    primaryTitle={"Level Reward Wallet"}
+                    secondaryTitle={""}
+                    primaryAmount={
+                   this.props.levelRewardWallet
+                    }
+                    bgStartColor={"#00b894"}
+                    bgEndColor={"#018067"}
+                    secondaryAmount={
+                     ""
+                    }
+                  />
           </Col>
-          <Col lg={4}>
-            <div className="circle"></div>
+          <Col lg={4}  style={{ paddingTop: 5}}>
+          <InfoTile
+                    primaryTitle={"Daily Reward Wallet"}
+                    secondaryTitle={""}
+                    primaryAmount={
+                      this.props.rewardWallet
+                    }
+                    bgStartColor={"#00b894"}
+                    bgEndColor={"#018067"}
+                    secondaryAmount={
+                      ""
+                    }
+                  />
           </Col>
         </Row>
       </Widget>

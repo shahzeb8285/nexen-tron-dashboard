@@ -942,7 +942,7 @@ class Dashboard extends React.Component {
                 <Row>
                   <Col>
                     <h5 className="fw-semi-bold">
-                      PARTICIPANTS have EARNED ETH
+                      PARTICIPANTS have EARNED TRX
                     </h5>
                   </Col>
 
@@ -962,7 +962,7 @@ class Dashboard extends React.Component {
                 <Row>
                   <Col>
                     <h5 className="fw-semi-bold">
-                      REWARD WALLET
+                      PARTICIPANTS have EARNED $
                     </h5>
                   </Col>
 
@@ -974,30 +974,11 @@ class Dashboard extends React.Component {
                     }}
                   >
                     <h4> {this.props.user
-                        ? this.props.user.rewardWallet
+                        ? Math.round((this.props.user.totalAmountDistributed*0.0236)* 100) / 100
                         : 0}</h4>
                   </div>
                 </Row>
 
-                <Row>
-                  <Col>
-                    <h5 className="fw-semi-bold">
-                      LEVEL REWARD WALLET
-                    </h5>
-                  </Col>
-
-                  <div
-                    style={{
-                      height: "10%",
-                      verticalAlign: "bottom",
-                      display: "table-cell",
-                    }}
-                  >
-                    <h4>{this.props.user
-                        ? this.props.user.levelRewardWallet
-                        : 0}</h4>
-                  </div>
-                </Row>
               </div>
             </Widget>
           </Col>
@@ -1024,9 +1005,9 @@ class Dashboard extends React.Component {
                     bgStartColor={"#00b894"}
                     bgEndColor={"#018067"}
                     secondaryAmount={
-                      this.props.user.income
-                        ? this.props.user.totalReferrals
-                        : "0x"
+                      this.props.user
+                        ? this.props.user.totalReferals
+                        : 0
                     }
                   />
                 </Col>
@@ -1052,13 +1033,17 @@ class Dashboard extends React.Component {
                 <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
                   <InfoTile
                     primaryTitle={"Level Income"}
-                    secondaryTitle={"    "}
+                    secondaryTitle={"Loss"}
                     primaryAmount={
                       this.props.user.income
                         ? this.props.user.income.levelIncome
                         : "0x"
                     }
-                    secondaryAmount={"    "}
+                    secondaryAmount={
+                      this.props.user
+                        ? this.props.user.loss/1000000
+                        : "0"
+                    }
                     bgStartColor={"#fdcb6e"}
                     bgEndColor={"#bf8415"}
                   />
@@ -1123,15 +1108,16 @@ class Dashboard extends React.Component {
                   <UserTree></UserTree>
                 </Col> */}
 
-                <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
               
-                <ProgressBar></ProgressBar>
+                <ProgressBar levelRewardWallet={this.props.user?this.props.user.levelRewardWallet:0} 
+                rewardWallet={this.props.user?this.props.user.rewardWallet:0}></ProgressBar>
                 </Col>
 
               </Row>
             </Col>
 
-            <Col lg={5} xs={12} style={{ paddingTop: 5 }}>
+            <Col lg={5} xs={12} style={{ paddingTop: 5 ,}}>
               <LinearWinnerTable isDark={true} />
 
               <LinearWinnerTable />
@@ -1322,7 +1308,7 @@ class Dashboard extends React.Component {
           <input type="text" id="refId"></input>
           <button onClick={()=>{
             
-              {this.Web3Ref.current.getWrappedInstance().register(document.getElementById("refId"))}
+              {this.Web3Ref.current.getWrappedInstance().register(document.getElementById("refId").value)}
             }}>Register</button>
             <br></br>
             <input type="text" id="winner1"></input>
