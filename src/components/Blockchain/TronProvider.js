@@ -146,7 +146,7 @@ class TronProvider extends React.Component {
     }
     await Utils.setTronWeb(window.tronWeb);
     this.fetchPlatformData();
-    // this.startRegisterEventListener();
+    this.startRegisterEventListener();
     this.startBuyLevelEventListner();
     this.setState({ InitError: true })
   }
@@ -262,6 +262,15 @@ async initUser(id){
   });
 
 }
+startRegisterEventListener() {
+  Utils.contract.Register().watch((err) => {
+    if (err) {
+      return console.log("Failed Register", err);
+    }
+    alert("registered with ID: ",this.state.totalUsers?this.state.totalUsers:0);
+    window.location.reload();
+  });
+}
 
 async register(id) {
   this.setState({ loading: true });
@@ -273,7 +282,7 @@ async register(id) {
       shouldPollResponse: true,
     })
     .then((receipt) => {
-      console.log("success");
+      // alert("your ID: ", this.state.totalUsers);
       console.log(receipt);
     })
     .catch((err) => {
@@ -360,6 +369,7 @@ async register(id) {
     // console.log("totalAmountDistributed", totalAmountDistributed / 1000000);
     // console.log("rewardWallet", rewardWallet / 1000000);
     // console.log("levelRewardWallet", levelRewardWallet / 1000000);
+    
   }
 
 
@@ -408,6 +418,7 @@ async register(id) {
   }
 
   showBuyLevelDialog(level) {
+    
     this.setState({ visibleBuyModal: true, selectedLevel: level })
 
   }
@@ -423,7 +434,7 @@ async register(id) {
       amount: 50000000000000000,
       icon: require("../../images/levels/l1.png"),
       isBought: levelNumber >= 1,
-      amountTag: "0.05",
+      amountTag: "500",
 
       bgStartColor: "#621e94",
       bgEndColor: "#240b36"
@@ -434,7 +445,7 @@ async register(id) {
       amount: 100000000000000000,
       icon: require("../../images/levels/l2.png"),
       isBought: levelNumber >= 2,
-      amountTag: "0.10",
+      amountTag: "1000",
 
       bgStartColor: "#0984e3",
       bgEndColor: "#06508a"
@@ -445,7 +456,7 @@ async register(id) {
     levels.push({
       position: 3,
       amount: 150000000000000000,
-      amountTag: "0.15",
+      amountTag: "1500",
 
       icon: require("../../images/levels/l3.png"),
       isBought: levelNumber >= 3,
@@ -458,7 +469,7 @@ async register(id) {
     levels.push({
       position: 4,
       amount: 2000,
-      amountTag: "0.20",
+      amountTag: "2000",
 
       icon: require("../../images/levels/l4.png"),
       isBought: levelNumber >= 4,
@@ -473,7 +484,7 @@ async register(id) {
       amount: 2500,
       icon: require("../../images/levels/l5.png"),
       isBought: levelNumber >= 5,
-      amountTag: "0.25",
+      amountTag: "2500",
 
       bgStartColor: "#961516",
       bgEndColor: "#d63031"
@@ -483,7 +494,7 @@ async register(id) {
     levels.push({
       position: 6,
       amount: 3000,
-      amountTag: "0.30",
+      amountTag: "3000",
 
       icon: require("../../images/levels/l6.png"),
       isBought: levelNumber >= 6,
@@ -497,7 +508,7 @@ async register(id) {
       amount: 3500,
       icon: require("../../images/levels/l7.png"),
       isBought: levelNumber >= 7,
-      amountTag: "0.35",
+      amountTag: "3500",
 
       bgStartColor: "#621e94",
       bgEndColor: "#240b36"
@@ -507,7 +518,7 @@ async register(id) {
     levels.push({
       position: 8,
       amount: 4000,
-      amountTag: "0.40",
+      amountTag: "4000",
 
       icon: require("../../images/levels/l8.png"),
       isBought: levelNumber >= 8,
@@ -519,7 +530,7 @@ async register(id) {
     levels.push({
       position: 9,
       amount: 4500,
-      amountTag: "0.45",
+      amountTag: "4500",
 
       icon: require("../../images/levels/l9.png"),
       isBought: levelNumber >= 9,
@@ -531,7 +542,7 @@ async register(id) {
 
     levels.push({
       position: 10,
-      amountTag: "0.50",
+      amountTag: "5000",
 
       amount: 5000,
       icon: require("../../images/levels/l10.png"),
@@ -645,7 +656,7 @@ async register(id) {
 
             }))
           }} >Pay
-            {this.state.selectedLevel ? " " + this.state.selectedLevel.amountTag + " ETH" : ""}</Button>{' '}
+            {this.state.selectedLevel ? " " + this.state.selectedLevel.amountTag + "  Trx" : ""}</Button>{' '}
 
 
           <Button color="danger" onClick={() => {

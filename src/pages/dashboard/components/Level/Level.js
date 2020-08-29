@@ -120,7 +120,7 @@ const Level = (props) => {
 
           }}>
 
-            <h5 className="">{amount} <span className="fw-bold">ETH</span></h5>
+            <h5 className="">{amount} <span className="fw-bold">TRX</span></h5>
 
           </Col>
 
