@@ -50,8 +50,9 @@ contract MLM {
     mapping(uint256 => address) public users_ids;
 
     event Register(address indexed addr, address indexed inviter, uint256 id);
-    event BuyLevel(address indexed addr, address indexed upline, uint8 level);
     event buyLevelEvent(address indexed _user, uint256 _level);
+    event distributeRewardEvent(uint256 _add1,uint256 _add2,uint256 _add3);
+    event distributeLevelRewardEvent();
 
     constructor() public {
         totalUsers = 0;
@@ -113,10 +114,10 @@ contract MLM {
             if (
                 usersFund[_inviter].levelFund >= levels[_level]
             ) {
-                autoBuyLevel(msg.sender);
+                autoBuyLevel(_inviter);
             }
         }
-        if (usersFund[_user].recycleFund >= levels[0]){
+        if (usersFund[_inviter].recycleFund >= levels[0]){
             recycleId(_inviter);
         }
          address(uint256(_inviter)).transfer(
@@ -352,7 +353,7 @@ contract MLM {
         usersFund[_inviter1].levelFund += (10 * first) / 100;
         usersFund[_inviter2].levelFund += (10 * second) / 100;
         usersFund[_inviter3].levelFund += (10 * third) / 100;
-
+        emit distributeRewardEvent(_winner1,_winner2,_winner3);
     }
 
     function distributeLevelReward() public {
@@ -375,6 +376,7 @@ contract MLM {
         }
         levelRewardWallet = 0;
         totalAmountDistributed += price * levelWinners.length;
+        emit distributeLevelRewardEvent();
     }
 
     function distributeLevelUpgradeAmount(uint256 _level, address _user)

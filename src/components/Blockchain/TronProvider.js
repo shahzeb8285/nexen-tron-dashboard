@@ -148,7 +148,19 @@ class TronProvider extends React.Component {
     this.fetchPlatformData();
     this.startRegisterEventListener();
     this.startBuyLevelEventListner();
+    this.startRewardDistributionEventListener();
+    this.startLevelRewardDistributionEventListener();
     this.setState({ InitError: true })
+  }
+
+  startRegisterEventListener() {
+    Utils.contract.Register().watch((err) => {
+      if (err) {
+        return console.log("Failed Register", err);
+      }
+
+      window.location.reload();
+    });
   }
 
   startBuyLevelEventListner() {
@@ -262,12 +274,24 @@ async initUser(id){
   });
 
 }
-startRegisterEventListener() {
-  Utils.contract.Register().watch((err) => {
+startRewardDistributionEventListener() {
+  Utils.contract.distributeRewardEvent().watch((err) => {
     if (err) {
-      return console.log("Failed Register", err);
+      alert("Something went Wrong please try again");
+      return console.log("Failed reward distribution", err);
     }
-    alert("registered with ID: ",this.state.totalUsers?this.state.totalUsers:0);
+    alert("Distribution successful");
+    window.location.reload();
+  });
+}
+
+startLevelRewardDistributionEventListener(){
+  Utils.contract.distributeLevelRewardEvent().watch((err) => {
+    if (err) {
+      alert("Something went Wrong please try again");
+      return console.log("level reward distribution failed", err);
+    }
+    alert("Distributed level reward Successfully");
     window.location.reload();
   });
 }
@@ -401,6 +425,21 @@ async register(id) {
       });
   }
 
+  async distributeLevelReward() {
+    Utils.contract
+      .distributeLevelReward()
+      .send({
+        shouldPollResponse: true,
+        callValue: 0,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("error while distributing levelReward", err);
+      });
+  }
+
   
   async getLevelsLoss(id){
     Utils.contract
@@ -418,7 +457,7 @@ async register(id) {
   }
 
   showBuyLevelDialog(level) {
-    
+
     this.setState({ visibleBuyModal: true, selectedLevel: level })
 
   }
