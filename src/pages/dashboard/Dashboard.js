@@ -849,7 +849,7 @@ class Dashboard extends React.Component {
 
                   />
                 </Col>
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{  paddingTop: 15 }}>
                   <InfoTile
 
                     primaryTitle={"Reward Income"}
@@ -869,7 +869,7 @@ class Dashboard extends React.Component {
 
 
 
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
                   <InfoTile
 
                     primaryTitle={"Level Income"}
@@ -939,10 +939,10 @@ class Dashboard extends React.Component {
 
 
 
-                <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                {/* <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
 
                   <UserTree></UserTree>
-                </Col>
+                </Col> */}
 
                 <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
               
