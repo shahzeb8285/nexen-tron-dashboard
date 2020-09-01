@@ -39,7 +39,7 @@ class TronProvider extends React.Component {
 
         bgStartColor: "#621e94",
         bgEndColor: "#240b36",
-        
+      ownerWallet:0,
       levelsPrice: [],
       totalUsers: 0,
       rewardWallet: 0,
@@ -277,7 +277,7 @@ async initUser(id){
 startRewardDistributionEventListener() {
   Utils.contract.distributeRewardEvent().watch((err) => {
     if (err) {
-      alert("Something went Wrong please try again");
+      // alert("Something went Wrong please try again");
       return console.log("Failed reward distribution", err);
     }
     alert("Distribution successful");
@@ -288,7 +288,7 @@ startRewardDistributionEventListener() {
 startLevelRewardDistributionEventListener(){
   Utils.contract.distributeLevelRewardEvent().watch((err) => {
     if (err) {
-      alert("Something went Wrong please try again");
+      // alert("Something went Wrong please try again");
       return console.log("level reward distribution failed", err);
     }
     alert("Distributed level reward Successfully");
@@ -314,8 +314,13 @@ async register(id) {
     });
 }
 
-  async buyLevel(level) {
 
+  async buyLevel(level) {
+    if(this.state.walletAddress != window.tronWeb.defaultAddress.base58)
+    {
+      alert("You can't buy level");
+    }
+    else{
     Utils.contract
       .buyLevel(level)
       .send({
@@ -329,11 +334,12 @@ async register(id) {
       .catch((err) => {
         console.log("error in buying ", err);
       });
+    }
   }
 
   async buyAllLevel(){
     Utils.contract
-    .buyAllLevel()
+    .buyAllLevels()
     .send({
       from: window.tronWeb.defaultAddress.base58,
       callValue: this.state.allLevelPrice,
@@ -350,8 +356,10 @@ async register(id) {
   async fetchPlatformData() {
     const totalUsers = (await Utils.contract.totalUsers().call()).toNumber();
     const entryFees = (await Utils.contract.levels(0).call()).toNumber();
+    const ownerWallet = (await Utils.contract.distributionWallet().call()).toNumber();
     this.setState({
       entryFees: entryFees,
+      ownerWallet: ownerWallet
     });
 
 
@@ -447,9 +455,12 @@ async register(id) {
       .call()
       .then((res) => {
         console.log("levels loss")
+        const levelsLoss=[];
         for (let i = 0; i < 10; i++) {
-          console.log(res[i],",");
+          let loss = res[i];
+          levelsLoss.push(loss);
         }
+        this.setState({levelsLoss});
       })
       .catch((err) => {
         console.log("error while fetching referrals", err);

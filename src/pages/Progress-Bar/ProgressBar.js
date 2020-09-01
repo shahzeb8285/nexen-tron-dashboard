@@ -17,6 +17,7 @@ export default class ProgressBar extends Component {
     return (
       <Widget>
         <Row>
+    
           <Col lg={4} xs={6}>
             <CircularProgressbar
               value={this.state.percentage}
@@ -61,7 +62,7 @@ export default class ProgressBar extends Component {
               }}
             />
           </Col>
-          <Col lg={4}>
+          <Col lg={4} style={{ paddingTop: 5}}>
           <InfoTile
                     primaryTitle={"Level Reward Wallet"}
                     secondaryTitle={""}
@@ -75,7 +76,7 @@ export default class ProgressBar extends Component {
                     }
                   />
           </Col>
-          <Col lg={4}>
+          <Col lg={4}  style={{ paddingTop: 5}}>
           <InfoTile
                     primaryTitle={"Daily Reward Wallet"}
                     secondaryTitle={""}

@@ -1118,12 +1118,29 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
+                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
+                  <InfoTile
+                    primaryTitle={"Owner Wallet"}
+                    secondaryTitle={""}
+                    primaryAmount={
+                      this.props.user
+                        ? this.props.user.ownerWallet
+                        : "0x"
+                    }
+                    secondaryAmount={
+                      ""
+                    }
+                    bgStartColor={"#d35400"}
+                    bgEndColor={"#a1511b"}
+                  />
+                </Col>
+
                 {/* <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
 
                   <UserTree></UserTree>
                 </Col> */}
 
-                <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
+                <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
               
                 <ProgressBar levelRewardWallet={this.props.user?this.props.user.levelRewardWallet:0} 
                 rewardWallet={this.props.user?this.props.user.rewardWallet:0}></ProgressBar>
@@ -1132,7 +1149,7 @@ class Dashboard extends React.Component {
               </Row>
             </Col>
 
-            <Col lg={5} xs={12} style={{ paddingTop: 5 }}>
+            <Col lg={5} xs={12} style={{ paddingTop: 5 ,}}>
               <LinearWinnerTable isDark={true} />
 
               <LinearWinnerTable />
@@ -1336,7 +1353,19 @@ class Dashboard extends React.Component {
               let w3 = document.getElementById("winner3").value
               this.Web3Ref.current.getWrappedInstance().distributeReward(w1,w2,w3)}
             }}>Distribute Reward</button>
-        </div>
+            <br></br>
+            <button onClick={()=>{
+              {
+              this.Web3Ref.current.getWrappedInstance().distributeLevelReward()
+              // document.getElementById("levelWinners").innerHTML=this.Web3Ref.current.getWrappedInstance().getLevelWinners()
+            }
+            }}>Distribute Level Reward</button>
+            <br></br>
+           
+            <button onClick={()=>{
+              {
+              this.Web3Ref.current.getWrappedInstance().buyAllLevel()}
+            }}>Buy All Levels</button>        </div>
       </>
     );
   }
