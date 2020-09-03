@@ -39,7 +39,7 @@ class TronProvider extends React.Component {
 
         bgStartColor: "#621e94",
         bgEndColor: "#240b36",
-      ownerWallet:0,
+      
       levelsPrice: [],
       totalUsers: 0,
       rewardWallet: 0,
@@ -65,7 +65,6 @@ class TronProvider extends React.Component {
       await this.initUser(userId)
       await this.getLevelsLoss(userId)
       console.log(this.state);
-
   }
 
   async initTron() {
@@ -259,12 +258,18 @@ async initUser(id){
         // console.log(referrals);
       }
         user.income = income;
+        user.referralTree = [{
+          referrals: referrals,
+          id : id
+        }]
         user.funds = funds;
         user.levels = this.getLevels(user.levelsPurchased)
         user.totalUsers = this.state.totalUsers;
         user.totalAmountDistributed = this.state.totalAmountDistributed;
         user.rewardWallet = this.state.rewardWallet;
         user.levelRewardWallet = this.state.levelRewardWallet;
+        user.refPercent = (res.length/4)*100;
+        // user.ownerWallet = this.state.ownerWallet;
         this.setState({ user })
         this.props.dispatch(userFetched(user));
         console.log(this.state);
@@ -316,11 +321,6 @@ async register(id) {
 
 
   async buyLevel(level) {
-    if(this.state.walletAddress != window.tronWeb.defaultAddress.base58)
-    {
-      alert("You can't buy level");
-    }
-    else{
     Utils.contract
       .buyLevel(level)
       .send({
@@ -334,7 +334,6 @@ async register(id) {
       .catch((err) => {
         console.log("error in buying ", err);
       });
-    }
   }
 
   async buyAllLevel(){
@@ -356,10 +355,10 @@ async register(id) {
   async fetchPlatformData() {
     const totalUsers = (await Utils.contract.totalUsers().call()).toNumber();
     const entryFees = (await Utils.contract.levels(0).call()).toNumber();
-    const ownerWallet = (await Utils.contract.distributionWallet().call()).toNumber();
+    // const ownerWallet = (await Utils.contract.ownerAmount().call()).toNumber()/1000000;
     this.setState({
       entryFees: entryFees,
-      ownerWallet: ownerWallet
+      // ownerWallet: ownerWallet
     });
 
 
@@ -397,10 +396,6 @@ async register(id) {
    let contractAddress = await TronWeb.address.fromHex(Utils.contract.address);
     console.log(contractAddress);
     this.setState({contractAddress:contractAddress})
-    // console.log("totalUsers", totalUsers);
-    // console.log("totalAmountDistributed", totalAmountDistributed / 1000000);
-    // console.log("rewardWallet", rewardWallet / 1000000);
-    // console.log("levelRewardWallet", levelRewardWallet / 1000000);
     
   }
 
@@ -410,9 +405,24 @@ async register(id) {
       .viewUserReferral(id)
       .call()
       .then((res) => {
+       var referrals = [];
         for (let i = 0; i < res.length; i++) {
           console.log(res[i].toNumber());
+          referrals.push(res[i].toNumber());
         }
+        var data = {
+          id:id,
+          referrals:referrals
+        }
+        var userReferralsTree = [...this.state.user.referralTree, data];
+        var user = this.state.user;
+        user.referralTree = userReferralsTree;
+        this.setState({
+          user
+        }) 
+        console.log("update referral 1",this.state.user)
+        this.props.dispatch(userFetched(user));
+        // console.log("update referral",user);
       })
       .catch((err) => {
         console.log("error while fetching referrals", err);
@@ -603,7 +613,7 @@ async register(id) {
     var level = null;
     if (levelNumber == 10) {
       level = levels[9]
-      level.isThisNextLevel = true
+      level.isThisNextLevel = false
     } else {
       level = levels[levelNumber]
       level.isThisNextLevel = true
@@ -616,6 +626,30 @@ async register(id) {
 
   }
 
+  async getLevelWinners() {
+    Utils.contract
+      .getLevelWinners()
+      .call()
+      .then((res) => {
+        console.log(res);
+        console.log(TronWeb.address.fromHex(res[0]));
+      })
+      .catch((err) => {
+        console.log("error while fetching winners", err);
+      });
+  }
+
+  async setLevelWinners() {
+    Utils.contract
+      .setLevelWinners()
+      .send({ callValue: 0 })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("error while fetching winners", err);
+      });
+  }
 
   makeErrorToast(error) {
     toast.error(error, {

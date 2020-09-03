@@ -24,9 +24,9 @@ import TronProvider from "../../components/Blockchain/TronProvider";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch, withRouter } from "react-router";
 import Level from "./components/Level/Level";
-import ProgressBar from '../../pages/Progress-Bar/ProgressBar'
-import { toast } from 'react-toastify';
-import UserTree from '../../components/Tree/UserTree'
+import ProgressBar from "../../pages/Progress-Bar/ProgressBar";
+import { toast } from "react-toastify";
+import UserTree from "../../components/Tree/UserTree";
 import WinnerTile from "./components/WinnerSlider/WinnerTile";
 import LinearWinnerTable from "./components/LinearWinnerTable/LinearWinnerTable";
 
@@ -50,10 +50,16 @@ class Dashboard extends React.Component {
       levels: [],
       selectedLevel: null,
       visileBuyModal: false,
+      treeLevel: 1,
+      currentReferralTree:{
+
+      }
     };
     this.checkTable = this.checkTable.bind(this);
     this.Web3Ref = React.createRef();
   }
+
+  
 
   checkTable(id) {
     let arr = [];
@@ -82,10 +88,7 @@ class Dashboard extends React.Component {
     });
   }
 
-  componentWillReceiveProps(props) {
-    console.log("Ggggggg", props);
-    console.log(this.state.user);
-  }
+ 
 
   getChartData() {
     const colors = {
@@ -850,6 +853,21 @@ class Dashboard extends React.Component {
     this.Web3Ref.current.getWrappedInstance().showBuyLevelDialog(level);
   };
 
+  loadReferrals = async (id) =>{
+    await this.Web3Ref.current.getWrappedInstance().getUserReferrals(id);
+    var referralTree = this.props.user.referralTree[this.props.user.referralTree.length-1];
+    this.setState({currentReferralTree : referralTree});
+    
+    // this.setState({treeLevel:this.state.treeLevel+1});
+  };
+
+  componentWillReceiveProps(props) {
+    console.log("Ggggggg", props);
+    console.log(this.state.user);
+     var referralTree = this.props.user.referralTree[this.props.user.referralTree.length-1];
+    this.setState({currentReferralTree : referralTree});
+    
+  }
   render() {
     return (
       <>
@@ -917,9 +935,7 @@ class Dashboard extends React.Component {
                       display: "table-cell",
                     }}
                   >
-                    <h4>{this.props.user
-                        ? this.props.user.totalUsers
-                        : 0}</h4>
+                    <h4>{this.props.user ? this.props.user.totalUsers : 0}</h4>
                   </div>
                 </Row>
 
@@ -953,17 +969,18 @@ class Dashboard extends React.Component {
                       display: "table-cell",
                     }}
                   >
-                    <h4> {this.props.user
+                    <h4>
+                      {" "}
+                      {this.props.user
                         ? this.props.user.totalAmountDistributed
-                        : 0}</h4>
+                        : 0}
+                    </h4>
                   </div>
                 </Row>
 
                 <Row>
                   <Col>
-                    <h5 className="fw-semi-bold">
-                      PARTICIPANTS have EARNED $
-                    </h5>
+                    <h5 className="fw-semi-bold">PARTICIPANTS have EARNED $</h5>
                   </Col>
 
                   <div
@@ -973,19 +990,24 @@ class Dashboard extends React.Component {
                       display: "table-cell",
                     }}
                   >
-                    <h4> {this.props.user
-                        ? Math.round((this.props.user.totalAmountDistributed*0.0236)* 100) / 100
-                        : 0}</h4>
+                    <h4>
+                      {" "}
+                      {this.props.user
+                        ? Math.round(
+                            this.props.user.totalAmountDistributed *
+                              0.0236 *
+                              100
+                          ) / 100
+                        : 0}
+                    </h4>
                   </div>
                 </Row>
-
               </div>
             </Widget>
           </Col>
         </Row>
 
         <div className={s.root}>
-          
           <Row style={{ marginTop: "20px", marginBottom: "20px" }}>
             <Col lg={7} xs={12}>
               <Row>
@@ -1005,13 +1027,15 @@ class Dashboard extends React.Component {
                     bgStartColor={"#00b894"}
                     bgEndColor={"#018067"}
                     secondaryAmount={
-                      this.props.user
-                        ? this.props.user.totalReferals
-                        : 0
+                      this.props.user ? this.props.user.totalReferals : 0
                     }
                   />
                 </Col>
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{  paddingTop: 15 }}>
+                <Col
+                  lg={{ size: 4, offset: 0 }}
+                  xs={6}
+                  style={{ paddingTop: 15 }}
+                >
                   <InfoTile
                     primaryTitle={"Reward Income"}
                     secondaryTitle={"Total Win"}
@@ -1028,9 +1052,11 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-
-
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
+                <Col
+                  lg={{ size: 4, offset: 0 }}
+                  xs={6}
+                  style={{ paddingTop: 15 }}
+                >
                   <InfoTile
                     primaryTitle={"Level Income"}
                     secondaryTitle={"Loss"}
@@ -1040,16 +1066,17 @@ class Dashboard extends React.Component {
                         : "0x"
                     }
                     secondaryAmount={
-                      this.props.user
-                        ? this.props.user.loss/1000000
-                        : "0"
+                      this.props.user ? this.props.user.loss / 1000000 : "0"
                     }
                     bgStartColor={"#fdcb6e"}
                     bgEndColor={"#bf8415"}
                   />
                 </Col>
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
-
+                <Col
+                  lg={{ size: 4, offset: 0 }}
+                  xs={6}
+                  style={{ paddingTop: 15 }}
+                >
                   <InfoTile
                     primaryTitle={"Recycle Income"}
                     secondaryTitle={"Total Recycle"}
@@ -1066,8 +1093,11 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
+                <Col
+                  lg={{ size: 4, offset: 0 }}
+                  xs={6}
+                  style={{ paddingTop: 15 }}
+                >
                   <InfoTile
                     primaryTitle={"Level Fund"}
                     secondaryTitle={"Level Bought"}
@@ -1084,7 +1114,11 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
+                <Col
+                  lg={{ size: 4, offset: 0 }}
+                  xs={6}
+                  style={{ paddingTop: 15 }}
+                >
                   <InfoTile
                     primaryTitle={"Recycle Fund"}
                     secondaryTitle={"Total Recycle"}
@@ -1101,7 +1135,11 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
+                <Col
+                  lg={{ size: 4, offset: 0 }}
+                  xs={6}
+                  style={{ paddingTop: 15 }}
+                >
                   <InfoTile
                     primaryTitle={"Upgrade Income"}
                     secondaryTitle={""}
@@ -1110,22 +1148,21 @@ class Dashboard extends React.Component {
                         ? this.props.user.income.upgradeIncome
                         : "0x"
                     }
-                    secondaryAmount={
-                      ""
-                    }
+                    secondaryAmount={""}
                     bgStartColor={"#d35400"}
                     bgEndColor={"#a1511b"}
                   />
                 </Col>
 
-                <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
+                {/* <Col lg={{ size: 4, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
                   <InfoTile
                     primaryTitle={"Owner Wallet"}
                     secondaryTitle={""}
                     primaryAmount={
-                      this.props.user
-                        ? this.props.user.ownerWallet
-                        : "0x"
+                      ""
+                      // this.props.user
+                      //   ? this.props.user.ownerWallet
+                      //   : 0
                     }
                     secondaryAmount={
                       ""
@@ -1133,23 +1170,34 @@ class Dashboard extends React.Component {
                     bgStartColor={"#d35400"}
                     bgEndColor={"#a1511b"}
                   />
-                </Col>
+                </Col> */}
 
                 {/* <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 5 }}>
 
                   <UserTree></UserTree>
                 </Col> */}
 
-                <Col lg={{ size: 12, offset: 0 }} xs={6} style={{ paddingTop: 15 }}>
-              
-                <ProgressBar levelRewardWallet={this.props.user?this.props.user.levelRewardWallet:0} 
-                rewardWallet={this.props.user?this.props.user.rewardWallet:0}></ProgressBar>
+                <Col
+                  lg={{ size: 12, offset: 0 }}
+                  xs={6}
+                  style={{ paddingTop: 15 }}
+                >
+                  <ProgressBar
+                    levelRewardWallet={
+                      this.props.user ? this.props.user.levelRewardWallet : 0
+                    }
+                    rewardWallet={
+                      this.props.user ? this.props.user.rewardWallet : 0
+                    }
+                    refPercent={
+                      this.props.user ? this.props.user.refPercent : 0
+                    }
+                  ></ProgressBar>
                 </Col>
-
               </Row>
             </Col>
 
-            <Col lg={5} xs={12} style={{ paddingTop: 5 ,}}>
+            <Col lg={5} xs={12} style={{ paddingTop: 5 }}>
               <LinearWinnerTable isDark={true} />
 
               <LinearWinnerTable />
@@ -1161,7 +1209,6 @@ class Dashboard extends React.Component {
               <LinearWinnerTable isDark={true} />
             </Col>
           </Row>
-
           <Widget
             className={"col-10"}
             title={
@@ -1244,9 +1291,20 @@ class Dashboard extends React.Component {
               />
             </Row>
           </Widget>
-
-          <UserTree />
-
+        {
+          this.props.user.referralTree?  <UserTree
+          data={this.state.currentReferralTree}
+          levelNumber = {this.props.user.referralTree.length-1}
+          onPreviousButtonClick={() => {
+            console.log("prev btn clicked");
+          }}
+          onPersonClick={async (person) => {
+            await this.loadReferrals(person);
+            this.setState({treeLevel:this.state.treeLevel+1});
+            console.log("person clicked..", person);
+          }}
+        /> : null
+        }
           {/* <Row className="show-grid">
             <Col>
               <Widget title={""}>
@@ -1317,8 +1375,7 @@ class Dashboard extends React.Component {
                 <br />
               </Widget>
             </Col> */}
-
-            {/* <Col>
+          {/* <Col>
               <Widget
                 title={
                   <h5>
@@ -1335,37 +1392,61 @@ class Dashboard extends React.Component {
                 />
               </Widget>
             </Col> */}
-           
           {/* </Row> */}
           <input type="text" id="refId"></input>
-          <button onClick={()=>{
-            
-              {this.Web3Ref.current.getWrappedInstance().register(document.getElementById("refId").value)}
-            }}>Register</button>
-            <br></br>
-            <input type="text" id="winner1"></input>
-            <input type="text" id="winner2"></input>
-            <input type="text" id="winner3"></input>
-            
-            <button onClick={()=>{
-              {let w1 = document.getElementById("winner1").value
-              let w2 = document.getElementById("winner2").value
-              let w3 = document.getElementById("winner3").value
-              this.Web3Ref.current.getWrappedInstance().distributeReward(w1,w2,w3)}
-            }}>Distribute Reward</button>
-            <br></br>
-            <button onClick={()=>{
+          <button
+            onClick={() => {
               {
-              this.Web3Ref.current.getWrappedInstance().distributeLevelReward()
-              // document.getElementById("levelWinners").innerHTML=this.Web3Ref.current.getWrappedInstance().getLevelWinners()
-            }
-            }}>Distribute Level Reward</button>
-            <br></br>
-           
-            <button onClick={()=>{
+                this.Web3Ref.current
+                  .getWrappedInstance()
+                  .register(document.getElementById("refId").value);
+              }
+            }}
+          >
+            Register
+          </button>
+          <br></br>
+          <input type="text" id="winner1"></input>
+          <input type="text" id="winner2"></input>
+          <input type="text" id="winner3"></input>
+          <button
+            onClick={() => {
               {
-              this.Web3Ref.current.getWrappedInstance().buyAllLevel()}
-            }}>Buy All Levels</button>        </div>
+                let w1 = document.getElementById("winner1").value;
+                let w2 = document.getElementById("winner2").value;
+                let w3 = document.getElementById("winner3").value;
+                this.Web3Ref.current
+                  .getWrappedInstance()
+                  .distributeReward(w1, w2, w3);
+              }
+            }}
+          >
+            Distribute Reward
+          </button>
+          <br></br>
+          <button
+            onClick={() => {
+              {
+                this.Web3Ref.current
+                  .getWrappedInstance()
+                  .distributeLevelReward();
+                // document.getElementById("levelWinners").innerHTML=this.Web3Ref.current.getWrappedInstance().getLevelWinners()
+              }
+            }}
+          >
+            Distribute Level Reward
+          </button>
+          <br></br>
+          <button
+            onClick={() => {
+              {
+                this.Web3Ref.current.getWrappedInstance().buyAllLevel();
+              }
+            }}
+          >
+            Buy All Levels
+          </button>{" "}
+        </div>
       </>
     );
   }

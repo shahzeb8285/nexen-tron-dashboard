@@ -20,15 +20,15 @@ export default class ProgressBar extends Component {
     
           <Col lg={4} xs={6}>
             <CircularProgressbar
-              value={this.state.percentage}
-              text={`${this.state.percentage}%`}
+              value={this.props.refPercent}
+              text={`${this.props.refPercent}%`}
               styles={{
                 // Customize the root svg element
                 root: {},
                 // Customize the path, i.e. the "completed progress"
                 path: {
                   // Path color
-                  stroke: `rgba(62, 152, 199, ${this.state.percentage / 100})`,
+                  stroke: `rgba(62, 152, 199, ${this.props.refPercent / 100})`,
                   // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
                   strokeLinecap: "butt",
                   // Customize transition animation
