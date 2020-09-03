@@ -729,8 +729,8 @@ class Dashboard extends React.Component {
 
 
                   <Col>
-                    <h5 className="fw-semi-bold">ALL PARTICIPANTS
-</h5>
+                    <h6 className="fw-semi-bold">ALL PARTICIPANTS
+</h6>
                   </Col>
 
                   <div style={{
