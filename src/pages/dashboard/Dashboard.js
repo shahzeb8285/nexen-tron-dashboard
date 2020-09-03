@@ -29,6 +29,7 @@ import { toast } from "react-toastify";
 import UserTree from "../../components/Tree/UserTree";
 import WinnerTile from "./components/WinnerSlider/WinnerTile";
 import LinearWinnerTable from "./components/LinearWinnerTable/LinearWinnerTable";
+import CurrencyConverter from "../../utils/CurrencyConverter";
 
 class Dashboard extends React.Component {
   async componentDidMount() {
@@ -59,7 +60,17 @@ class Dashboard extends React.Component {
     this.Web3Ref = React.createRef();
   }
 
-  
+  async renderUsdEarning(){
+   if(this.props.user.name){
+    var rate = await CurrencyConverter.getInstance().fetchCurrency()
+    console.log("rate ",rate);
+    return  <h4>
+      {this.props.user.totalAmountDistributed*rate}
+    
+  </h4>
+   }
+     return null;
+  }
 
   checkTable(id) {
     let arr = [];
@@ -88,7 +99,10 @@ class Dashboard extends React.Component {
     });
   }
 
- 
+  componentWillReceiveProps(props) {
+    console.log("Ggggggg", props);
+    console.log(this.state.user);
+  }
 
   getChartData() {
     const colors = {
@@ -857,17 +871,8 @@ class Dashboard extends React.Component {
     await this.Web3Ref.current.getWrappedInstance().getUserReferrals(id);
     var referralTree = this.props.user.referralTree[this.props.user.referralTree.length-1];
     this.setState({currentReferralTree : referralTree});
-    
     // this.setState({treeLevel:this.state.treeLevel+1});
   };
-
-  componentWillReceiveProps(props) {
-    console.log("Ggggggg", props);
-    console.log(this.state.user);
-     var referralTree = this.props.user.referralTree[this.props.user.referralTree.length-1];
-    this.setState({currentReferralTree : referralTree});
-    
-  }
   render() {
     return (
       <>
@@ -970,7 +975,6 @@ class Dashboard extends React.Component {
                     }}
                   >
                     <h4>
-                      {" "}
                       {this.props.user
                         ? this.props.user.totalAmountDistributed
                         : 0}
@@ -990,16 +994,8 @@ class Dashboard extends React.Component {
                       display: "table-cell",
                     }}
                   >
-                    <h4>
-                      {" "}
-                      {this.props.user
-                        ? Math.round(
-                            this.props.user.totalAmountDistributed *
-                              0.0236 *
-                              100
-                          ) / 100
-                        : 0}
-                    </h4>
+                    {this.renderUsdEarning()}
+                  
                   </div>
                 </Row>
               </div>
@@ -1291,7 +1287,7 @@ class Dashboard extends React.Component {
               />
             </Row>
           </Widget>
-        {
+        {/* {
           this.props.user.referralTree?  <UserTree
           data={this.state.currentReferralTree}
           levelNumber = {this.props.user.referralTree.length-1}
@@ -1304,94 +1300,7 @@ class Dashboard extends React.Component {
             console.log("person clicked..", person);
           }}
         /> : null
-        }
-          {/* <Row className="show-grid">
-            <Col>
-              <Widget title={""}>
-                <h3>
-                  Level Wise <span className="fw-semi-bold">Income</span>
-                </h3>
-                <p>Description</p>
-                <Table className="table-striped">
-                  <thead>
-                    <tr>
-                      <th>
-                        <div className="abc-checkbox">
-                         
-                        </div>
-                      </th>
-                      <th>Level</th>
-                      <th>Total Member</th>
-                      <th>Total Business</th>
-                      <th>Active Members</th>
-                      <th>Level Bonus</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div className="abc-checkbox">
-                         
-                        </div>
-                      </td>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>
-                        <Badge color="danger">Online</Badge>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="abc-checkbox">
-                       
-                        </div>
-                      </td>
-                      <td>
-                        Jacob{" "}
-                        <Badge color="warning" className="text-gray-dark">
-                          ALERT!
-                        </Badge>
-                      </td>
-                      <td>Thornton</td>
-                      <td>
-                        <span className="badge bg-gray">Away</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div className="abc-checkbox">
-                          
-                        </div>
-                      </td>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>
-                        <Badge color="danger">Construct</Badge>
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-                <br />
-                <br />
-              </Widget>
-            </Col> */}
-          {/* <Col>
-              <Widget
-                title={
-                  <h5>
-                    Test <span className="fw-semi-bold">Data Chart</span>
-                  </h5>
-                }
-              >
-                <ApexChart
-                  className="sparkline-chart"
-                  height={350}
-                  series={this.state.cd.apex.column.series}
-                  options={this.state.cd.apex.column.options}
-                  type={"bar"}
-                />
-              </Widget>
-            </Col> */}
+        } 
           {/* </Row> */}
           <input type="text" id="refId"></input>
           <button
