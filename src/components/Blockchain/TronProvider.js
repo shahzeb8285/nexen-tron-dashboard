@@ -238,8 +238,8 @@ async initUser(id){
 
         user.walletAddress=walletAddress;
        var funds={
-          levelFund: levelFund,
-          recycleFund: recycleFund,
+          levelFund: levelFund/1000000,
+          recycleFund: recycleFund/1000000,
           walletAddress: walletAddress,
         }; 
         const referrals = []
@@ -269,7 +269,7 @@ async initUser(id){
         user.rewardWallet = this.state.rewardWallet;
         user.levelRewardWallet = this.state.levelRewardWallet;
         user.refPercent = (res.length/4)*100;
-        // user.ownerWallet = this.state.ownerWallet;
+        user.ownerWallet = this.state.ownerWallet;
         this.setState({ user })
         this.props.dispatch(userFetched(user));
         console.log(this.state);
@@ -324,7 +324,6 @@ async register(id) {
     Utils.contract
       .buyLevel(level)
       .send({
-        from: window.tronWeb.defaultAddress.base58,
         callValue: this.state.levelsPrice[level - 1],
         shouldPollResponse: true,
       })
@@ -355,10 +354,10 @@ async register(id) {
   async fetchPlatformData() {
     const totalUsers = (await Utils.contract.totalUsers().call()).toNumber();
     const entryFees = (await Utils.contract.levels(0).call()).toNumber();
-    // const ownerWallet = (await Utils.contract.ownerAmount().call()).toNumber()/1000000;
+    const ownerWallet = (await Utils.contract.ownerAmount().call()).toNumber()/1000000;
     this.setState({
       entryFees: entryFees,
-      // ownerWallet: ownerWallet
+      ownerWallet: ownerWallet
     });
 
 
@@ -651,6 +650,33 @@ async register(id) {
       });
   }
 
+  async withDrawlevelFund(){
+    Utils.contract
+    .withDrawlevelFund()
+    .send({ callValue: 0 , shouldPollResponse:true})
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log("error while fetching winners", err);
+    });
+  }
+
+  async getUplines(id) {
+    Utils.contract
+      .getUplines(id)
+      .call()
+      .then((res) => {
+        // console.log(res);
+        for(let i=0;i<10;i++){
+          console.log(TronWeb.address.fromHex(res[i]))
+        }
+      })
+      .catch((err) => {
+        console.log("error while fetching winners", err);
+      });
+  }
+  
   makeErrorToast(error) {
     toast.error(error, {
       position: "bottom-center",
