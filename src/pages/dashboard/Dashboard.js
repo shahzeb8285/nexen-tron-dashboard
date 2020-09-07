@@ -29,6 +29,7 @@ import { toast } from "react-toastify";
 import UserTree from "../../components/Tree/UserTree";
 import WinnerTile from "./components/WinnerSlider/WinnerTile";
 import LinearWinnerTable from "./components/LinearWinnerTable/LinearWinnerTable";
+import CurrencyConverter from '../../utils/CurrencyConverter';
 
 class Dashboard extends React.Component {
   async componentDidMount() {
@@ -51,10 +52,26 @@ class Dashboard extends React.Component {
       selectedLevel: null,
       visileBuyModal: false,
       treeLevel: 1,
-      currentReferralTree: {},
+      currentTreeId: null,
+      currentReferralTree: null,
+      referralTreeHistory: []
     };
     this.checkTable = this.checkTable.bind(this);
     this.Web3Ref = React.createRef();
+    this.userTreeRef = React.createRef();
+
+  }
+
+  renderUsdEarning = async () => {
+    if (this.props.user.name) {
+      var rate = await CurrencyConverter.getInstance().fetchCurrency()
+      console.log("rate ", rate);
+      return <h4>
+        {this.props.user.totalAmountDistributed * rate}
+
+      </h4>
+    }
+    return <></>;
   }
 
   checkTable(id) {
@@ -85,8 +102,26 @@ class Dashboard extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    console.log("Ggggggg", props);
-    console.log(this.state.user);
+    console.log("Ggggggg", props.user);
+    if (props.user.referralTree) {
+
+      // var referralTree = {
+      //   data:props.user.referralTree[props.user.referralTree.length-1],
+      //   level:props.user.referralTree.length
+      // }
+
+      console.log("9988844", props.user.referralTree[props.user.id.toString()])
+
+      this.setState({
+        currentReferralTree: props.user.referralTree,
+        currentTreeId: props.user.id.toString(),
+        referralTreeHistory: [props.user.id.toString()]
+      })
+
+      // this.userTreeRef.current.updateData(referralTree)
+
+    }
+
   }
 
   getChartData() {
@@ -853,13 +888,68 @@ class Dashboard extends React.Component {
   };
 
   loadReferrals = async (id) => {
-    await this.Web3Ref.current.getWrappedInstance().getUserReferrals(id);
-    var referralTree = this.props.user.referralTree[
-      this.props.user.referralTree.length - 1
-    ];
-    this.setState({ currentReferralTree: referralTree });
-    // this.setState({treeLevel:this.state.treeLevel+1});
+    var user = await this.Web3Ref.current.getWrappedInstance().getUserReferrals(id);
+    // var referralTree = user.referralTree[this.props.user.referralTree.length - 1];
+
+    console.log("referralTree", user.referralTree)
+    // var referralTree = {
+    //   data:user.referralTree[user.referralTree.length-1],
+    //   level:user.referralTree.length
+    // }
+    this.setState({
+      currentReferralTree: user.referralTree,
+      treeLevel: this.state.treeLevel + 1,
+      currentTreeId: id.toString(),
+      referralTreeHistory: [...this.state.referralTreeHistory, id.toString()]
+    });
   };
+
+
+
+  renderTree() {
+    if (!this.state.currentReferralTree) {
+      console.log("iiuyyy443232212")
+      return <h3>No Data2</h3>
+    }
+    return <UserTree
+      ref={this.userTreeRef}
+      data={this.state.currentReferralTree[this.state.referralTreeHistory[
+        this.state.referralTreeHistory.length - 1
+      ]]}
+      levelNumber={this.state.treeLevel}
+      onPreviousButtonClick={() => {
+        console.log("prev btn clicked");
+        var referralTreeHistory = this.state.referralTreeHistory;
+        referralTreeHistory.pop()
+        console.log("???????????",referralTreeHistory)
+        this.setState({ treeLevel: this.state.treeLevel - 1, referralTreeHistory });
+
+      }}
+
+      disablePrevButton={this.state.treeLevel > 1}
+      onPersonClick={async (person) => {
+        if (this.state.currentReferralTree[person]) {
+          var referralTreeHistory = this.state.referralTreeHistory.push(person.toString());
+          this.setState({ currentTreeId: person, referralTreeHistory })
+        } else {
+          await this.loadReferrals(person);
+
+        }
+
+
+
+        console.log("2311$$$3", this.state.referralTreeHistory);
+
+        console.log("person clicked..", person,"pooo",this.state.currentReferralTree);
+
+
+      }}
+    />
+  }
+
+
+
+
   render() {
     return (
       <>
@@ -950,8 +1040,7 @@ class Dashboard extends React.Component {
                 <Row>
                   <Col>
                     <h5 className="fw-semi-bold">
-                      PARTICIPANTS have EARNED TRX
-                    </h5>
+                      Participants have earned                    </h5>
                   </Col>
 
                   <div
@@ -964,7 +1053,7 @@ class Dashboard extends React.Component {
                     <h4>
                       {" "}
                       {this.props.user
-                        ? this.props.user.totalAmountDistributed
+                        ? "TRX " + this.props.user.totalAmountDistributed
                         : 0}
                     </h4>
                   </div>
@@ -972,7 +1061,7 @@ class Dashboard extends React.Component {
 
                 <Row>
                   <Col>
-                    <h5 className="fw-semi-bold">PARTICIPANTS have EARNED $</h5>
+                    <h5 className="fw-semi-bold">Participants have earned </h5>
                   </Col>
 
                   <div
@@ -982,16 +1071,12 @@ class Dashboard extends React.Component {
                       display: "table-cell",
                     }}
                   >
-                    <h4>
-                      {" "}
-                      {this.props.user
-                        ? Math.round(
-                            this.props.user.totalAmountDistributed *
-                              0.0236 *
-                              100
-                          ) / 100
-                        : 0}
-                    </h4>
+                    {this.props.user ?
+                      <h4>
+                        ${this.props.user.totalUSDAmountDistributed}
+
+                      </h4> : null}
+
                   </div>
                 </Row>
               </div>
@@ -1282,6 +1367,8 @@ class Dashboard extends React.Component {
               />
             </Row>
           </Widget>
+          {
+            this.renderTree()}
           <input type="text" id="refId"></input>
           <button
             onClick={() => {
@@ -1294,6 +1381,7 @@ class Dashboard extends React.Component {
           >
             Register
           </button>
+          <br></br>
           <br></br>
           <input type="text" id="level"></input>
           <button
@@ -1308,9 +1396,10 @@ class Dashboard extends React.Component {
             Buy Level
           </button>
           <br></br>
-          <input type="text" id="winner1"></input>
-          <input type="text" id="winner2"></input>
-          <input type="text" id="winner3"></input>
+          <br></br>
+          <input type="text" id="winner1" placeholder="Winner1"></input>
+          <input type="text" id="winner2" placeholder="Winner2"></input>
+          <input type="text" id="winner3" placeholder="Winner3"></input>
           <button
             onClick={() => {
               {
@@ -1326,6 +1415,7 @@ class Dashboard extends React.Component {
             Distribute Reward
           </button>
           <br></br>
+          <br></br>
           <button
             onClick={() => {
               {
@@ -1339,15 +1429,7 @@ class Dashboard extends React.Component {
             Distribute Level Reward
           </button>
           <br></br>
-          <button
-            onClick={() => {
-              {
-                this.Web3Ref.current.getWrappedInstance().buyAllLevel();
-              }
-            }}
-          >
-            Buy All Levels
-          </button>
+         
           <br></br>
           <button
             onClick={() => {
@@ -1362,33 +1444,7 @@ class Dashboard extends React.Component {
             Withdraw Level Fund
           </button>
           <br></br>
-          <input type="text" id="id1"></input>
-          <button
-            onClick={() => {
-              {
-                this.Web3Ref.current
-                  .getWrappedInstance()
-                  .getUplines(document.getElementById("id1").value);
-               
-              }
-            }}
-          >
-            Get Uplines
-          </button>
-
-          <button
-            onClick={() => {
-              {
-                this.Web3Ref.current
-                  .getWrappedInstance()
-                  .getLevelWinners();
-               
-              }
-            }}
-          >
-            Get Uplines
-          </button>
-          <br></br>
+          
         </div>
       </>
     );

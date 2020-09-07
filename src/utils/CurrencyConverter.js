@@ -7,7 +7,7 @@ export default class CurrencyConverter {
     static  getInstance() {
         if (CurrencyConverter.myInstance == null) {
             CurrencyConverter.myInstance = new CurrencyConverter();
-             CurrencyConverter.myInstance.init();
+            //  CurrencyConverter.myInstance.init();
         }
 
         return this.myInstance;
@@ -20,7 +20,9 @@ export default class CurrencyConverter {
         //     this.rate = data.tron.usd
         //     callback(this.rate,false);
         // });
-        var rate = res.json().tron.usd;
+        var rate =await  res.json();
+        rate = rate.tron.usd
+        console.log("usd",rate)
         return rate;
     }
     

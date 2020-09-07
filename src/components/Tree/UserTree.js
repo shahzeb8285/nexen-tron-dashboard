@@ -9,15 +9,31 @@ import { Col, Row, Button } from "reactstrap";
 export default class UserTree extends Component {
   constructor(props) {
     super(props);
+    this.state={
+      data:null
+    }
   }
+
+
+  // componentDidMount(){
+  //   this.updateData(this.props.data)
+  // }
+
+
+  // updateData(data){
+  //   this.setState({data:data})
+
+  // }
+
   render() {
     return (
       <>
       {this.props.data?   <Widget className="tree--main">
       <Row>
         <Col lg={2} xs={2}>
-          <div className="prev--button">
+         {this.props.disablePrevButton? <div className="prev--button">
             <Button
+            
               color="primary"
               onClick={() => {
                 this.props.onPreviousButtonClick();
@@ -25,7 +41,7 @@ export default class UserTree extends Component {
             >
               Prev
             </Button>
-          </div>
+          </div>:null}
         </Col>
         <Col lg={8} xs={8}>
           <Tree
@@ -34,7 +50,7 @@ export default class UserTree extends Component {
             lineBorderRadius={"10px"}
             label={
               <div className="user">
-                <a href="#">
+                <a >
                   <img src={avatar}></img>
                 </a>
                 <div className="user__id">
@@ -48,8 +64,10 @@ export default class UserTree extends Component {
                 label={
                   <div
                     className="user"
-                    onClick={() => {
-                      this.props.onPersonClick(this.props.data.referrals[0]);
+                    onClick={()=>{
+                      this.props.onPersonClick(
+                        this.props.data.referrals[0]
+                      )
                     }}
                   >
                     <a>
@@ -68,8 +86,10 @@ export default class UserTree extends Component {
                 label={
                   <div
                     className="user"
-                    onClick={() => {
-                      this.props.onPersonClick(this.props.data.referrals[1]);
+                    onClick={()=>{
+                      this.props.onPersonClick(
+                        this.props.data.referrals[1]
+                      )
                     }}
                   >
                     <a>
@@ -87,8 +107,10 @@ export default class UserTree extends Component {
                 label={
                   <div
                     className="user"
-                    onClick={() => {
-                      this.props.onPersonClick(this.props.data.referrals[2]);
+                    onClick={()=>{
+                      this.props.onPersonClick(
+                        this.props.data.referrals[2]
+                      )
                     }}
                   >
                     <a>
@@ -107,9 +129,11 @@ export default class UserTree extends Component {
                 label={
                   <div
                     className="user"
-                    onClick={this.props.onPersonClick(
-                      this.props.data.referrals[3]
-                    )}
+                    onClick={()=>{
+                      this.props.onPersonClick(
+                        this.props.data.referrals[3]
+                      )
+                    }}
                   >
                     <a>
                       <img src={avatar}></img>
@@ -128,7 +152,7 @@ export default class UserTree extends Component {
           <span>Level Number {this.props.levelNumber}</span>
         </Col>
       </Row>
-    </Widget>: null
+    </Widget>: <h3>No Data</h3>
  }
  </>
      );

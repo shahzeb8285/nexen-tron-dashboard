@@ -197,13 +197,13 @@ class Sidebar extends React.Component {
                             <img src={eth} ></img>
                             <div className="value">
                                 <h4> <span className="fa fa-group" style={{marginRight:5,color:"#6ed89c"}}> </span>3</h4>
-                                <h4> <span className="fa fa-dollar" style={{marginRight:5,color:"#6ed89c"}}> </span>{this.props.user.income?Math.round((this.props.user.income.directIncome+this.props.user.income.levelIncome+this.props.user.income.recycleIncome)*0.0236* 100) / 100:0 }</h4>
+                                <h4> <span className="fa fa-dollar" style={{marginRight:5,color:"#6ed89c"}}> </span>{this.props.user.income?Math.round((this.props.user.income.directIncome+this.props.user.income.levelIncome+this.props.user.income.recycleIncome+ this.props.user.income.upgradeIncome)*0.0236* 100) / 100:0 }</h4>
 
                                 
                             </div>
                         </div>
                         <div className="id__btn">
-                            <h4>{this.props.user.income?(this.props.user.income.directIncome+this.props.user.income.levelIncome+this.props.user.income.recycleIncome):0 } trx</h4>
+                            <h4>{this.props.user.income?(this.props.user.income.directIncome+this.props.user.income.levelIncome+this.props.user.income.recycleIncome+this.props.user.income.upgradeIncome):0 } trx</h4>
                         </div>
                     </div>
 

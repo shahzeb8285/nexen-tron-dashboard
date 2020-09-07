@@ -407,7 +407,7 @@ contract MLM {
         for (uint256 i = 0; i < 10; i++) {
             if (uplines[i] == address(0)) {
                 ownerAmount += x;
-            } else if (users[uplines[i]].levelsPurchased >= (i + 1)) {
+            } else if (users[uplines[i]].levelsPurchased >= _level) {
                 usersIncomes[uplines[i]].upgradeIncome += price;
 
                 usersFund[uplines[i]].recycleFund += (10 * x) / 100;
