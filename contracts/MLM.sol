@@ -27,6 +27,19 @@ contract MLM {
         uint256[] usersAtLevels;
     }
 
+    struct LevelMembers {
+        address add;
+        uint256[] level1;
+        uint256[] level2;
+        uint256[] level3;
+        uint256[] level4;
+        uint256[] level5;
+        uint256[] level6;
+        uint256[] level7;
+        uint256[] level8;
+        uint256[] level9;
+        uint256[] level10;
+    }
     struct UserIncomes {
         uint256 directIncome;
         uint256 rewardIncome;
@@ -48,6 +61,7 @@ contract MLM {
     mapping(address => UserIncomes) public usersIncomes;
     mapping(address => UserFunds) public usersFund;
     mapping(uint256 => address) public users_ids;
+    mapping(uint256 => LevelMembers) public levelMembers;
 
     event Register(address indexed addr, address indexed inviter, uint256 id);
     event buyLevelEvent(address indexed _user, uint256 _level);
@@ -136,20 +150,56 @@ contract MLM {
         users[users_ids[id]].referral.push(msg.sender);
         users[users_ids[id]].referralsIds.push(users[msg.sender].id);
         users[msg.sender].upline = id;
+
+        uint256 uid = id;
+        levelMembers[uid].level1.push(totalUsers);
+
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level2.push(totalUsers);
+        }
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level3.push(totalUsers);
+        }
+
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level4.push(totalUsers);
+        }
+
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level5.push(totalUsers);
+        }
+
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level6.push(totalUsers);
+        }
+
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level7.push(totalUsers);
+        }
+
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level8.push(totalUsers);
+        }
+
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level9.push(totalUsers);
+        }
+
+        if (uid != 0) {
+            uid = users[users_ids[uid]].upline;
+            levelMembers[uid].level10.push(totalUsers);
+        }
     }
 
-    function buyLevel(uint256 _level) public payable {
-        require(
-            _level > users[msg.sender].levelsPurchased,
-            "Already purchased level"
-        );
-        require(users[msg.sender].isExist, "User not exist");
-        require(_level > 0 && _level <= 10, "Incorrect level");
-        require(msg.value == levels[_level], "Incorrect Value");
-        require(
-            users[msg.sender].levelsPurchased == _level - 1,
-            "You haven't purchased previous level yet"
-        );
+    function buyLevelHelper(uint256 _level) public {
         usersFund[msg.sender].levelsLoss[_level - 1] = false;
         uint256 upgradeAmount = (levels[_level] * 20) / 100;
         address _inviter = users[msg.sender].inviter;
@@ -170,16 +220,29 @@ contract MLM {
             recycleId(_inviter);
         }
 
+        totalAmountDistributed += (upgradeAmount - (20 * upgradeAmount) / 100);
+        distributeLevelUpgradeAmount(_level, msg.sender);
+    }
+
+    function buyLevel(uint256 _level) public payable {
+        require(
+            _level > users[msg.sender].levelsPurchased,
+            "Already purchased level"
+        );
+        require(users[msg.sender].isExist, "User not exist");
+        require(_level > 0 && _level <= 10, "Incorrect level");
+        require(msg.value == levels[_level], "Incorrect Value");
+        require(
+            users[msg.sender].levelsPurchased == _level - 1,
+            "You haven't purchased previous level yet"
+        );
+        uint256 upgradeAmount = (levels[_level] * 20) / 100;
+        buyLevelHelper(_level);
         address(uint256(users[msg.sender].inviter)).transfer(
             upgradeAmount - (20 * upgradeAmount) / 100
         );
-
-        totalAmountDistributed += (upgradeAmount - (20 * upgradeAmount) / 100);
-
         if (users[msg.sender].levelsPurchased + 1 < 10)
             users[msg.sender].levelsPurchased += 1;
-
-        distributeLevelUpgradeAmount(_level, msg.sender);
 
         emit buyLevelEvent(msg.sender, _level);
     }
@@ -192,27 +255,11 @@ contract MLM {
             "You have to purchase levels one by one"
         );
         users[msg.sender].levelsPurchased = 10;
-        for (uint256 i = 0; i < 10; i++) {
-            usersFund[msg.sender].levelsLoss[i] = false;
-        }
-        uint256 upgradeAmount = (allLevelPrice * 20) / 100;
-        address _inviter = users[msg.sender].inviter;
-        usersIncomes[_inviter].levelIncome += (upgradeAmount -
-            (20 * upgradeAmount) /
-            100);
-        usersFund[_inviter].recycleFund += (10 * upgradeAmount) / 100;
-        usersFund[_inviter].levelFund += (10 * upgradeAmount) / 100;
-        uint256 level = users[_inviter].levelsPurchased + 1;
-        if (users[_inviter].levelsPurchased < 10) {
-            if (usersFund[_inviter].levelFund >= levels[level]) {
-                autoBuyLevel(_inviter);
-            }
+        for (uint256 i = 1; i <= 10; i++) {
+            buyLevelHelper(i);
         }
 
-        if (usersFund[_inviter].recycleFund >= levels[0]) {
-            recycleId(_inviter);
-        }
-
+        uint256 upgradeAmount = (20 * allLevelPrice) / 100;
         address(uint256(users[msg.sender].inviter)).transfer(
             upgradeAmount - (20 * upgradeAmount) / 100
         );
@@ -222,28 +269,6 @@ contract MLM {
         if (users[msg.sender].levelsPurchased + 1 < 10)
             users[msg.sender].levelsPurchased += 1;
 
-        uint256 x = (allLevelPrice * 8) / 100;
-        uint256 y = (20 * x) / 100;
-        uint256 price = (x - y);
-        setUplines(users[msg.sender].id);
-        address[] memory uplines = new address[](10);
-        uplines = users[msg.sender].uplines;
-        for (uint256 i = 0; i < 10; i++) {
-            if (uplines[i] == address(0)) {
-                ownerAmount += x;
-            } else if (users[uplines[i]].levelsPurchased >= (i + 1)) {
-                usersIncomes[uplines[i]].upgradeIncome += price;
-
-                usersFund[uplines[i]].recycleFund += (10 * x) / 100;
-                usersFund[uplines[i]].levelFund += (10 * x) / 100;
-
-                address(uint256(uplines[i])).transfer(price);
-                totalAmountDistributed += price;
-            } else {
-                users[uplines[i]].loss += x;
-                ownerAmount += x;
-            }
-        }
         emit buyLevelEvent(msg.sender, 10);
     }
 
@@ -285,25 +310,25 @@ contract MLM {
             address _inviter = users[_user].inviter;
             if (_inviter == address(0)) {
                 ownerAmount += referalMoney;
+            }
+            usersIncomes[_inviter].recycleIncome += (referalMoney -
+                (referalMoney * 20) /
+                100);
+            usersFund[_inviter].recycleFund += (referalMoney * 10) / 100;
+            usersFund[_inviter].levelFund += (referalMoney * 10) / 100;
+
+            //owner Wallet
+            if (_inviter == address(0)) {
+                ownerAmount += referalMoney - (referalMoney * 20) / 100;
             } else {
-                usersIncomes[_inviter].recycleIncome += (referalMoney -
+                address(uint256(_inviter)).transfer(
+                    referalMoney - (referalMoney * 20) / 100
+                );
+                totalAmountDistributed += (referalMoney -
                     (referalMoney * 20) /
                     100);
-                usersFund[_inviter].recycleFund += (referalMoney * 10) / 100;
-                usersFund[_inviter].levelFund += (referalMoney * 10) / 100;
-
-                //owner Wallet
-                if (_inviter == address(0)) {
-                    ownerAmount += referalMoney - (referalMoney * 20) / 100;
-                } else {
-                    address(uint256(_inviter)).transfer(
-                        referalMoney - (referalMoney * 20) / 100
-                    );
-                    totalAmountDistributed += (referalMoney -
-                        (referalMoney * 20) /
-                        100);
-                }
             }
+
             rewardWallet += (levels[0] * 10) / 100;
             levelRewardWallet += (levels[0] * 10) / 100;
         }
@@ -352,21 +377,15 @@ contract MLM {
 
         rewardWallet = 0;
 
+        usersFund[users_ids[_winner1]].recycleFund += (10 * first) / 100;
+        usersFund[users_ids[_winner1]].levelFund += (10 * first) / 100;
 
-       
-            usersFund[users_ids[_winner1]].recycleFund += (10 * first) / 100;
-            usersFund[users_ids[_winner1]].levelFund += (10 * first) / 100;
-        
+        usersFund[users_ids[_winner2]].recycleFund += (10 * second) / 100;
+        usersFund[users_ids[_winner2]].levelFund += (10 * second) / 100;
 
-        
-            usersFund[users_ids[_winner2]].recycleFund += (10 * second) / 100;
-            usersFund[users_ids[_winner2]].levelFund += (10 * second) / 100;
-       
+        usersFund[users_ids[_winner3]].recycleFund += (10 * third) / 100;
+        usersFund[users_ids[_winner3]].levelFund += (10 * third) / 100;
 
-    
-            usersFund[users_ids[_winner3]].recycleFund += (10 * third) / 100;
-            usersFund[users_ids[_winner3]].levelFund += (10 * third) / 100;
- 
         emit distributeRewardEvent(_winner1, _winner2, _winner3);
     }
 
@@ -383,11 +402,10 @@ contract MLM {
             } else {
                 address(uint256(levelWinners[i])).transfer(price);
                 usersIncomes[levelWinners[i]].levelRewardIncome += price;
-               
-                    usersFund[levelWinners[i]].recycleFund += recyclePrice;
-                    usersFund[levelWinners[i]].levelFund += levelPrice;
-                    totalAmountDistributed += price;
-                
+
+                usersFund[levelWinners[i]].recycleFund += recyclePrice;
+                usersFund[levelWinners[i]].levelFund += levelPrice;
+                totalAmountDistributed += price;
             }
         }
         levelRewardWallet = 0;
@@ -412,6 +430,15 @@ contract MLM {
 
                 usersFund[uplines[i]].recycleFund += (10 * x) / 100;
                 usersFund[uplines[i]].levelFund += (10 * x) / 100;
+
+                if (users[uplines[i]].levelsPurchased < 10) {
+                    if (usersFund[uplines[i]].levelFund >= levels[_level]) {
+                        autoBuyLevel(uplines[i]);
+                    }
+                }
+                if (usersFund[uplines[i]].recycleFund >= levels[0]) {
+                    recycleId(uplines[i]);
+                }
 
                 address(uint256(uplines[i])).transfer(price);
                 totalAmountDistributed += price;
@@ -560,7 +587,6 @@ contract MLM {
         uint256 i;
         uint256 j = 0;
         for (i = 1; i <= totalUsers; i++) {
-            
             if (
                 users[users_ids[i]].referral.length == 4 &&
                 users_ids[i] != address(0)
@@ -582,5 +608,42 @@ contract MLM {
             levelsLoss[i] = usersFund[users_ids[_id]].levelsLoss[i];
         }
         return levelsLoss;
+    }
+
+    function getLevelMembers(uint256 _id, uint256 _level)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        if (_level == 1) {
+            return levelMembers[_id].level1;
+        }
+        if (_level == 2) {
+            return levelMembers[_id].level2;
+        }
+        if (_level == 3) {
+            return levelMembers[_id].level3;
+        }
+        if (_level == 4) {
+            return levelMembers[_id].level4;
+        }
+        if (_level == 5) {
+            return levelMembers[_id].level5;
+        }
+        if (_level == 6) {
+            return levelMembers[_id].level6;
+        }
+        if (_level == 7) {
+            return levelMembers[_id].level7;
+        }
+        if (_level == 8) {
+            return levelMembers[_id].level8;
+        }
+        if (_level == 9) {
+            return levelMembers[_id].level9;
+        }
+        if (_level == 10) {
+            return levelMembers[_id].level10;
+        }
     }
 }

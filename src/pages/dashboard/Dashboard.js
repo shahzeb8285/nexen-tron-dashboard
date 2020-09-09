@@ -1410,6 +1410,18 @@ class Dashboard extends React.Component {
           </button>
           <br></br>
           <br></br>
+
+          <button
+            onClick={() => {
+              {
+                this.Web3Ref.current.getWrappedInstance().buyAllLevel();
+              }
+            }}
+          >
+            Buy All Levels
+          </button>
+          <br></br>
+          <br></br>
           <input type="text" id="winner1" placeholder="Winner1"></input>
           <input type="text" id="winner2" placeholder="Winner2"></input>
           <input type="text" id="winner3" placeholder="Winner3"></input>
@@ -1454,6 +1466,35 @@ class Dashboard extends React.Component {
             Withdraw Level Fund
           </button>
           <br></br>
+          <input type="text" id="UserId"></input>
+          <input type="text" id="UserLevel"></input>
+          <button
+            onClick={() => {
+              {
+                const res = this.Web3Ref.current
+                  .getWrappedInstance()
+                  .getLevelMembers(
+                    document.getElementById("UserId").value,
+                    document.getElementById("UserLevel").value
+                  );
+
+                // document.getElementById("levelWinners").innerHTML=this.Web3Ref.current.getWrappedInstance().getLevelWinners()
+              }
+            }}
+          >
+            Get Level Members
+          </button>
+          <br></br>
+          <p id="level1"></p>
+          <p id="level2"></p>
+          <p id="level3"></p>
+          <p id="level4"></p>
+          <p id="level5"></p>
+          <p id="level6"></p>
+          <p id="level7"></p>
+          <p id="level8"></p>
+          <p id="level9"></p>
+          <p id="level10"></p>
         </div>
       </>
     );
