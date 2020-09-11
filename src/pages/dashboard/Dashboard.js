@@ -1381,6 +1381,94 @@ class Dashboard extends React.Component {
               />
             </Row>
           </Widget>
+          <Row>
+            <Col >
+              <Widget
+                title={""}
+              >
+                <h3>Level Wise <span className="fw-semi-bold">Income</span></h3>
+                <p>Description</p>
+                {/* <p>Each row is highlighted. You will never lost there. Just <code>.table-striped</code> it.</p> */}
+                <Table className="table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        <div className="abc-checkbox">
+
+                          {/* <Label for="checkbox1" /> */}
+                        </div>
+                      </th>
+                      <th>Level Number</th>
+                      <th>Your Referral</th>
+                      <th>Total Referral</th>
+                      <th>Remmember</th>
+                      
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div className="abc-checkbox">
+
+                          {/* <Label for="checkbox2" /> */}
+                        </div>
+                      </td>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                      <td><Badge color="danger">Online</Badge></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div className="abc-checkbox">
+
+                          {/* <Label for="checkbox3" /> */}
+                        </div>
+                      </td>
+                      <td>Jacob <Badge color="warning" className="text-gray-dark">ALERT!</Badge></td>
+                      <td>Thornton</td>
+                      <td><span className="badge bg-gray">Away</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div className="abc-checkbox">
+
+                          {/* <Label for="checkbox4" /> */}
+                        </div>
+                      </td>
+                      <td>Larry</td>
+                      <td>the Bird</td>
+                      <td><Badge color="danger">Construct</Badge></td>
+                    </tr>
+                  </tbody>
+                </Table>
+                <br /><br />
+              </Widget>
+
+            </Col>
+
+
+
+            <Col>
+              <Widget
+                title={<h5>Test <span className='fw-semi-bold'>Data Chart</span></h5>}
+              >
+                <ApexChart
+                  className="sparkline-chart"
+                  height={350}
+                  series={this.state.cd.apex.column.series}
+                  options={this.state.cd.apex.column.options}
+                  type={"bar"}
+                />
+              </Widget>
+
+
+
+            </Col>
+
+
+          </Row>
+ 
           {this.renderTree()}
           <input type="text" id="refId"></input>
           <button
