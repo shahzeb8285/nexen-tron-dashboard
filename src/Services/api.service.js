@@ -5,18 +5,21 @@ export const apiService = {
     getUser,
     updateUser,
     getUserTree,
-    getWinners
+    getWinners,
+    getTodayJoin
     
 };
 
 
 const CONSTANTS={
-    BASE_URL:"http://localhost:5000/",
+    BASE_URL:"https://xjgvjfezp4.execute-api.ap-south-1.amazonaws.com/prod/",
     REGISTER_PATH:"register",
     GET_USER:"user",
     GET_USER_TREE:"tree",
     GET_WINNERS:"getWinners",
-    UPDATE_USER:"user"
+    UPDATE_USER:"user",
+    FETCH_TODAY_JOINED:"todayJoin"
+
 
 }
 
@@ -24,6 +27,11 @@ const CONSTANTS={
 async function register(user) {
     const URL = CONSTANTS.BASE_URL+CONSTANTS.REGISTER_PATH;
     return axios.post(URL, user);
+}
+
+async function getTodayJoin() {
+    const URL = CONSTANTS.BASE_URL+CONSTANTS.FETCH_TODAY_JOINED;
+    return axios.get(URL);
 }
 
 
