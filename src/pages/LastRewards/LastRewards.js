@@ -17,6 +17,7 @@ import { Sparklines, SparklinesBars } from 'react-sparklines';
 
 import Widget from '../../components/Widget/Widget';
 import s from './LastRewards.module.scss';
+import Avatar from '../../components/Avatar/Avatar';
 
 class LastRewards extends React.Component {
 
@@ -235,8 +236,10 @@ class LastRewards extends React.Component {
                       <td>{row.userId}</td>
 
                       <td>
-                        <img className="img-rounded" src={row.avatar} alt="" style={{borderRadius:"50%", 
+                        <Avatar src={row.avatar}  extraStyle={{borderRadius:"50%", 
                         height:50,width:50}}/>
+                        {/* <img className="img-rounded" src={row.avatar} alt="" style={{borderRadius:"50%", 
+                        height:50,width:50}}/> */}
                       </td>
                         
                       <td className="text-muted">
