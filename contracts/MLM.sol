@@ -63,7 +63,7 @@ contract MLM {
     mapping(uint256 => address) public users_ids;
     mapping(uint256 => LevelMembers) public levelMembers;
 
-    event Register(address indexed addr, address indexed inviter, uint256 id);
+    event Register(address indexed addr, uint256 inviter, uint256 id);
     event buyLevelEvent(address indexed _user, uint256 _level);
     event distributeRewardEvent(uint256 _add1, uint256 _add2, uint256 _add3);
     event distributeLevelRewardEvent();
@@ -82,7 +82,6 @@ contract MLM {
         levels.push(900000000);
         levels.push(1000000000);
         levels.push(1100000000);
-        allLevelPrice = 6500000000;
         newUser(msg.sender, address(0));
         users[msg.sender].levelsPurchased = 10;
         users[msg.sender].referral = new address[](0);
@@ -98,7 +97,7 @@ contract MLM {
         users[_addr].isExist = true;
         users[_addr].getLevelReward = false;
         users[msg.sender].levelsPurchased = 0;
-        emit Register(_addr, _inviter, totalUsers);
+        emit Register(_addr, users[_inviter].id, totalUsers);
     }
 
     function _register(
@@ -249,17 +248,21 @@ contract MLM {
 
     function buyAllLevels() public payable {
         require(users[msg.sender].isExist, "User not exist");
-        require(msg.value == allLevelPrice, "Incorrect Value");
-        require(
-            users[msg.sender].levelsPurchased == 0,
-            "You have to purchase levels one by one"
-        );
+        uint256 price;
+        uint256 level = users[msg.sender].levelsPurchased + 1;
+        require(level <= 10, "incorrect level");
+        for (uint256 i = level; i <= 10; i++) {
+            price = price + levels[i];
+        }
+
+        require(msg.value == price, "Incorrect Value");
+
         users[msg.sender].levelsPurchased = 10;
-        for (uint256 i = 1; i <= 10; i++) {
+        for (uint256 i = level; i <= 10; i++) {
             buyLevelHelper(i);
         }
 
-        uint256 upgradeAmount = (20 * allLevelPrice) / 100;
+        uint256 upgradeAmount = (20 * price) / 100;
         address(uint256(users[msg.sender].inviter)).transfer(
             upgradeAmount - (20 * upgradeAmount) / 100
         );
@@ -645,5 +648,46 @@ contract MLM {
         if (_level == 10) {
             return levelMembers[_id].level10;
         }
+    }
+
+    function getLevelMembersCount(uint256 _id)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256[] memory userCount = new uint256[](10);
+        for (uint256 i = 0; i < 10; i++) {
+            if (i == 0) {
+                userCount[i] = levelMembers[_id].level1.length;
+            }
+            if (i == 1) {
+                userCount[i] = levelMembers[_id].level2.length;
+            }
+            if (i == 2) {
+                userCount[i] = levelMembers[_id].level3.length;
+            }
+            if (i == 3) {
+                userCount[i] = levelMembers[_id].level4.length;
+            }
+            if (i == 4) {
+                userCount[i] = levelMembers[_id].level5.length;
+            }
+            if (i == 5) {
+                userCount[i] = levelMembers[_id].level6.length;
+            }
+            if (i == 6) {
+                userCount[i] = levelMembers[_id].level7.length;
+            }
+            if (i == 7) {
+                userCount[i] = levelMembers[_id].level8.length;
+            }
+            if (i == 8) {
+                userCount[i] = levelMembers[_id].level9.length;
+            }
+            if (i == 9) {
+                userCount[i] = levelMembers[_id].level10.length;
+            }
+        }
+        return userCount;
     }
 }

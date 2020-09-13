@@ -1485,16 +1485,7 @@ class Dashboard extends React.Component {
             Get Level Members
           </button>
           <br></br>
-          <p id="level1"></p>
-          <p id="level2"></p>
-          <p id="level3"></p>
-          <p id="level4"></p>
-          <p id="level5"></p>
-          <p id="level6"></p>
-          <p id="level7"></p>
-          <p id="level8"></p>
-          <p id="level9"></p>
-          <p id="level10"></p>
+         
         </div>
       </>
     );
