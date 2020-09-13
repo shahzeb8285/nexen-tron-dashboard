@@ -8,6 +8,7 @@ import {
 
 
 import Widget from '../../../../components/Widget/Widget';
+import danger from '../Level/1.png'
 
 
 
@@ -149,6 +150,20 @@ const Level = (props) => {
         }}>{position}</h5>
 
           : null}
+           <h5 style={{
+          position: "absolute",
+          right: "5px",
+          top: "10px",
+          marginLeft: "20px",
+          // background: "radial-gradient(farthest-side ellipse at 10% 0, " + startClr
+            // + " 20%, " + endClr + ")",
+          textAlign: "center",
+          borderRadius: "5px",
+          color: "white",
+          // padding: "8px 6px 6px 6px",
+          fontWeight: "600",
+          fontSize: "18px}"
+        }}><img src={danger} style={{height:"20px"}}></img></h5>
 
       </Col>
 

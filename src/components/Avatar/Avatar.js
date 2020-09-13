@@ -17,14 +17,27 @@ const Avatar = (props) => {
     // Update the document title using the browser API
     setAvatar(props.src)
   });
+  function fileChangedHandler(event){
+    console.log(event.target.files)
+    const file = event.target.files[0];
+    console.log(file);
+    let name=file.name;
+    
+  }
   return (
-
-   
+    <>
+     
     <img src={avatar}
                   style={
                     { borderRadius: "50%",marginBottom:5 ,
                     ...props.extraStyle}}
                 />
+                <input type="file" onChange={fileChangedHandler} placeholder="change pic"/>
+    </>
+
+   
+   
+   
   
   );
 }
