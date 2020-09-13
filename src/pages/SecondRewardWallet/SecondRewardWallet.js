@@ -3,10 +3,10 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import 'react-circular-progressbar/dist/styles.css';
 import InfoTile from "../../components/InfoTile/InfoTile";
 import { Row, Col } from "reactstrap";
-import "./ProgressBar.scss";
-import Widget from "../../components/Widget";
+import "./SecondRewardWallet.scss";
+import Widget from "../../components/Widget/Widget";
 
-export default class ProgressBar extends Component {
+export default class SecondRewardWallet extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,10 +15,10 @@ export default class ProgressBar extends Component {
   }
   render() {
     return (
-      <Widget>
+      <Widget style={{marginTop:15}}>
         <Row>
     
-          <Col lg={4} xs={6}>
+          <Col size={6}>
             <CircularProgressbar
               value={this.props.refPercent}
               text={`${this.props.refPercent}%`}
@@ -62,7 +62,7 @@ export default class ProgressBar extends Component {
               }}
             />
           </Col>
-          <Col lg={4} style={{ paddingTop: 5}}>
+          <Col size={4} style={{ paddingTop: 5}}>
           <InfoTile
                     primaryTitle={"Level Reward Wallet"}
                     secondaryTitle={""}
@@ -76,7 +76,7 @@ export default class ProgressBar extends Component {
                     }
                   />
           </Col>
-          <Col lg={4}  style={{ paddingTop: 5}}>
+          <Col size={4}  style={{ paddingTop: 5}}>
           <InfoTile
                     primaryTitle={"Daily Reward Wallet"}
                     secondaryTitle={""}

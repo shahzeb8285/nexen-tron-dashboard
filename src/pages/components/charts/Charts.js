@@ -70,7 +70,7 @@ class Charts extends React.Component {
         <h1 className="page-title">Visual - <span className="fw-semi-bold">Charts</span></h1>
         <div>
           <Row>
-            <Col lg={7} xs={12}>
+            <Col size={7}>
               <Widget
                 title={<h5>Apex <span className='fw-semi-bold'>Column Chart</span></h5>}
                 close collapse
@@ -87,7 +87,7 @@ class Charts extends React.Component {
         
         
         
-            <Col lg={5} xs={12}>
+            <Col size={5}>
               <Widget
                 title={<h5>Echarts <span className='fw-semi-bold'>Line Chart</span></h5>}
                 close collapse
@@ -103,7 +103,7 @@ class Charts extends React.Component {
             
             
             
-            <Col lg={5} xs={12}>
+            <Col size={5}>
               <Widget
                 title={<h5>Highcharts <span className='fw-semi-bold'>Line Chart</span></h5>}
                 close collapse
@@ -146,9 +146,9 @@ class Charts extends React.Component {
                 </Row>
               </Widget>
             </Col>
-            <Col lg={7} xs={12}>
+            <Col size={7}>
               <Row>
-                <Col lg={6} xs={12}>
+                <Col size={6}>
                   <Widget
                     title={<h5>Apex <span className="fw-semi-bold">Monochrome Pie</span></h5>}
                     close collapse

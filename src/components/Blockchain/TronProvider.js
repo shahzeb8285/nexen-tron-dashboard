@@ -13,11 +13,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
-import {
-  incomeFetched,
-  userFetched,
-  onLevelUpdated,
-} from "../../actions/web3Actions";
+import { userFetched } from "../../actions/web3Actions";
 import { toast } from "react-toastify";
 import { compose } from "redux";
 import Level from "../../pages/dashboard/components/Level/Level";
@@ -64,25 +60,13 @@ class TronProvider extends React.Component {
 
   async componentDidMount() {
     let userId = this.props.auth.userId;
-    // this.setState({userId:parseInt(this.props.auth.userId)})
-    // await this.loadWeb3();
-    // await this.loadBlockchainData();
+
     await this.initTron();
     await this.fetchPlatformData();
     console.log("tron initiated", this.state);
+    await this.getLevelMembersCount(userId);
     await this.initUser(userId);
     await this.getLevelsLoss(userId);
-    await this.getLevelMembersCount(userId);
-    // await this.getLevelMembers(userId, 1);
-    // await this.getLevelMembers(userId, 2);
-    // await this.getLevelMembers(userId, 3);
-    // await this.getLevelMembers(userId, 4);
-    // await this.getLevelMembers(userId, 5);
-    // await this.getLevelMembers(userId, 6);
-    // await this.getLevelMembers(userId, 7);
-    // await this.getLevelMembers(userId, 8);
-    // await this.getLevelMembers(userId, 9);
-    // await this.getLevelMembers(userId, 10);
 
     console.log(this.state);
   }
@@ -146,7 +130,6 @@ class TronProvider extends React.Component {
         hex: window.tronWeb.address.toHex(FOUNDATION_ADDRESS),
         base58: FOUNDATION_ADDRESS,
       };
-
       window.tronWeb.on("addressChanged", () => {
         if (this.state.tronWeb.loggedIn) {
           return;
@@ -317,6 +300,18 @@ class TronProvider extends React.Component {
       });
   }
 
+  startRewardDistributionEventListener() {
+    Utils.contract.distributeRewardEvent().watch((err, { result }) => {
+      if (err) {
+        // alert("Something went Wrong please try again");
+        return console.log("Failed reward distribution", err);
+      }
+      console.log("reward distribution", result);
+      alert("Distribution successful");
+      window.location.reload();
+    });
+  }
+
   // startRewardDistributionEventListener() {
   //   Utils.contract.distributeRewardEvent().watch((err, { result }) => {
   //     if (err) {
@@ -351,7 +346,7 @@ class TronProvider extends React.Component {
       })
       .then((receipt) => {
         // alert("your ID: ", this.state.totalUsers);
-        console.log(receipt);
+        console.log("receipt", receipt);
       })
       .catch((err) => {
         console.log("error while registering user", err);
@@ -834,7 +829,6 @@ class TronProvider extends React.Component {
     return <>{this.state.visibleBuyModal ? this.renderBuyDialog() : null}</>;
   }
 }
-
 function mapStateToProps(store) {
   return {
     auth: store.auth,

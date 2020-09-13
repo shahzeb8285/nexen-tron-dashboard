@@ -30,7 +30,7 @@ export default class UserTree extends Component {
       <>
       {this.props.data?   <Widget className="tree--main">
       <Row>
-        <Col lg={2} xs={2}>
+        <Col size={2}>
          {this.props.disablePrevButton? <div className="prev--button">
             <Button
             
@@ -43,7 +43,7 @@ export default class UserTree extends Component {
             </Button>
           </div>:null}
         </Col>
-        <Col lg={8} xs={8}>
+        <Col size={8}>
           <Tree
             lineWidth={"2px"}
             lineColor={"green"}
@@ -148,7 +148,7 @@ export default class UserTree extends Component {
           </Tree>
         </Col>
 
-        <Col lg={2} xs={2}>
+        <Col lsize={2}>
           <span>Level Number {this.props.levelNumber}</span>
         </Col>
       </Row>
