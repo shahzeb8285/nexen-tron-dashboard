@@ -346,6 +346,8 @@ class Static extends React.Component {
                   {/* eslint-enable */}
                 </Table>
               </div>
+            
+            
             </Widget>
           </Col>
       

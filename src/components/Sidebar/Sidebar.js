@@ -11,7 +11,7 @@ import LinksGroup from './LinksGroup';
 import s from './Sidebar.module.scss';
 import { Col, Container, Row } from 'reactstrap';
 import Widget from '../../components/Widget';
-import avatar from '../../images/people/a5.jpg';
+import defaultAvatar from '../../images/avatar.png';
 import { toast } from 'react-toastify';
 import eth from '../../images/1 copy.png';
 import './Sidebar.scss';
@@ -65,12 +65,6 @@ class Sidebar extends React.Component {
 
 
     copyToClipboard = (name, data) => {
-        // const el =document.createElement('txtps');
-        // el.value = data;
-        // document.body.appendChild(el);
-        // el.querySelectorAll(0,111111111);
-        // document.execCommand("copy");
-        // document.body.removeChild(el);
 
         navigator.clipboard.writeText(data).then(() => {
             toast.success(name + " copied successfully", {
@@ -94,6 +88,9 @@ class Sidebar extends React.Component {
 
 
 
+    componentWillReceiveProps(props) {
+        console.log("sidebar", props)
+    }
 
     dismissAlert(id) {
         this.props.dispatch(dismissAlert(id));
@@ -111,12 +108,7 @@ class Sidebar extends React.Component {
                     this.element = nav;
                 }}
             >
-                {/* <header className={s.logo }>
-                    <a href="https://demo.flatlogic.com/light-blue-react/">Light <span
-                        className="fw-bold">Blue</span></a>
 
-
-                </header> */}
 
 
 
@@ -131,12 +123,17 @@ class Sidebar extends React.Component {
                     <hr className="solid" />
 
 
-                    <div className="avatar">
-                        <span className="avatar__pic">
-                            <img src={avatar} alt="..." />
-                        </span>
-                        <span className="avatar__name" style={{fontSize:22}}>Binod</span>
-                    </div>
+                    {this.props.profile.name ? <>
+                        <div className="avatar">
+                            <span className="avatar__pic">
+                                {this.props.profile && this.props.profile.avatar ?
+                                    <img src={this.props.profile.avatar} alt="..." />
+                                    : <img src={defaultAvatar} alt="..." />
+                                }
+                            </span>
+                            <span className="avatar__name" style={{ fontSize: 22 }}>
+                                {this.props.profile ? this.props.profile.name : this.props.auth.userId}</span>
+                        </div></> : null}
 
 
                     <LinksGroup
@@ -161,7 +158,7 @@ class Sidebar extends React.Component {
                     />
 
 
-                     <LinksGroup
+                    <LinksGroup
                         onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
                         activeItem={this.props.activeItem}
                         header="Last Rewards"
@@ -196,14 +193,14 @@ class Sidebar extends React.Component {
                         <div className="eth">
                             <img src={eth} ></img>
                             <div className="value">
-                                <h4> <span className="fa fa-group" style={{marginRight:5,color:"#6ed89c"}}> </span>3</h4>
-                                <h4> <span className="fa fa-dollar" style={{marginRight:5,color:"#6ed89c"}}> </span>123</h4>
+                                <h4> <span className="fa fa-group" style={{ marginRight: 5, color: "#6ed89c" }}> </span>3</h4>
+                                <h4> <span className="fa fa-dollar" style={{ marginRight: 5, color: "#6ed89c" }}> </span>{this.props.user.income ? Math.round((this.props.user.income.directIncome + this.props.user.income.levelIncome + this.props.user.income.recycleIncome) * 0.0236 * 100) / 100 : 0}</h4>
 
-                                
+
                             </div>
                         </div>
                         <div className="id__btn">
-                            <h4>0.35 eth</h4>
+                            <h4>{this.props.user.income ? (this.props.user.income.directIncome + this.props.user.income.levelIncome + this.props.user.income.recycleIncome) : 0} trx</h4>
                         </div>
                     </div>
 
@@ -218,13 +215,13 @@ class Sidebar extends React.Component {
 
                         <p className="fw-semi-bold tile-hover" onClick={(f) => {
                             console.log("clickedddddd", f);
-                            this.copyToClipboard("Affiliate Link", "https://nexen.live/"+this.props.auth.userId)
+                            this.copyToClipboard("Affiliate Link", "https://nexen.live/" + this.props.auth.userId)
 
 
                         }}>
 
                             https://nexen.live/{this.props.auth.userId}
-      </p>
+                        </p>
                     </Widget>
 
                     <Widget
@@ -241,7 +238,7 @@ class Sidebar extends React.Component {
                     </Widget>
 
                     <Widget
-                        
+
                         title={"Etherium Wallet"}
                     >
 
@@ -398,8 +395,8 @@ function mapStateToProps(store) {
         alertsList: store.alerts.alertsList,
         activeItem: store.navigation.activeItem,
         user: store.Web3Reducer.user,
-        auth:store.auth
-
+        auth: store.auth,
+        profile: store.ProfileReducer.profile
     };
 }
 

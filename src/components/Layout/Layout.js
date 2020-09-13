@@ -10,16 +10,7 @@ import { incomeFetched, userFetched } from "../../actions/web3Actions";
 import WinnerSlider from "../../pages/dashboard/components/WinnerSlider/WinnerSlider";
 import ProfilePage from "../../pages/Profile/Profile";
 import LastRewards from "../../pages/LastRewards/LastRewards"
-import {
-  Badge,
-  Table,
-  Button,
-  Modal,
-  Spinner,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "reactstrap";
+
 import Widget from "../../components/Widget";
 import Charts from "../../pages/components/charts/Charts";
 import UIIcons from "../../pages/components/icons";

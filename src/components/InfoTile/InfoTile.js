@@ -100,11 +100,12 @@ class InfoTile extends React.Component {
 
 
     return (
-      <React.Fragment >
+      <React.Fragment>
         <section
           style={{
             background: "radial-gradient(farthest-side ellipse at 10% 0, " + this.props.bgStartColor
-              + " 20%, " + this.props.bgEndColor + ")"
+              + " 20%, " + this.props.bgEndColor + ")" ,
+              height:"100%"
           }}
           className={s.body}
         >
