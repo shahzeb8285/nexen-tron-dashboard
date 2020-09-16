@@ -287,6 +287,7 @@ class TronProvider extends React.Component {
                     user.ownerWallet = this.state.ownerWallet;
                     user.levelMembers = this.state.levelsMembers;
                     user.publicAddress = this.state.publicAddress;
+                    user.dailyUsersCount = this.state.dailyUsersCount;
                     if (user.walletAddress === user.publicAddress) {
                       user.sameAddress = true;
                     } else {

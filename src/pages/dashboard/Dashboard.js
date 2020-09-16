@@ -234,7 +234,7 @@ class Dashboard extends React.Component {
                     title={"JOINED IN 24 HOURS"}
                     counts={
                       this.props.user
-                        ? this.props.user.totalUSDAmountDistributed
+                        ? this.props.user.dailyUsersCount
                         : 0
                     }
                   />
@@ -268,7 +268,6 @@ class Dashboard extends React.Component {
               </Col>
             </Row>
           </Widget>
-
           <Row style={{ alignItems: "baseline" }} nogutters>
             <Col size={9} nogutters>
               <Row>
@@ -392,109 +391,115 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-                {/* <Col
-                  lg={{ size: 4, offset: 0 }}
-                  xs={6}
-                  style={{ paddingTop: 15 }}
-                > */}
-                {/* <InfoTile
-                    primaryTitle={"Owner Wallet"}
-                    secondaryTitle={""}
-                    primaryAmount={
-                      this.props.user ? this.props.user.ownerWallet : 0
-                    }
-                    secondaryAmount={""}
-                    bgStartColor={"#d35400"}
-                    bgEndColor={"#a1511b"}
-                  />
-                </Col>
+                <Col size={4} />
 
-                <Col
-                  lg={{ size: 4, offset: 0 }}
-                  xs={6}
-                  style={{ paddingTop: 15 }}
-                >
-                  <InfoTile
-                    primaryTitle={"Level Reward Income"}
-                    secondaryTitle={""}
-                    primaryAmount={
-                      this.props.user.income
-                        ? this.props.user.income.levelRewardIncome
-                        : 0
-                    }
-                    secondaryAmount={""}
-                    bgStartColor={"#d35400"}
-                    bgEndColor={"#a1511b"}
-                  />
-                </Col> */}
-
-                <Level
-                  onLevelClicked={this.onLevelClicked}
-                  levelData={
-                    this.props.user.levels ? this.props.user.levels[2] : null
-                  }
-                />
-
-                <Level
-                  levelData={
-                    this.props.user.levels ? this.props.user.levels[3] : null
-                  }
-                  onLevelClicked={this.onLevelClicked}
-                />
-
-                <Level
-                  levelData={
-                    this.props.user.levels ? this.props.user.levels[4] : null
-                  }
-                  onLevelClicked={this.onLevelClicked}
-                />
+                <Col size={4} />
               </Row>
 
-              <Row>
-                <Level
-                  onLevelClicked={this.onLevelClicked}
-                  levelData={
-                    this.props.user.levels ? this.props.user.levels[5] : null
-                  }
-                />
+              <SecondRewardWallet
+                levelRewardWallet={
+                  this.props.user.levelRewardWallet
+                    ? this.props.user.levelRewardWallet
+                    : null
+                }
+                rewardWallet={
+                  this.props.user.rewardWallet
+                    ? this.props.user.rewardWallet
+                    : null
+                }
+                refPercent={
+                  this.props.user.refPercent ? this.props.user.refPercent : 0
+                }
+              />
 
-                <Level
-                  levelData={
-                    this.props.user.levels ? this.props.user.levels[6] : null
-                  }
-                  onLevelClicked={this.onLevelClicked}
-                />
+              <Widget
+                title={
+                  <h3>
+                    Buy <span className="fw-semi-bold">Levels</span>
+                  </h3>
+                }
+              >
+                <Row style={{ padding: 5 }}>
+                  <Level
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[0] : null
+                    }
+                    onLevelClicked={this.onLevelClicked}
+                  />
 
-                <Level
-                  levelData={
-                    this.props.user.levels ? this.props.user.levels[7] : null
-                  }
-                  onLevelClicked={this.onLevelClicked}
-                />
+                  <Level
+                    onLevelClicked={this.onLevelClicked}
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[1] : null
+                    }
+                  />
 
-                <Level
-                  levelData={
-                    this.props.user.levels ? this.props.user.levels[8] : null
-                  }
-                  onLevelClicked={this.onLevelClicked}
-                />
+                  <Level
+                    onLevelClicked={this.onLevelClicked}
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[2] : null
+                    }
+                  />
 
-                <Level
-                  levelData={
-                    this.props.user.levels ? this.props.user.levels[9] : null
-                  }
-                  onLevelClicked={this.onLevelClicked}
-                />
-              </Row>
+                  <Level
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[3] : null
+                    }
+                    onLevelClicked={this.onLevelClicked}
+                  />
+
+                  <Level
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[4] : null
+                    }
+                    onLevelClicked={this.onLevelClicked}
+                  />
+                </Row>
+
+                <Row>
+                  <Level
+                    onLevelClicked={this.onLevelClicked}
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[5] : null
+                    }
+                  />
+
+                  <Level
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[6] : null
+                    }
+                    onLevelClicked={this.onLevelClicked}
+                  />
+
+                  <Level
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[7] : null
+                    }
+                    onLevelClicked={this.onLevelClicked}
+                  />
+
+                  <Level
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[8] : null
+                    }
+                    onLevelClicked={this.onLevelClicked}
+                  />
+
+                  <Level
+                    levelData={
+                      this.props.user.levels ? this.props.user.levels[9] : null
+                    }
+                    onLevelClicked={this.onLevelClicked}
+                  />
+                </Row>
+              </Widget>
             </Col>
 
             <Col size={3}>
               <RewardRankWinner />
             </Col>
           </Row>
-
           {this.renderRefferalsInfo()}
-
           <input type="text" id="refId"></input>
           <button
             onClick={() => {
@@ -523,7 +528,6 @@ class Dashboard extends React.Component {
           </button>
           <br></br>
           <br></br>
-
           <button
             onClick={() => {
               {
@@ -564,7 +568,6 @@ class Dashboard extends React.Component {
             Distribute Level Reward
           </button>
           <br></br>
-
           <br></br>
           <button
             onClick={() => {
@@ -595,7 +598,6 @@ class Dashboard extends React.Component {
             Get Level Members
           </button>
           <br></br>
-
           <br></br>
           <br></br>
           <button
@@ -608,7 +610,6 @@ class Dashboard extends React.Component {
             Get Daily Users
           </button>
           <br></br>
-
           <br></br>
           <button
             onClick={() => {
@@ -622,8 +623,7 @@ class Dashboard extends React.Component {
             ReInitialize daily users
           </button>
           <br></br>
-
-          <br></br>
+          <br></br>{" "}
         </div>
 
         {this.renderPageLoadingDialoge()}
