@@ -392,12 +392,12 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-                <Col
+                {/* <Col
                   lg={{ size: 4, offset: 0 }}
                   xs={6}
                   style={{ paddingTop: 15 }}
-                >
-                  <InfoTile
+                > */}
+                {/* <InfoTile
                     primaryTitle={"Owner Wallet"}
                     secondaryTitle={""}
                     primaryAmount={
@@ -426,7 +426,7 @@ class Dashboard extends React.Component {
                     bgStartColor={"#d35400"}
                     bgEndColor={"#a1511b"}
                   />
-                </Col>
+                </Col> */}
 
                 <Level
                   onLevelClicked={this.onLevelClicked}
@@ -535,18 +535,16 @@ class Dashboard extends React.Component {
           </button>
           <br></br>
           <br></br>
-          <input type="text" id="winner1" placeholder="Winner1"></input>
+          {/* <input type="text" id="winner1" placeholder="Winner1"></input>
           <input type="text" id="winner2" placeholder="Winner2"></input>
-          <input type="text" id="winner3" placeholder="Winner3"></input>
+          <input type="text" id="winner3" placeholder="Winner3"></input> */}
           <button
             onClick={() => {
               {
-                let w1 = document.getElementById("winner1").value;
-                let w2 = document.getElementById("winner2").value;
-                let w3 = document.getElementById("winner3").value;
-                this.Web3Ref.current
-                  .getWrappedInstance()
-                  .distributeReward(w1, w2, w3);
+                // let w1 = document.getElementById("winner1").value;
+                // let w2 = document.getElementById("winner2").value;
+                // let w3 = document.getElementById("winner3").value;
+                this.Web3Ref.current.getWrappedInstance().distributeReward();
               }
             }}
           >
@@ -596,6 +594,35 @@ class Dashboard extends React.Component {
           >
             Get Level Members
           </button>
+          <br></br>
+
+          <br></br>
+          <br></br>
+          <button
+            onClick={() => {
+              {
+                this.Web3Ref.current.getWrappedInstance().getDailyUsers();
+              }
+            }}
+          >
+            Get Daily Users
+          </button>
+          <br></br>
+
+          <br></br>
+          <button
+            onClick={() => {
+              {
+                this.Web3Ref.current
+                  .getWrappedInstance()
+                  .reInitializeDailyUsersInfo();
+              }
+            }}
+          >
+            ReInitialize daily users
+          </button>
+          <br></br>
+
           <br></br>
         </div>
 

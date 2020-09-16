@@ -9,7 +9,10 @@ contract MLM {
     uint256 public ownerAmount;
     uint256 public totalAmountDistributed;
     address[] public levelWinners;
-    uint256 public allLevelPrice;
+    uint256 public dailyUsersCount = 0;
+    uint256 public maxReferrals = 0;
+    uint256 public idWithMaxReferrals;
+
     struct User {
         uint256 id;
         address inviter;
@@ -25,6 +28,7 @@ contract MLM {
         uint256 loss;
         bool getLevelReward;
         uint256[] usersAtLevels;
+        uint256 dailyReferralsCount;
     }
 
     struct LevelMembers {
@@ -56,22 +60,21 @@ contract MLM {
     }
 
     uint256[] public levels;
-
     mapping(address => User) public users;
     mapping(address => UserIncomes) public usersIncomes;
     mapping(address => UserFunds) public usersFund;
     mapping(uint256 => address) public users_ids;
     mapping(uint256 => LevelMembers) public levelMembers;
-
+    mapping(uint256 => uint256) public dailyUsers;
     event Register(address indexed addr, uint256 inviter, uint256 id);
     event buyLevelEvent(address indexed _user, uint256 _level);
-    event distributeRewardEvent(uint256 _add1, uint256 _add2, uint256 _add3);
+    event distributeRewardEvent(uint256 _add1);
     event distributeLevelRewardEvent();
 
     constructor() public {
         totalUsers = 0;
         ownerWallet = msg.sender;
-        levels.push(500000000);
+        levels.push(100000000);
         levels.push(200000000);
         levels.push(300000000);
         levels.push(400000000);
@@ -92,6 +95,8 @@ contract MLM {
     function newUser(address _addr, address _inviter) private {
         totalUsers++;
         users[_addr].id = totalUsers;
+        dailyUsersCount++;
+        dailyUsers[dailyUsersCount] = totalUsers;
         users[_addr].inviter = _inviter;
         users_ids[totalUsers] = _addr;
         users[_addr].isExist = true;
@@ -121,6 +126,11 @@ contract MLM {
         usersFund[_inviter].recycleFund += (referalMoney * 10) / 100;
         usersFund[_inviter].levelFund += (referalMoney * 10) / 100;
         users[_inviter].totalReferals++;
+        users[_inviter].dailyReferralsCount++;
+        if (users[_inviter].dailyReferralsCount >= maxReferrals) {
+            maxReferrals = users[_inviter].dailyReferralsCount;
+            idWithMaxReferrals = users[_inviter].id;
+        }
 
         if (users[_inviter].levelsPurchased < 10) {
             if (usersFund[_inviter].levelFund >= levels[_level]) {
@@ -198,7 +208,7 @@ contract MLM {
         }
     }
 
-    function buyLevelHelper(uint256 _level) public {
+    function buyLevelHelper(uint256 _level) internal {
         usersFund[msg.sender].levelsLoss[_level - 1] = false;
         uint256 upgradeAmount = (levels[_level] * 20) / 100;
         address _inviter = users[msg.sender].inviter;
@@ -337,59 +347,31 @@ contract MLM {
         }
     }
 
-    function distributeReward(
-        uint256 _winner1,
-        uint256 _winner2,
-        uint256 _winner3
-    ) public {
-        require(
-            _winner1 >= 1 && _winner2 >= 1 && _winner3 >= 1,
-            "invalid winnerId"
-        );
-        uint256 first = (50 * rewardWallet) / 100;
-        uint256 second = (30 * rewardWallet) / 100;
-        uint256 third = (20 * rewardWallet) / 100;
+    function distributeReward() public {
+        if (idWithMaxReferrals == 0) {
+            ownerAmount += rewardWallet;
+        } else {
+            uint256 _winner1 = idWithMaxReferrals;
+            uint256 first = rewardWallet;
 
-        usersIncomes[users_ids[_winner1]].rewardIncome += (first -
-            (20 * first) /
-            100);
-        usersIncomes[users_ids[_winner2]].rewardIncome += (second -
-            (20 * second) /
-            100);
-        usersIncomes[users_ids[_winner3]].rewardIncome += (third -
-            (20 * third) /
-            100);
+            usersIncomes[users_ids[_winner1]].rewardIncome += (first -
+                (20 * first) /
+                100);
 
-        address(uint256(users_ids[_winner1])).transfer(
-            (first - (20 * first) / 100)
-        );
-        address(uint256(users_ids[_winner2])).transfer(
-            (second - (20 * second) / 100)
-        );
-        address(uint256(users_ids[_winner3])).transfer(
-            (third - (20 * third) / 100)
-        );
+            address(uint256(users_ids[_winner1])).transfer(
+                (first - (20 * first) / 100)
+            );
 
-        users[users_ids[_winner1]].totalWins += 1;
-        users[users_ids[_winner2]].totalWins += 1;
-        users[users_ids[_winner3]].totalWins += 1;
+            users[users_ids[_winner1]].totalWins += 1;
 
-        totalAmountDistributed += ((first - (20 * first) / 100) +
-            (second - (20 * second) / 100) +
-            (third - (20 * third) / 100));
+            totalAmountDistributed += (first - (20 * first) / 100);
+            rewardWallet = 0;
 
-        rewardWallet = 0;
-
-        usersFund[users_ids[_winner1]].recycleFund += (10 * first) / 100;
-        usersFund[users_ids[_winner1]].levelFund += (10 * first) / 100;
-
-        usersFund[users_ids[_winner2]].recycleFund += (10 * second) / 100;
-        usersFund[users_ids[_winner2]].levelFund += (10 * second) / 100;
-
-        usersFund[users_ids[_winner3]].recycleFund += (10 * third) / 100;
-        usersFund[users_ids[_winner3]].levelFund += (10 * third) / 100;
-
-        emit distributeRewardEvent(_winner1, _winner2, _winner3);
+            usersFund[users_ids[_winner1]].recycleFund += (10 * first) / 100;
+            usersFund[users_ids[_winner1]].levelFund += (10 * first) / 100;
+            emit distributeRewardEvent(_winner1);
+        }
+        reInitializeDailyUsersInfo();
     }
 
     function distributeLevelReward() public {
@@ -690,5 +672,21 @@ contract MLM {
         }
         return userCount;
     }
-}
 
+    function getDailyUsers() public view returns (uint256[] memory) {
+        uint256[] memory dailyusers = new uint256[](dailyUsersCount);
+        for (uint256 i = 0; i < dailyUsersCount; i++) {
+            dailyusers[i] = dailyUsers[i + 1];
+        }
+        return dailyusers;
+    }
+
+    function reInitializeDailyUsersInfo() public {
+        dailyUsersCount = 0;
+        maxReferrals = 0;
+        idWithMaxReferrals = 0;
+        for (uint256 i = 1; i <= totalUsers; i++) {
+            users[users_ids[i]].dailyReferralsCount = 0;
+        }
+    }
+}

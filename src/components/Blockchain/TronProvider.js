@@ -67,6 +67,7 @@ class TronProvider extends React.Component {
     await this.getLevelMembersCount(userId);
     await this.initUser(userId);
     await this.getLevelsLoss(userId);
+    await this.getDailyUsers();
 
     console.log(this.state);
   }
@@ -144,23 +145,23 @@ class TronProvider extends React.Component {
     }
     await Utils.setTronWeb(window.tronWeb);
     this.fetchPlatformData();
-    // this.startRegisterEventListener();
+    this.startRegisterEventListener();
     // this.startBuyLevelEventListner();
     // this.startRewardDistributionEventListener();
     // this.startLevelRewardDistributionEventListener();
     this.setState({ InitError: true });
   }
 
-  // startRegisterEventListener() {
-  //   Utils.contract.Register().watch((err, { result }) => {
-  //     if (err) {
-  //       return console.log("Failed Register", err);
-  //     }
-  //     console.log("register--->", result);
-  //     window.alert("Registered");
-  //     window.location.reload();
-  //   });
-  // }
+  startRegisterEventListener() {
+    Utils.contract.Register().watch((err, { result }) => {
+      if (err) {
+        console.log("Failed Register", err);
+      }
+      console.log("register--->", result);
+      // window.alert("Registered");
+      // window.location.reload();
+    });
+  }
 
   // startBuyLevelEventListner() {
   //   Utils.contract.buyLevelEvent().watch((err) => {
@@ -337,20 +338,16 @@ class TronProvider extends React.Component {
 
   async register(id) {
     this.setState({ loading: true });
-    Utils.contract
-      .register(id)
-      .send({
-        from: window.tronWeb.defaultAddress.base58,
-        callValue: this.state.entryFees,
-        shouldPollResponse: true,
-      })
-      .then((receipt) => {
-        // alert("your ID: ", this.state.totalUsers);
-        console.log("receipt", receipt);
-      })
-      .catch((err) => {
-        console.log("error while registering user", err);
-      });
+    await Utils.contract.register(id).send({
+      callValue: this.state.entryFees,
+      shouldPollResponse: true,
+    });
+    // .then((receipt) => {
+    //   console.log("receipt", receipt);
+    // })
+    // .catch((err) => {
+    //   console.log("error while registering user", err);
+    // });
   }
 
   async buyLevel(level) {
@@ -418,12 +415,25 @@ class TronProvider extends React.Component {
       (await Utils.contract.rewardWallet().call()).toNumber() / 1000000;
     const levelRewardWallet =
       (await Utils.contract.levelRewardWallet().call()).toNumber() / 1000000;
+    const maxReferrals = (
+      await Utils.contract.maxReferrals().call()
+    ).toNumber();
+    const idWithMaxReferrals = (
+      await Utils.contract.idWithMaxReferrals().call()
+    ).toNumber();
+
+    const dailyUsersCount = (
+      await Utils.contract.dailyUsersCount().call()
+    ).toNumber();
 
     this.setState({
       totalUsers: totalUsers,
       totalAmountDistributed: totalAmountDistributed,
       rewardWallet: rewardWallet,
       levelRewardWallet: levelRewardWallet,
+      maxReferrals: maxReferrals,
+      idWithMaxReferrals: idWithMaxReferrals,
+      dailyUsersCount: dailyUsersCount,
     });
 
     let contractAddress = await TronWeb.address.fromHex(Utils.contract.address);
@@ -465,10 +475,10 @@ class TronProvider extends React.Component {
       });
   }
 
-  async distributeReward(id1, id2, id3) {
-    console.log("distribute", id1, id2, id3);
+  async distributeReward() {
+    console.log("distribute");
     Utils.contract
-      .distributeReward(parseInt(id1), parseInt(id2), parseInt(id3))
+      .distributeReward()
       .send({ from: window.tronWeb.defaultAddress.base58, callValue: 0 })
       .then((res) => {
         console.log("enter distribute", res);
@@ -718,6 +728,7 @@ class TronProvider extends React.Component {
         let levelMembersCount = [];
         for (let i = 0; i < 10; i++) {
           levelMembersCount[i] = res[i].toNumber();
+          console.log("member1", res[i].toNumber());
         }
         this.state.user.levelsMembers = levelMembersCount;
         console.log("level members count ---> ", levelMembersCount);
@@ -726,6 +737,51 @@ class TronProvider extends React.Component {
         console.log("error while fetching level members count", err);
       });
   }
+
+  async getLevelMembers(id, level) {
+    Utils.contract
+      .getLevelMembers(id, level)
+      .call()
+      .then((res) => {
+        // this.state.levelsMembers.push(res.length);
+        console.log(level, "level members");
+        for (let i = 0; i < res.length; i++) {
+          console.log(res[i].toNumber());
+        }
+      })
+      .catch((err) => {
+        console.log("error while fetching level members", err);
+      });
+  }
+
+  async getDailyUsers() {
+    Utils.contract
+      .getDailyUsers()
+      .call()
+      .then((res) => {
+        // this.state.levelsMembers.push(res.length);
+        console.log("daily users");
+        for (let i = 0; i < res.length; i++) {
+          console.log(res[i].toNumber());
+        }
+      })
+      .catch((err) => {
+        console.log("error while fetching daily Users", err);
+      });
+  }
+
+  async reInitializeDailyUsersInfo() {
+    Utils.contract
+      .reInitializeDailyUsersInfo()
+      .send({ shouldPollResponse: true, callValue: 0 })
+      .then((reciept) => {
+        console.log(reciept);
+      })
+      .catch((err) => {
+        console.log("error while reinitializing Users", err);
+      });
+  }
+
   makeErrorToast(error) {
     toast.error(error, {
       position: "bottom-center",
