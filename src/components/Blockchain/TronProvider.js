@@ -145,7 +145,7 @@ class TronProvider extends React.Component {
     }
     await Utils.setTronWeb(window.tronWeb);
     this.fetchPlatformData();
-    this.startRegisterEventListener();
+    // this.startRegisterEventListener();
     // this.startBuyLevelEventListner();
     // this.startRewardDistributionEventListener();
     // this.startLevelRewardDistributionEventListener();
@@ -202,6 +202,7 @@ class TronProvider extends React.Component {
                     const totalWins = User.totalWins.toNumber();
                     const levelsPurchased = User.levelsPurchased.toNumber();
                     const loss = User.loss.toNumber();
+                    const dailyReferralsCount = User.dailyReferralsCount;
 
                     user = {
                       inviter: inviter,
@@ -210,7 +211,7 @@ class TronProvider extends React.Component {
                       totalWins: totalWins,
                       levelsPurchased: levelsPurchased,
                       loss: loss,
-
+                      dailyReferralsCount: dailyReferralsCount,
                       // walletAddress: this.state.walletAddress,
                       contractAddress: this.state.contractAddress,
                     };
@@ -339,10 +340,17 @@ class TronProvider extends React.Component {
 
   async register(id) {
     this.setState({ loading: true });
-    await Utils.contract.register(id).send({
-      callValue: this.state.entryFees,
-      shouldPollResponse: true,
-    });
+    Utils.contract
+      .register(id)
+      .send({
+        callValue: this.state.entryFees,
+        shouldPollResponse: true,
+      })
+      .then((receipt) => {
+        console.log("user registered", this.state.publicAddress);
+        console.log("recipt", receipt);
+        alert("Registered success fully");
+      });
     // .then((receipt) => {
     //   console.log("receipt", receipt);
     // })

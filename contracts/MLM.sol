@@ -66,9 +66,14 @@ contract MLM {
     mapping(uint256 => address) public users_ids;
     mapping(uint256 => LevelMembers) public levelMembers;
     mapping(uint256 => uint256) public dailyUsers;
-    event Register(address indexed addr, uint256 inviter, uint256 id);
-    event buyLevelEvent(address indexed _user, uint256 _level);
-    event distributeRewardEvent(uint256 _add1);
+    event Register(
+        uint256 id,
+        uint256 rootParent,
+        uint256 parent,
+        address indexed addr
+    );
+    event buyLevelEvent(uint256 _user, uint256 _level);
+    event distributeRewardEvent(uint256 _winnerId, uint256 _amount);
     event distributeLevelRewardEvent();
 
     constructor() public {
@@ -102,7 +107,6 @@ contract MLM {
         users[_addr].isExist = true;
         users[_addr].getLevelReward = false;
         users[msg.sender].levelsPurchased = 0;
-        emit Register(_addr, users[_inviter].id, totalUsers);
     }
 
     function _register(
@@ -150,11 +154,10 @@ contract MLM {
 
     function register(uint256 _inviter_id) external payable {
         _register(msg.sender, users_ids[_inviter_id], msg.value);
-        address add;
         uint256 id = _inviter_id;
         if (users[users_ids[_inviter_id]].referral.length >= 4) {
-            add = findFreeReferrer(users_ids[_inviter_id]);
-            id = users[add].id;
+            address _add = findFreeReferrer(msg.sender);
+            id = users[_add].id;
         }
         users[users_ids[id]].referral.push(msg.sender);
         users[users_ids[id]].referralsIds.push(users[msg.sender].id);
@@ -206,6 +209,12 @@ contract MLM {
             uid = users[users_ids[uid]].upline;
             levelMembers[uid].level10.push(totalUsers);
         }
+        emit Register(
+            users[msg.sender].id,
+            _inviter_id,
+            users[msg.sender].upline,
+            msg.sender
+        );
     }
 
     function buyLevelHelper(uint256 _level) internal {
@@ -253,7 +262,7 @@ contract MLM {
         if (users[msg.sender].levelsPurchased + 1 < 10)
             users[msg.sender].levelsPurchased += 1;
 
-        emit buyLevelEvent(msg.sender, _level);
+        emit buyLevelEvent(users[msg.sender].id, _level);
     }
 
     function buyAllLevels() public payable {
@@ -282,7 +291,7 @@ contract MLM {
         if (users[msg.sender].levelsPurchased + 1 < 10)
             users[msg.sender].levelsPurchased += 1;
 
-        emit buyLevelEvent(msg.sender, 10);
+        emit buyLevelEvent(users[msg.sender].id, 10);
     }
 
     function autoBuyLevel(address _user) public {
@@ -311,6 +320,7 @@ contract MLM {
         }
         usersFund[_user].levelFund -= levels[_level];
         users[_user].levelsPurchased += 1;
+        emit buyLevelEvent(users[_user].id, _level);
     }
 
     function recycleId(address _user) public {
@@ -369,7 +379,7 @@ contract MLM {
 
             usersFund[users_ids[_winner1]].recycleFund += (10 * first) / 100;
             usersFund[users_ids[_winner1]].levelFund += (10 * first) / 100;
-            emit distributeRewardEvent(_winner1);
+            emit distributeRewardEvent(_winner1, (first - (20 * first) / 100));
         }
         reInitializeDailyUsersInfo();
     }
@@ -444,7 +454,8 @@ contract MLM {
             uint256 totalRecycles,
             uint256 totalWins,
             uint256 levelsPurchased,
-            uint256 loss
+            uint256 loss,
+            uint256 dailyReferralsCount
         )
     {
         User memory user = users[users_ids[_id]];
@@ -454,7 +465,8 @@ contract MLM {
             user.totalRecycles,
             user.totalWins,
             user.levelsPurchased,
-            user.loss
+            user.loss,
+            user.dailyReferralsCount
         );
     }
 

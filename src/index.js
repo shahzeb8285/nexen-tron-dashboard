@@ -1,28 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux'
-import ReduxThunk from 'redux-thunk'
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import ReduxThunk from "redux-thunk";
+import * as serviceWorker from "./serviceWorker";
 
-import App from './components/App';
-import reducers from './reducers';
-import ProfilePage from './pages/profile/Profile';
-import { HashRouter } from 'react-router-dom';
+import App from "./components/App";
+import reducers from "./reducers";
+import ProfilePage from "./pages/profile/Profile";
+import { HashRouter } from "react-router-dom";
 
-const store = createStore(
-  reducers,
-  applyMiddleware(ReduxThunk)
-);
+const store = createStore(reducers, applyMiddleware(ReduxThunk));
 
 ReactDOM.render(
-    <Provider store={store}>
+  <Provider store={store}>
     <HashRouter>
-    
-        <App />
-        </HashRouter>
-    </Provider>,
-    document.getElementById('root')
+      <App />
+    </HashRouter>
+  </Provider>,
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

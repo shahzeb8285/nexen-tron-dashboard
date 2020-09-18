@@ -20,7 +20,8 @@ module.exports = {
       network_id: "*",
     },
     mainnet: {
-      privateKey: PK,
+      privateKey:
+        "ba98877707981d04f7279954a275dbc05bd47eeb089a39ec67a377fa7fbba51a",
       consume_user_resource_percent: 30,
       fee_limit: 100000000,
       fullHost: "https://api.trongrid.io",
