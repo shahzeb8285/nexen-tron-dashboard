@@ -159,15 +159,8 @@ class Dashboard extends React.Component {
           <Col size={6}
             style={{ paddingTop: 5 }} >
 
-<<<<<<< HEAD
-                  <Col>
-                    <h6 className="fw-semi-bold">ALL PARTICIPANTS
-</h6>
-                  </Col>
-=======
            
               </Col>
->>>>>>> neha
 
 
         </Row>

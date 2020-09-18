@@ -301,15 +301,15 @@ class TronProvider extends React.Component {
   }
 
   startRewardDistributionEventListener() {
-    Utils.contract.distributeRewardEvent().watch((err, { result }) => {
-      if (err) {
-        // alert("Something went Wrong please try again");
-        return console.log("Failed reward distribution", err);
-      }
-      console.log("reward distribution", result);
-      alert("Distribution successful");
-      window.location.reload();
-    });
+    // Utils.contract.distributeRewardEvent().watch((err, { result }) => {
+    //   if (err) {
+    //     // alert("Something went Wrong please try again");
+    //     return console.log("Failed reward distribution", err);
+    //   }
+    //   console.log("reward distribution", result);
+    //   alert("Distribution successful");
+    //   window.location.reload();
+    // });
   }
 
   startLevelRewardDistributionEventListener() {

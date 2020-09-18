@@ -1,5 +1,5 @@
 // const contractAddress = 'TEnwGymDpSkCxDzZM4mTFrCejGvntQhKsA' //mainnet
-const contractAddress = 'TVmUCyCU2rUtwVcMU9bteff4uk8x8c4ja6' //testing
+const contractAddress = 'TFABf9zw9RCBA1aHB3FQ6xZhJ55uk71zbB' //testing
 // const contractAddress = 'TLc5dENhfqn4Jg2vgCbNLcpzmPK3UQdRiu'
 const utils = {
     tronWeb: false,
