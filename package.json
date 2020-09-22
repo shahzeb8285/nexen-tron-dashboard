@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "cross-env PUBLIC_URL='./' node scripts/build.js",
+    "build": "node scripts/build.js",
     "start": "node scripts/start.js",
     "test": "node scripts/test.js"
   },
@@ -66,7 +66,6 @@
     "apexcharts": "^3.19.3",
     "awesome-bootstrap-checkbox": "1.0.1",
     "bootstrap": "4.5.0",
-    "bootstrap_calendar": "git+https://github.com/xero/bootstrap_calendar.git#1.0.1",
     "classnames": "^2.2.6",
     "echarts": "^4.8.0",
     "echarts-for-react": "^2.0.16",
@@ -181,9 +180,6 @@
     "url": "git+https://github.com/shahzi8285/nexen-dashboard-new.git"
   },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/shahzi8285/nexen-dashboard-new/issues"
-  },
-  "homepage": "https://github.com/shahzi8285/nexen-dashboard-new#readme"
+  "license": "ISC"
+  
 }

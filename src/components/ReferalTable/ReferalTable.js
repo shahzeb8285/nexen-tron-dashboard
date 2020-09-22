@@ -19,8 +19,8 @@ import {
 import Avatar from '../Avatar/Avatar';
 
 import Widget from "../Widget/Widget";
-
-
+import { apiService } from '../../Services/api.service';
+import defaultAvatar from "../../images/avatar.png"
 class ReferalTable extends React.Component {
 
 
@@ -29,8 +29,9 @@ class ReferalTable extends React.Component {
     this.state = {
       levelData: null,
       selectedLevel: null,
-      levelExpandData: {},
-      isDataLoading: false
+      levelExpandData: [],
+      isDataLoading: false,
+      currentExpandUiItems:[]
     }
   }
 
@@ -77,9 +78,34 @@ class ReferalTable extends React.Component {
 
 
 
+  async fetchLevelData(levelNumber){
+    var resp = await apiService.getUserTree(parseInt(this.props.myId),
+    parseInt(levelNumber))
+    if(resp.status == 200){
+      var data = resp.data;
+      var levelExpandData  = this.state.levelExpandData;
+      levelExpandData[levelNumber-1] = data.tree
+      this.setState({levelExpandData,currentExpandUiItems:data.tree})
+      console.log("refereadata",JSON.stringify(data.tree))
+
+    }else{
+
+    }
+
+
+    this.setState({isDataLoading:false})
+  }
 
   onLevelClicked(level) {
-    this.setState({ selectedLevel: level.level })
+    var isDataLoading= false
+    var currentExpandUiItems = []
+    if(!this.state.levelExpandData[level.level-1]){
+      isDataLoading = true
+      this.fetchLevelData(level.level)
+    }else{
+      currentExpandUiItems = this.state.levelExpandData[level.level-1]
+    }
+    this.setState({ selectedLevel: level.level,isDataLoading,currentExpandUiItems })
   }
 
 
@@ -96,11 +122,7 @@ class ReferalTable extends React.Component {
       </Col>
 
 
-      <Col>
-          <Input type="checkbox" />{' '}
-          Filter My Referals
-      </Col>
-
+    
       <Table striped>
         <thead>
           <tr className="fs-sm">
@@ -116,35 +138,23 @@ class ReferalTable extends React.Component {
         </thead>
         <tbody>
           {
-            [].map(row =>
+            this.state.currentExpandUiItems.map(row =>
               <tr key={row.userId}>
-                <td><span>{row.rank}</span></td>
                 <td>{row.userId}</td>
-
                 <td>
-                  <Avatar src={row.avatar} extraStyle={{
+                  <Avatar src={row.profile_pic?row.profile_pic:defaultAvatar} extraStyle={{
                     borderRadius: "50%",
                     height: 50, width: 50
                   }} />
 
-                </td>
+                </td>                
+                <td>{row.name?row.name:"-"}</td>
+                <td>{row.levelNumber?row.levelNumber:0}</td>
+                <td>{row.rootReferrer==this.props.myId ?"Yes":"No"}</td>
 
-                <td className="text-muted">
-                  {row.name}
-                </td>
-                <td className="text-muted">
-                  {row.totalDirects}
-                </td>
-                <td className="text-muted">
-                  {row.totalReward}
-                </td>
-                <td className="width-150">
-                  <Progress
-                    color={row.colorClass} value={row.percent}
-                    className="progress-sm mb-xs"
-                  />
-                </td>
-              </tr>,
+               
+
+              </tr>
             )
           }
         </tbody>
@@ -154,6 +164,7 @@ class ReferalTable extends React.Component {
     </>
 
   }
+
   renderLevelExpandModal() {
     return (
       <>
@@ -163,22 +174,21 @@ class ReferalTable extends React.Component {
 
           </ModalHeader>
           <ModalBody>
-            {/* {this.state.isDataLoading ?
+            {this.state.isDataLoading ?
               <Row><Spinner color="secondary" />
                 <span className='fw-semi-bold'
                   style={{ marginLeft: 5 }}>Loading Data...</span>
               </Row>
-              : this.renderTableData()} */}
+              : this.renderTableData()}
 
 
-            {this.renderTableData()}
           </ModalBody>
           <ModalFooter>
 
             <Button
               color="danger"
               onClick={() => {
-                this.setState({ selectedLevel: null });
+                this.setState({ selectedLevel: null,currentExpandUiItems:[] });
               }}
             >
               Close
@@ -193,10 +203,10 @@ class ReferalTable extends React.Component {
   renderTableItems() {
     var items = this.state.levelData.map((level) => {
       return (
-        <tr onClick={() => {
+        <tr key={level.level} onClick={() => {
           this.onLevelClicked(level)
         }}>
-          <td className='fw-semi-bold'>{level.level}</td>
+          <td className='fw-semi-bold'>{level.level }</td>
           <td className='fw-semi-bold'>{level.referals}</td>
           <td>{this.getMaxReferals(level.level)}</td>
           <td className='fw-semi-bold'>{this.getMaxReferals(level.level) - level.referals}</td>

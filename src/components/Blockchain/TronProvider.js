@@ -61,12 +61,14 @@ class TronProvider extends React.Component {
   async componentDidMount() {
     let userId = this.props.auth.userId;
 
+    var isTronInstalledAndLogin=false;
     await this.initTron();
     await this.fetchPlatformData();
     console.log("tron initiated", this.state);
     await this.getLevelMembersCount(userId);
-    await this.initUser(userId);
     await this.getLevelsLoss(userId);
+
+    await this.initUser(userId);
     await this.getDailyUsers();
 
     console.log(this.state);
@@ -288,6 +290,7 @@ class TronProvider extends React.Component {
                     user.levelMembers = this.state.levelsMembers;
                     user.publicAddress = this.state.publicAddress;
                     user.dailyUsersCount = this.state.dailyUsersCount;
+                    user.levelsLoss= this.state.levelsLoss 
                     if (user.walletAddress === user.publicAddress) {
                       user.sameAddress = true;
                     } else {
@@ -516,7 +519,11 @@ class TronProvider extends React.Component {
           let loss = res[i];
           levelsLoss.push(loss);
         }
+
+        // let user = this.state.user;
+        // user.levelsLoss = levelsLoss;
         this.setState({ levelsLoss });
+
       })
       .catch((err) => {
         console.log("error while fetching referrals", err);
@@ -731,7 +738,7 @@ class TronProvider extends React.Component {
           levelMembersCount[i] = res[i].toNumber();
           console.log("member1", res[i].toNumber());
         }
-        this.state.user.levelsMembers = levelMembersCount;
+        this.setState({levelsMembers:levelMembersCount})
         console.log("level members count ---> ", levelMembersCount);
       })
       .catch((err) => {

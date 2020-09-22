@@ -15,22 +15,12 @@ export default class UserTree extends Component {
   }
 
 
-  // componentDidMount(){
-  //   this.updateData(this.props.data)
-  // }
-
-
-  // updateData(data){
-  //   this.setState({data:data})
-
-  // }
-
   render() {
     return (
       <>
       {this.props.data?   <Widget className="tree--main">
       <Row>
-        <Col size={2}>
+        <Col xs={2} lg={2} sm={2} md={2} xl={2} >
          {this.props.disablePrevButton? <div className="prev--button">
             <Button
             
@@ -43,7 +33,7 @@ export default class UserTree extends Component {
             </Button>
           </div>:null}
         </Col>
-        <Col size={8}>
+        <Col  xs={8} lg={8} sm={8} md={8} xl={8} >
           <Tree
             lineWidth={"2px"}
             lineColor={"green"}
@@ -148,8 +138,19 @@ export default class UserTree extends Component {
           </Tree>
         </Col>
 
-        <Col lsize={2}>
-          <span>Level Number {this.props.levelNumber}</span>
+        <Col  xs={2} lg={2} sm={2} md={2} xl={2} >
+          {/* <span>Level Number {this.props.levelNumber}</span> */}
+          <h5 style={{
+
+            background: "radial-gradient(farthest-side ellipse at 10% 0, " + "#c31432"
+              + " 20%, " +"#240b36"+ ")",
+            textAlign: "center",
+            borderRadius: "5px",
+            color: "white",
+            padding: "8px 6px 6px 6px",
+            fontWeight: "600",
+            fontSize: "18px}"
+          }}>Level Number {this.props.levelNumber}</h5>
         </Col>
       </Row>
     </Widget>: <h3>No Data</h3>

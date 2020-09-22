@@ -472,19 +472,18 @@ module.exports = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
-    new WorkboxWebpackPlugin.GenerateSW({
-      clientsClaim: true,
-      exclude: [/\.map$/, /asset-manifest\.json$/],
-      importWorkboxFrom: 'cdn',
-      navigateFallback: publicUrl + '/index.html',
-      navigateFallbackBlacklist: [
-        // Exclude URLs starting with /_, as they're likely an API call
-        new RegExp('^/_'),
-        // Exclude URLs containing a dot, as they're likely a resource in
-        // public/ and not a SPA route
-        new RegExp('/[^/]+\\.[^/]+$'),
-      ],
-    }),
+    // new WorkboxWebpackPlugin.GenerateSW({
+    //   clientsClaim: true,
+    //   exclude: [/\.map$/, /asset-manifest\.json$/],
+    //   navigateFallback: publicUrl + '/index.html',
+    //   navigateFallbackDenylist: [
+    //     // Exclude URLs starting with /_, as they're likely an API call
+    //     new RegExp('^/_'),
+    //     // Exclude URLs containing a dot, as they're likely a resource in
+    //     // public/ and not a SPA route
+    //     new RegExp('/[^/]+\\.[^/]+$'),
+    //   ],
+    // }),
   ].filter(Boolean),
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

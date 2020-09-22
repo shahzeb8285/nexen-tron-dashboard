@@ -6,6 +6,7 @@ import {
   Col
 } from 'reactstrap';
 
+import defaultAvatar from "../../images/avatar.png"
 
 import Widget from '../Widget/Widget';
 
@@ -54,7 +55,7 @@ const WinnerTile = (props) => {
               boxs: "1px 1px 5px #4069E2",
             }}>
               {/* <img id="avatar" src={props.user.avatar} ></img> */}
-              <img src="https://images.pexels.com/photos/20787/pexels-photo.jpg" style={{
+              <img src={props.data.user.profile_pic?props.data.user.profile_pic:defaultAvatar} style={{
                 height: 80,
                 width: 80,
                 objectFit: "cover",
@@ -64,7 +65,7 @@ const WinnerTile = (props) => {
 
 
             <div style={{display:"inline-block"}}>
-              <h5 className={"fw-semi-bold"}>{props.user.name}</h5>
+              <h5 className={"fw-semi-bold"}>{props.data.user.name?props.data.user.name:"-"}</h5>
 
               <div id="stats" className="row" style={{display:"block",overflow:"initial" }}>
                 <Row style={{borderRadius:5,opacity:.6,backgroundColor:"#000",}}>
@@ -74,7 +75,7 @@ const WinnerTile = (props) => {
 
  
                   <Col>
-                  <span>1234</span>
+                  <span>{props.data.userId}</span>
                   </Col>
 
                 </Row>
@@ -86,7 +87,7 @@ const WinnerTile = (props) => {
 
  
                   <Col>
-                  <span>1234</span>
+                  <span>{props.data.totalReferreral}</span>
                   </Col>
 
                 </Row>

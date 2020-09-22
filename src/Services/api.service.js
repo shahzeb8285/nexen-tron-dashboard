@@ -13,6 +13,7 @@ export const apiService = {
 
 const CONSTANTS={
     BASE_URL:"https://xjgvjfezp4.execute-api.ap-south-1.amazonaws.com/prod/",
+    // BASE_URL:"http://localhost:5000/",
     REGISTER_PATH:"register",
     GET_USER:"user",
     GET_USER_TREE:"tree",
@@ -42,6 +43,8 @@ async function getUser(userId) {
 
 
 async function updateUser(user) {
+
+    console.log("dsdsdsdsd",user)
     const URL = CONSTANTS.BASE_URL+CONSTANTS.UPDATE_USER+"/"+user.id;
     return axios.post(URL, user );
 
@@ -50,8 +53,11 @@ async function updateUser(user) {
 
 async function getUserTree(userId,levelNumber) {
     const URL = CONSTANTS.BASE_URL+CONSTANTS.GET_USER_TREE+"/"+levelNumber+"/"+userId;
+    console.log("yrrrssas",URL)
     return axios.get(URL);
 }
+
+
 
 
 

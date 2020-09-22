@@ -8,7 +8,7 @@ import {
 
 
 import Widget from '../../../../components/Widget/Widget';
-import danger from '../Level/1.png'
+import danger from '../Level/warning.png'
 
 
 
@@ -163,7 +163,11 @@ const Level = (props) => {
           // padding: "8px 6px 6px 6px",
           fontWeight: "600",
           fontSize: "18px}"
-        }}><img src={danger} style={{height:"20px"}}></img></h5>
+        }}>
+
+          {props.isLoss && !isBought? <img src={danger} style={{height:"20px"}}></img>:null}
+          
+         </h5>
 
       </Col>
 

@@ -32,7 +32,8 @@ class Profile extends Component {
       email: "",
       islogin: true,
       defaultImage: require("../../images/avatar.png"),
-      isLoading: false
+      isLoading: false,
+      avatarChanged:false
     }
 
 
@@ -47,10 +48,11 @@ class Profile extends Component {
     const file = event.target.files[0];
     console.log(file);
     let name = file.name;
-    this.setState({ image: name })
+    this.setState({ image: name });
+
   }
 
-  async  handleOnSubmitClick() {
+  async handleOnSubmitClick() {
 
     console.log("user", this.state.username);
     console.log("email", this.state.email);
@@ -80,6 +82,10 @@ class Profile extends Component {
         email: this.state.email
       }
 
+      if(this.state.avatarChanged){
+        payload.profile_pic = this.state.avatar
+      }
+
 
       try {
         var resp = await apiService.updateUser(payload)
@@ -88,7 +94,7 @@ class Profile extends Component {
           toast.success("Profile Updated Successfully ");
           var user = resp.data;
 
-          console.log("Resssssss",resp)
+          console.log("Resssssss", resp)
           this.props.dispatch(updateProfile(user));
 
 
@@ -115,7 +121,7 @@ class Profile extends Component {
 
 
   componentWillReceiveProps(props) {
-    console.log("fvgfggf",props)
+    console.log("fvgfggf", props)
     if (props.profile) {
 
       if (props.profile.name) {
@@ -125,7 +131,37 @@ class Profile extends Component {
       if (props.profile.email) {
         this.setState({ email: this.props.profile.email })
       }
+
+
+      if (props.profile.profile_pic) {
+        this.setState({ avatar: this.props.profile.profile_pic })
+      }
     }
+  }
+
+
+
+  fileChangedHandler = async (event) => {
+    console.log(event.target.files)
+    const file = event.target.files[0];
+    console.log(file);
+    let name = file.name;
+    const base64 = await this.convertBase64(file);
+    this.setState({avatar:base64,avatarChanged:true})
+
+  }
+
+  convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    })
   }
 
   render() {
@@ -141,61 +177,68 @@ class Profile extends Component {
 
               <Col lg="4">
 
-                <Avatar src={defaultAvatar} />
-                <FormGroup>
+                <Col>              <Avatar src={this.state.avatar} />
+                </Col>               <Col>
+                  <input type="file" onChange={this.fileChangedHandler} placeholder="change pic" />
+                </Col>
+
+                <Col>
+                  <FormGroup>
 
 
-                  <label
-                    className="form-control-label"
-                    htmlFor="input-username"
-                  >
-                    Username
-                           </label>
-                  <Input
-                    className="form-control-alternative"
-                    id="input-username"
-                    placeholder="Your Name"
-                    type="text"
-                    value={this.state.username}
-                    onChange={(text) => {
-                      this.setState({ username: text.target.value })
-                    }}
-                  />
+                    <label
+                      className="form-control-label"
+                      htmlFor="input-username"
+                    >
+                      Username
+         </label>
+                    <Input
+                      className="form-control-alternative"
+                      id="input-username"
+                      placeholder="Your Name"
+                      type="text"
+                      value={this.state.username}
+                      onChange={(text) => {
+                        this.setState({ username: text.target.value })
+                      }}
+                    />
 
-                  <label
-                    className="form-control-label"
-                    htmlFor="input-email"
-                  >
-                    Email address
-                           </label>
-                  <Input
-                    className="form-control-alternative"
-                    id="input-email"
-                    placeholder="Enter Your Email"
-                    type="email"
-                    value={this.state.email}
+                    <label
+                      className="form-control-label"
+                      htmlFor="input-email"
+                    >
+                      Email address
+         </label>
+                    <Input
+                      className="form-control-alternative"
+                      id="input-email"
+                      placeholder="Enter Your Email"
+                      type="email"
+                      value={this.state.email}
 
-                    onChange={(text) => {
-                      this.setState({ email: text.target.value })
-                    }}
-                  />
+                      onChange={(text) => {
+                        this.setState({ email: text.target.value })
+                      }}
+                    />
 
 
 
-                  <Button
-                    color="success"
-                    onClick={() => {
-                      this.handleOnSubmitClick()
-                    }}
+                    <Button
+                      color="success"
+                      onClick={() => {
+                        this.handleOnSubmitClick()
+                      }}
 
-                    size="sm"
-                  >
-                    {this.state.isLoading ? <Spinner color="secondary" />
-                      : null}
-                    <span className="fw-semi-bold"> Update Profile</span>
-                  </Button>
+                      size="sm"
+                    >
+                      {this.state.isLoading ? <Spinner color="secondary" />
+                        : null}
+                      <span className="fw-semi-bold"> Update Profile</span>
+                    </Button>
 
-                </FormGroup>
+                  </FormGroup>
+
+                </Col>
               </Col>
 
 

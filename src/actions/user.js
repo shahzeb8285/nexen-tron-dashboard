@@ -39,7 +39,6 @@ export function logoutUser() {
 }
 
 export function loginUser(creds) {
-    console.log("loginggg",creds)
     return (dispatch) => {
         localStorage.setItem('userId', creds.userId)
 

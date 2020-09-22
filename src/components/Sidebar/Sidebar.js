@@ -38,6 +38,9 @@ class Sidebar extends React.Component {
     super(props);
 
     this.doLogout = this.doLogout.bind(this);
+    this.state={
+      totalTeams:0
+    }
   }
 
   componentDidMount() {
@@ -53,6 +56,8 @@ class Sidebar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log("fdfdfdfddddf0",nextProps)
+
     if (nextProps.sidebarOpened !== this.props.sidebarOpened) {
       if (nextProps.sidebarOpened) {
         this.element.style.height = `${this.element.scrollHeight}px`;
@@ -62,6 +67,15 @@ class Sidebar extends React.Component {
           this.element.style.height = "";
         }, 0);
       }
+    }
+    if(nextProps.user.levelMembers){
+
+      var totalTeams = 0;
+      for (var level of nextProps.user.levelMembers){
+        totalTeams = totalTeams +level
+      }
+
+      this.setState({totalTeams})
     }
   }
 
@@ -88,9 +102,9 @@ class Sidebar extends React.Component {
       });
   };
 
-  componentWillReceiveProps(props) {
-    console.log("sidebar", props);
-  }
+  // componentWillReceiveProps(props) {
+  //   console.log("sidebar", props);
+  // }
 
   dismissAlert(id) {
     this.props.dispatch(dismissAlert(id));
@@ -124,8 +138,11 @@ class Sidebar extends React.Component {
             <>
               <div className="avatar">
                 <span className="avatar__pic">
-                  {this.props.profile && this.props.profile.avatar ? (
-                    <img src={this.props.profile.avatar} alt="..." />
+                  {this.props.profile && this.props.profile.profile_pic ? (
+                    <img src={this.props.profile.profile_pic} alt="..."   style={
+                      { borderRadius: "50%",marginBottom:5 ,
+                      height:50,width:50,
+                      objectFit:"cover"}}/>
                   ) : (
                     <img src={defaultAvatar} alt="..." />
                   )}
@@ -206,7 +223,7 @@ class Sidebar extends React.Component {
                   >
                     {" "}
                   </span>
-                  3
+                  {this.state.totalTeams}
                 </h4>
                 <h4>
                   {" "}

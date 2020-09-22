@@ -27,7 +27,6 @@ export function closeSidebar() {
 
 export function changeActiveSidebarItem(activeItem) {
 
-  console.log("ggggfgf",activeItem)
   return {
     type: CHANGE_ACTIVE_SIDEBAR_ITEM,
     activeItem,

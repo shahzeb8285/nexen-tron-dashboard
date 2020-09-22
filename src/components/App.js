@@ -24,7 +24,6 @@ import { logoutUser, loginUser } from '../actions/user';
 
 function validateRoute(url) {
 
-  console.log("FDfdfwewwww", typeof url)
   //check for space
   if (/\s/g.test(url)) {
     return false
@@ -35,14 +34,12 @@ function validateRoute(url) {
     return false
   }
 
-  console.log("Gfgfgfgfvg", true)
 
   return true
 }
 const PrivateRoute = ({ propData, dispatch, component, ...rest }) => {
 
 
-  console.log("dfsdsdsds", rest);
   //check route
 
 
@@ -51,7 +48,6 @@ const PrivateRoute = ({ propData, dispatch, component, ...rest }) => {
   if(validateRoute(rest.location.pathname) && 
   localStorage.getItem('userId') != rest.location.pathname.replace(/\D/g, "")){
     propData.dispatch(loginUser({ userId: rest.location.pathname.replace(/\D/g, "") }));
-        console.log("resssst",rest)
       // return (<Route {...rest} render={props => (React.createElement(component, props))} />)
       return (<Redirect to="/dashboard" />)
   }
@@ -64,17 +60,15 @@ const PrivateRoute = ({ propData, dispatch, component, ...rest }) => {
       <Route {...rest} render={props => (React.createElement(component, props))} />
     );
   } else {
-    // console.log("fgfggg",rest)
 
 
     if (validateRoute(rest.location.pathname)) {
       propData.dispatch(loginUser({ userId: rest.location.pathname.replace(/\D/g, "") }));
-        console.log("resssst",rest)
       // return (<Route {...rest} render={props => (React.createElement(component, props))} />)
       return (<Redirect to="/dashboard" />)
 
     } else {
-      return (<Redirect to="/error" />)
+      return (<Redirect to="/login" />)
 
 
     }
@@ -189,7 +183,7 @@ class App extends React.PureComponent {
               {/* <Route path="/app" exact render={() => <Redirect to="/app/main"/>}/> */}
               {/* <Route path="/register" exact component={Register}/>
                     <Route path="/login" exact component={ErrorPage}/> */}
-              <Route path="/error" exact component={ErrorPage} />
+              <Route path="/login" exact component={Login} />
               {/* <Route path="/dashboard" exact component={LayoutComponent}/>  */}
               <Route path="/notfound" exact component={NotFound}/> 
               

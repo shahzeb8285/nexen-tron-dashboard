@@ -3039,10 +3039,6 @@ bootstrap@4.5.0:
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.5.0.tgz#97d9dbcb5a8972f8722c9962483543b907d9b9ec"
   integrity sha512-Z93QoXvodoVslA+PWNdk23Hze4RBYIkpb5h8I2HY2Tu2h7A0LpAgLcyrhrSUyo2/Oxm2l1fRZPs1e5hnxnliXA==
 
-"bootstrap_calendar@git+https://github.com/xero/bootstrap_calendar.git#1.0.1":
-  version "0.0.0"
-  resolved "git+https://github.com/xero/bootstrap_calendar.git#796c6621ce7e50865be72871f87e6c732906d6fa"
-
 borc@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/borc/-/borc-2.1.2.tgz#6ce75e7da5ce711b963755117dd1b187f6f8cf19"

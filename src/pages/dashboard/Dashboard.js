@@ -28,7 +28,7 @@ import { toast } from "react-toastify";
 import UserTree from "../../components/Tree/UserTree";
 import { apiService } from "../../Services/api.service";
 import CurrencyConverter from "../../utils/CurrencyConverter";
-import ReferalIncomeChart from "../../components/ReferalIncomeChart/ReferalIncomeChart";
+import ReferalGraph from "../../components/ReferalGraph/ReferalGraph";
 import RewardRankWinner from "../../components/RewardRankWinner/RewardRankWinner";
 import ReferalTable from "../../components/ReferalTable/ReferalTable";
 import MyRewards from "../../components/MyRewards/MyRewards";
@@ -49,6 +49,7 @@ class Dashboard extends React.Component {
       currentReferralTree: null,
       referralTreeHistory: [],
       levelsMembers: null,
+      showBuyLevel:false
     };
     this.Web3Ref = React.createRef();
     this.userTreeRef = React.createRef();
@@ -64,15 +65,17 @@ class Dashboard extends React.Component {
 
   async componentWillReceiveProps(props) {
     console.log("updatedUser", props.user);
-
-    var isPageLoadedUpdated = false;
     if (props.user.referralTree) {
-      isPageLoadedUpdated = true;
+      let showBuyLevel = false;
+      if(props.user.levelsLoss){
+        showBuyLevel= true
+      }
       this.setState({
         currentReferralTree: props.user.referralTree,
         currentTreeId: props.user.id.toString(),
         referralTreeHistory: [props.user.id.toString()],
         levelsMembers: props.user.levelMembers,
+        showBuyLevel
       });
 
       if (!isProfileLoaded) {
@@ -103,15 +106,16 @@ class Dashboard extends React.Component {
   }
 
   renderRefferalsInfo() {
-    if (this.state.levelsMembers) {
+    if (this.state.levelsMembers && this.state.levelsMembers.length >0) {
       return (
         <>
           <Col size={12} style={{ height: "100%" }}>
-            <ReferalTable data={this.state.levelsMembers} />
+
+            <ReferalTable data={this.state.levelsMembers} myId={this.props.user.id}/>
           </Col>
 
           <Col size={12} style={{ height: "100%" }}>
-            <ReferalIncomeChart />
+            <ReferalGraph />
           </Col>
 
           <Col size={12}>
@@ -160,7 +164,7 @@ class Dashboard extends React.Component {
 
   renderTree() {
     if (!this.state.currentReferralTree) {
-      return <h3></h3>;
+      return null;
     }
     return (
       <UserTree
@@ -268,8 +272,9 @@ class Dashboard extends React.Component {
               </Col>
             </Row>
           </Widget>
-          <Row style={{ alignItems: "baseline" }} nogutters>
-            <Col size={9} nogutters>
+          <Row style={{ alignItems: "baseline" }}>
+    
+            <Col xs={8} lg={8} sm={8} md={8} xl={8} >
               <Row>
                 <Col size={4}>
                   <InfoTile
@@ -412,7 +417,8 @@ class Dashboard extends React.Component {
                 }
               />
 
-              <Widget
+
+                {this.state.showBuyLevel? <Widget
                 title={
                   <h3>
                     Buy <span className="fw-semi-bold">Levels</span>
@@ -425,6 +431,8 @@ class Dashboard extends React.Component {
                       this.props.user.levels ? this.props.user.levels[0] : null
                     }
                     onLevelClicked={this.onLevelClicked}
+                    isLoss={this.props.user.levelsLoss[0]}
+
                   />
 
                   <Level
@@ -432,6 +440,8 @@ class Dashboard extends React.Component {
                     levelData={
                       this.props.user.levels ? this.props.user.levels[1] : null
                     }
+                    isLoss={this.props.user.levelsLoss[1]}
+
                   />
 
                   <Level
@@ -439,12 +449,16 @@ class Dashboard extends React.Component {
                     levelData={
                       this.props.user.levels ? this.props.user.levels[2] : null
                     }
+                    isLoss={this.props.user.levelsLoss[2]}
+
                   />
 
                   <Level
                     levelData={
                       this.props.user.levels ? this.props.user.levels[3] : null
                     }
+                    isLoss={this.props.user.levelsLoss[3]}
+
                     onLevelClicked={this.onLevelClicked}
                   />
 
@@ -453,6 +467,8 @@ class Dashboard extends React.Component {
                       this.props.user.levels ? this.props.user.levels[4] : null
                     }
                     onLevelClicked={this.onLevelClicked}
+                    isLoss={this.props.user.levelsLoss[4]}
+
                   />
                 </Row>
 
@@ -462,12 +478,15 @@ class Dashboard extends React.Component {
                     levelData={
                       this.props.user.levels ? this.props.user.levels[5] : null
                     }
+                    isLoss={this.props.user.levelsLoss[5]}
                   />
 
                   <Level
                     levelData={
                       this.props.user.levels ? this.props.user.levels[6] : null
                     }
+                    isLoss={this.props.user.levelsLoss[6]}
+
                     onLevelClicked={this.onLevelClicked}
                   />
 
@@ -475,6 +494,8 @@ class Dashboard extends React.Component {
                     levelData={
                       this.props.user.levels ? this.props.user.levels[7] : null
                     }
+                    isLoss={this.props.user.levelsLoss[7]}
+
                     onLevelClicked={this.onLevelClicked}
                   />
 
@@ -482,6 +503,8 @@ class Dashboard extends React.Component {
                     levelData={
                       this.props.user.levels ? this.props.user.levels[8] : null
                     }
+                    isLoss={this.props.user.levelsLoss[8]}
+
                     onLevelClicked={this.onLevelClicked}
                   />
 
@@ -489,13 +512,17 @@ class Dashboard extends React.Component {
                     levelData={
                       this.props.user.levels ? this.props.user.levels[9] : null
                     }
+                    isLoss={this.props.user.levelsLoss[9]}
+
                     onLevelClicked={this.onLevelClicked}
                   />
                 </Row>
               </Widget>
-            </Col>
+           :null}
+             
+           </Col>
 
-            <Col size={3}>
+            <Col  xs={4} lg={4} sm={4} md={4} xl={4}>
               <RewardRankWinner />
             </Col>
           </Row>
