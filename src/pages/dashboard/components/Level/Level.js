@@ -19,6 +19,7 @@ const Level = (props) => {
   let endClr = "#a8a8a8"
   let isBought = false;
   let icon = "";
+  let disicon = "";
   let amount = 0;
   let position = 0;
   let isThisNextLevel = false;
@@ -31,6 +32,7 @@ const Level = (props) => {
   if (props.levelData) {
     data = props.levelData;
     icon = data.icon;
+    disicon = data.disicon;
     isBought = data.isBought;
     amount = data.amountTag;
     position = data.position;
@@ -80,15 +82,15 @@ const Level = (props) => {
           padding: "5px",
           alignContent: "center"
         }}
-          className={isThisNextLevel ? "shiver" : ""}
+          // className={isThisNextLevel ? "shiver" : ""}
 
         >
           <Col style={{
             // background: "radial-gradient(farthest-side ellipse at 10% 0, " + startClr
             //   + " 20%, " + endClr + ")",
 
-            filter: isBought ? null : " blur(2px)",
-            WebkitFilter: isBought ? null : "blur(2px)",
+            // filter: isBought ? null : " blur(2px)",
+            // WebkitFilter: isBought ? null : "blur(2px)",
             borderRadius: "8px 8px 0px 0px",
             padding: "2px",
             textAlign: "center",
@@ -101,17 +103,17 @@ const Level = (props) => {
           }}
 
           >
-            <img src={icon} className="img-responsive" style={{
-              // height: 100,
+            <img src={isBought?icon:disicon} className="img-responsive" style={{
+              height: 250,
               // width: 100,
               // borderRadius: "50%",
-              // objectFit: "cover",
+              objectFit: "cover",
             }} alt="" />
 
 
           </Col>
 
-          <Col style={{
+          {/* <Col style={{
             background: "radial-gradient(farthest-side ellipse at 10% 0, " + bottomStartClr
               + " 20%, " + bottomEndClr + ")",
             borderRadius: "0px 0px 8px 8px",
@@ -123,7 +125,7 @@ const Level = (props) => {
 
             <h5 className="">{amount} <span className="fw-bold">TRX</span></h5>
 
-          </Col>
+          </Col> */}
 
 
 
@@ -134,7 +136,7 @@ const Level = (props) => {
 
 
 
-        {isBought ? <h5 style={{
+        {/* {isBought ? <h5 style={{
           position: "absolute",
           left: "-20px",
           top: "10px",
@@ -147,13 +149,13 @@ const Level = (props) => {
           padding: "8px 6px 6px 6px",
           fontWeight: "600",
           fontSize: "18px}"
-        }}>{position}</h5>
+        }}>{position}</h5> */}
 
-          : null}
+          {/* : null} */}
            <h5 style={{
           position: "absolute",
-          right: "5px",
-          top: "10px",
+          // right: "5px",
+          bottom: "0",
           marginLeft: "20px",
           // background: "radial-gradient(farthest-side ellipse at 10% 0, " + startClr
             // + " 20%, " + endClr + ")",

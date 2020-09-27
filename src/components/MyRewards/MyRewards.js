@@ -71,9 +71,9 @@ class MyRewards extends React.Component {
   render() {
     return (
       <Widget
-          title={<h5>
+          title={<h3>
             My <span className="fw-semi-bold">Rewards</span>
-          </h5>}
+          </h3>}
           bodyClass={s.mainTableWidget}
         >
           <Table striped>

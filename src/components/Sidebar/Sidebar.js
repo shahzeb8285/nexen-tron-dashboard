@@ -9,7 +9,7 @@ import { logoutUser } from "../../actions/user";
 import logo from "../../images/logo.png";
 import LinksGroup from "./LinksGroup";
 import s from "./Sidebar.module.scss";
-import { Col, Container, Row } from "reactstrap";
+import { Button, Col, Container, Row } from "reactstrap";
 import Widget from "../../components/Widget";
 import defaultAvatar from "../../images/avatar.png";
 import { toast } from "react-toastify";
@@ -17,7 +17,19 @@ import eth from "../../images/1 copy.png";
 import "./Sidebar.scss";
 import Header from "../Header/Header";
 import { closeSidebar, openSidebar } from "../../actions/navigation";
+import MyRewards from "../../components/MyRewards/MyRewards";
 
+let levelBadge = [
+  require("../../images/level_badges/1.png"),
+  require("../../images/level_badges/2.png"),
+  require("../../images/level_badges/3.png"),
+  require("../../images/level_badges/4.png"),
+  require("../../images/level_badges/5.png"),
+  require("../../images/level_badges/6.png"),
+  require("../../images/level_badges/7.png"),
+  require("../../images/level_badges/8.png"),
+  require("../../images/level_badges/9.png"),
+  require("../../images/level_badges/10.png"),]
 class Sidebar extends React.Component {
   static propTypes = {
     sidebarStatic: PropTypes.bool,
@@ -38,8 +50,8 @@ class Sidebar extends React.Component {
     super(props);
 
     this.doLogout = this.doLogout.bind(this);
-    this.state={
-      totalTeams:0
+    this.state = {
+      totalTeams: 0
     }
   }
 
@@ -56,7 +68,7 @@ class Sidebar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("fdfdfdfddddf0",nextProps)
+    console.log("fdfdfdfddddf0", nextProps)
 
     if (nextProps.sidebarOpened !== this.props.sidebarOpened) {
       if (nextProps.sidebarOpened) {
@@ -68,14 +80,14 @@ class Sidebar extends React.Component {
         }, 0);
       }
     }
-    if(nextProps.user.levelMembers){
+    if (nextProps.user.levelMembers) {
 
       var totalTeams = 0;
-      for (var level of nextProps.user.levelMembers){
-        totalTeams = totalTeams +level
+      for (var level of nextProps.user.levelMembers) {
+        totalTeams = totalTeams + level
       }
 
-      this.setState({totalTeams})
+      this.setState({ totalTeams })
     }
   }
 
@@ -126,7 +138,7 @@ class Sidebar extends React.Component {
           <img
             src={logo}
             className={"LinksGroup_headerLink__vI_3u "}
-            style={{ width: "80%", height: "auto" }}
+            style={{ width: "90%", height: "auto", marginTop: 30 }}
             alt="Logo"
           />
 
@@ -138,14 +150,37 @@ class Sidebar extends React.Component {
             <>
               <div className="avatar">
                 <span className="avatar__pic">
-                  {this.props.profile && this.props.profile.profile_pic ? (
-                    <img src={this.props.profile.profile_pic} alt="..."   style={
-                      { borderRadius: "50%",marginBottom:5 ,
-                      height:50,width:50,
-                      objectFit:"cover"}}/>
-                  ) : (
-                    <img src={defaultAvatar} alt="..." />
-                  )}
+                  {this.props.profile ? (
+                    <div style={{
+                      position: "relative",
+                      display: "inline-block"
+                    }}>
+                      {this.props.profile.levelNumber ?
+                        <img src={levelBadge[this.props.profile.levelNumber - 1]}
+                          alt="..." style={
+                            {
+                              marginBottom: 5,
+                              height: 30, width: 30,
+                              objectFit: "cover",
+                              position: "absolute",
+                              top: "-10",
+                              right: 0
+                            }} /> : null}
+
+                      <img src={this.props.profile.profile_pic ?
+                        this.props.profile.profile_pic : defaultAvatar} alt="..." style={
+                          {
+                            borderRadius: "50%", marginBottom: 5,
+                            height: 80, width: 80,
+                            objectFit: "cover",
+
+                          }} />
+
+
+
+
+                    </div>
+                  ) : null}
                 </span>
                 <span className="avatar__name" style={{ fontSize: 22 }}>
                   {this.props.profile
@@ -155,6 +190,10 @@ class Sidebar extends React.Component {
               </div>
             </>
           ) : null}
+
+
+
+
 
           <LinksGroup
             onActiveSidebarItemChange={(activeItem) =>
@@ -169,7 +208,9 @@ class Sidebar extends React.Component {
           />
           {/* <h5 className={[s.navTitle, s.groupTitle].join(' ')}>TEMPLATE</h5> */}
 
-          <LinksGroup
+
+
+          {this.props.user && this.props.user.sameAddress ? <LinksGroup
             onActiveSidebarItemChange={(activeItem) =>
               this.props.dispatch(changeActiveSidebarItem(activeItem))
             }
@@ -179,83 +220,127 @@ class Sidebar extends React.Component {
             iconName="flaticon-user"
             link="/dashboard/profile"
             index="core"
-          />
+          /> : null}
 
-          <LinksGroup
-            onActiveSidebarItemChange={(activeItem) =>
-              this.props.dispatch(changeActiveSidebarItem(activeItem))
-            }
-            activeItem={this.props.activeItem}
-            header="Last Rewards"
-            isHeader
-            iconName="flaticon-like-1"
-            link="/dashboard/LastRewards"
-            index="core"
-          />
-          <LinksGroup
-            onActiveSidebarItemChange={(t) =>
-              this.props.dispatch(changeActiveSidebarItem(t))
-            }
-            activeItem={this.props.activeItem}
+
+
+          {/* <LinksGroup
+            // onActiveSidebarItemChange={(t) =>
+            //   // this.props.dispatch(changeActiveSidebarItem(t))
+            // }
+            activeItem={false}
             header="Logout"
-            isHeader
+            // isHeader
             iconName="flaticon-exit"
-            link="/dashboard/tables"
-            index="tables"
-          />
+            onClick={()=>{
+              console.log("logioyci")
+              // this.doLogout()
+            }}
+            // index="tables"
+          /> */}
+
+          <div style={{ padding: "13px 20px" }}>
+
+            <span >
+              <i className={`fi flaticon-exit`} />
+            </span>
+
+            <a onClick={() => {
+              console.log("logout")
+
+              this.doLogout()
+            }}> Log out</a>
+          </div>
+
 
           <hr className="solid" />
 
+
           <div className="id">
-            <div className="id__header">
-              <h3>
-                ID <span>{this.props.auth ? this.props.auth.userId : "0"}</span>
-              </h3>
-            </div>
+
             <div className="eth">
-              <img src={eth}></img>
               <div className="value">
-                <h4>
-                  {" "}
-                  <span
-                    className="fa fa-group"
-                    style={{ marginRight: 5, color: "#6ed89c" }}
-                  >
-                    {" "}
-                  </span>
-                  {this.state.totalTeams}
-                </h4>
-                <h4>
-                  {" "}
-                  <span
-                    className="fa fa-dollar"
-                    style={{ marginRight: 5, color: "#6ed89c" }}
-                  >
-                    {" "}
-                  </span>
-                  {this.props.user.income
-                    ? Math.round(
+                <Row style={{ justifyContent: "space-between", }}>
+
+                  <h4>
+
+                    <span
+                      className="fa fa-id-card-o"
+                      style={{ marginRight: 5, color: "#6ed89c" }}
+                    /></h4>
+
+                  <h4>
+
+                    {this.props.auth ? this.props.auth.userId : "0"}
+                  </h4>
+                </Row>
+
+
+
+                <Row style={{ justifyContent: "space-between", }}>
+
+                  <h4>
+
+                    <span
+                      className="fa fa-group"
+                      style={{ marginRight: 5, color: "#6ed89c" }}
+                    /></h4>
+
+                  <h4>
+
+                    {this.state.totalTeams}
+                  </h4>
+                </Row>
+
+                <Row style={{ justifyContent: "space-between" }}>
+
+                  <h4>
+
+                    <span
+                      className="fa fa-dollar"
+                      style={{ marginRight: 5, color: "#6ed89c" }}
+                    /></h4>
+
+                  <h4>
+
+                    {this.props.user.income
+                      ? Math.round(
                         (this.props.user.income.directIncome +
                           this.props.user.income.levelIncome +
                           this.props.user.income.recycleIncome) *
-                          0.0236 *
-                          100
+                        0.0236 *
+                        100
                       ) / 100
-                    : 0}
-                </h4>
+                      : 0}
+                  </h4>
+                </Row>
+
+
+
               </div>
             </div>
             <div className="id__btn">
-              <h4>
+              <img src={eth} style={{ height: 30, margin: 5 }}></img>
+
+              <h4 className={"fw-bold"}>
                 {this.props.user.income
                   ? this.props.user.income.directIncome +
-                    this.props.user.income.levelIncome +
-                    this.props.user.income.recycleIncome
+                  this.props.user.income.levelIncome +
+                  this.props.user.income.recycleIncome +
+                  this.props.user.income.upgradeIncome
+
                   : 0}{" "}
                 trx
               </h4>
             </div>
           </div>
+
+          <Widget title={"Withdraw"}>
+          <Button color="primary">Withdraw Your Earnings</Button>{' '}
+
+          </Widget>
+
+
 
           <Widget title={"Affiliate Link"}>
             <p
@@ -264,11 +349,11 @@ class Sidebar extends React.Component {
                 console.log("clickedddddd", f);
                 this.copyToClipboard(
                   "Affiliate Link",
-                  "https://nexen.live/" + this.props.auth.userId
+                  "http://dash.nexen.live/" + this.props.auth.userId
                 );
               }}
             >
-              https://nexen.live/{this.props.auth.userId}
+              http://dash.nexen.live/{this.props.auth.userId}
             </p>
           </Widget>
 
@@ -286,7 +371,7 @@ class Sidebar extends React.Component {
             </p>
           </Widget>
 
-          <Widget title={"Etherium Wallet"}>
+          <Widget title={"TRON WALLET"}>
             <p
               className="fw-semi-bold tile-hover"
               onClick={(f) => {
@@ -300,124 +385,20 @@ class Sidebar extends React.Component {
             </p>
           </Widget>
 
-          {/* <LinksGroup
-                        onActiveSidebarItemChange={t => this.props.dispatch(changeActiveSidebarItem(t))}
-                        activeItem={this.props.activeItem}
-                        header="Help"
-                        isHeader
-                        iconName="flaticon-help"
-                        link="/app/tables"
-                        index="tables"
-                    />
+          <Widget title={"Share Us"}>
+          <div className="sharethis-inline-share-buttons"></div>
+          </Widget>
+
+        
 
 
-<LinksGroup
-                        onActiveSidebarItemChange={t => this.props.dispatch(changeActiveSidebarItem(t))}
-                        activeItem={this.props.activeItem}
-                        header="Contact Us"
-                        isHeader
-                        iconName="flaticon-internet"
-                        link="/app/icons"
-                        index="tables"
-                    /> */}
-          {/* <LinksGroup
-                        onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-                        activeItem={this.props.activeItem}
-                        header="Notifications"
-                        isHeader
-                        iconName="flaticon-layers"
-                        link="/app/notifications"
-                        index="ui"
-                    /> */}
-          {/* <LinksGroup
-                        onActiveSidebarItemChange={activeItem => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-                        activeItem={this.props.activeItem}
-                        header="Components"
-                        isHeader
-                        iconName="flaticon-list"
-                        link="/app/forms"
-                        index="forms"
-                        childrenLinks={[
-                            {
-                                header: 'Charts', link: '/app/charts',
-                            },
-                            {
-                                header: 'Icons', link: '/app/icons',
-                            },
-                            {
-                                header: 'Maps', link: '/app/maps',
-                            },
-                        ]}
-                    /> */}
+          {/* <MyRewards /> */}
+
+
         </ul>
-        {/* <h5 className={s.navTitle}>
-                    Other
-                   
-                </h5> */}
 
-        {/* <ul className={s.sidebarLabels}>
-                    <li>
-                        <a href="#">
-                            <i className="fa fa-circle text-success mr-2" />
-                            <span className={s.labelName}>My Recent</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i className="fa fa-circle text-primary mr-2" />
-                            <span className={s.labelName}>Starred</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i className="fa fa-circle text-danger mr-2" />
-                            <span className={s.labelName}>Background</span>
-                        </a>
-                    </li>
-                </ul>
-                <h5 className={s.navTitle}>
-                    PROJECTS
-                </h5>
-              
-               */}
 
-        {/* <div className={s.sidebarAlerts}>
-                    {this.props.alertsList.map(alert => // eslint-disable-line
-                        <Alert
-                            key={alert.id}
-                            className={s.sidebarAlert} color="transparent"
-                            isOpen={true} // eslint-disable-line
-                            toggle={() => {
-                                this.dismissAlert(alert.id);
-                            }}
-                        >
-                            <span>{alert.title}</span><br />
-                            <Progress className={`bg-custom-dark progress-xs mt-1`} color={alert.color}
-                                value={alert.value} />
-                            <small>{alert.footer}</small>
-                        </Alert>,
-                    )}
-                </div> */}
 
-        {/* <Row>
-                <Row>
-                <Col lg={12}>
-                    <div>
-                        <h3>Id 12345</h3>
-                    </div>
-                </Col>
-                </Row>
-                <Row>
-                    <Col lg={6}>
-                        <img src={eth}></img>
-                    </Col>
-                    <Col lg={6}>
-                        <h3>3</h3>
-                    </Col>
-                </Row>
-                
-
-            </Row> */}
       </nav>
     );
   }

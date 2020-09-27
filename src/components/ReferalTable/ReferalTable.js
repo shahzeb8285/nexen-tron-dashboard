@@ -20,7 +20,11 @@ import Avatar from '../Avatar/Avatar';
 
 import Widget from "../Widget/Widget";
 import { apiService } from '../../Services/api.service';
-import defaultAvatar from "../../images/avatar.png"
+import defaultAvatar from "../../images/avatar.png";
+import "./ReferalTable.scss"
+const levelPrice = [
+  200,300,400,500,600,700,800,900,1000,1100
+]
 class ReferalTable extends React.Component {
 
 
@@ -79,13 +83,24 @@ class ReferalTable extends React.Component {
 
 
   async fetchLevelData(levelNumber){
+    var totalBonus=0
     var resp = await apiService.getUserTree(parseInt(this.props.myId),
     parseInt(levelNumber))
     if(resp.status == 200){
       var data = resp.data;
       var levelExpandData  = this.state.levelExpandData;
-      levelExpandData[levelNumber-1] = data.tree
-      this.setState({levelExpandData,currentExpandUiItems:data.tree})
+      for(var i=0;i<data.tree.length;i++){
+        var user = data.tree[i];
+        var bonus =0;
+        for(var j =0;j<user.levelNumber;j++){
+          bonus = bonus+(levelPrice[j]*8/100)
+          totalBonus=bonus+totalBonus
+        }
+
+        data.tree[i].totalLevelBonus=bonus
+      }
+      levelExpandData[levelNumber-1] = data.tree;
+      this.setState({levelExpandData,currentExpandUiItems:data.tree,totalBonus})
       console.log("refereadata",JSON.stringify(data.tree))
 
     }else{
@@ -129,8 +144,11 @@ class ReferalTable extends React.Component {
             <th className="hidden-sm-down">Id</th>
             <th>Picture</th>
             <th className="hidden-sm-down">Name</th>
+            <th className="hidden-sm-down">Level Badge</th>
+
             <th className="hidden-sm-down">Level</th>
             <th className="hidden-sm-down">Is Direct Referal</th>
+            <th className="hidden-sm-down">Total Level Bonus</th>
 
             {/* <th className="hidden-sm-down">Reward Amount</th>
           <th className="hidden-sm-down">Total referal</th> */}
@@ -149,8 +167,18 @@ class ReferalTable extends React.Component {
 
                 </td>                
                 <td>{row.name?row.name:"-"}</td>
+
+                <td>
+                 {!row.levelNumber || row.levelNumber ==0?"-": 
+                 <img src={require("../../images/level_badges/"+row.levelNumber+".png")} style={{
+                    height: 50, 
+                    // width: 50
+                  }} />}
+
+                </td>  
                 <td>{row.levelNumber?row.levelNumber:0}</td>
                 <td>{row.rootReferrer==this.props.myId ?"Yes":"No"}</td>
+                <td>{row.totalLevelBonus}</td>
 
                
 
@@ -182,9 +210,17 @@ class ReferalTable extends React.Component {
               : this.renderTableData()}
 
 
+
+
           </ModalBody>
           <ModalFooter>
 
+            <Row style={{alignItems:"flex-start",
+            width:"100%",justifyContent:"flex-start"}}>
+           <h5> <strong>* TOTAL LEVEL BONUS is calculated from the 8% of each level bonus </strong></h5>
+            <h5> | Total {this.state.totalBonus} TRX</h5> 
+
+            </Row>
             <Button
               color="danger"
               onClick={() => {
@@ -203,7 +239,7 @@ class ReferalTable extends React.Component {
   renderTableItems() {
     var items = this.state.levelData.map((level) => {
       return (
-        <tr key={level.level} onClick={() => {
+        <tr key={level.level}  onClick={() => {
           this.onLevelClicked(level)
         }}>
           <td className='fw-semi-bold'>{level.level }</td>
@@ -225,7 +261,7 @@ class ReferalTable extends React.Component {
         <Widget
           title={<h3>Level <span className='fw-semi-bold'>Details</span></h3>}
         >
-          {this.state.levelData ? <Table className="table-hover">
+          {this.state.levelData ? <Table>
             <thead>
               <tr>
                 <th>Level Number</th>

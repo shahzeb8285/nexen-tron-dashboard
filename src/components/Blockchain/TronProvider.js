@@ -23,7 +23,6 @@ import Utils from "../../utils";
 import { copySync } from "fs-extra";
 import CurrencyConverter from "../../utils/CurrencyConverter";
 
-const FOUNDATION_ADDRESS = "TWiWt5SEDzaEqS6kE5gandWMNfxR2B5xzg";
 
 class TronProvider extends React.Component {
   constructor(props) {
@@ -38,6 +37,8 @@ class TronProvider extends React.Component {
         position: 1,
         amount: 50000000000000000,
         icon: require("../../images/levels/l1.png"),
+        disicon: require("../../images/levels/l1d.png"),
+
         isBought: 1,
         amountTag: "0.05",
 
@@ -62,14 +63,21 @@ class TronProvider extends React.Component {
     let userId = this.props.auth.userId;
 
     var isTronInstalledAndLogin=false;
-    await this.initTron();
+    try{
+      await this.initTron();
+      console.log("tron initiated");
+
     await this.fetchPlatformData();
-    console.log("tron initiated", this.state);
+    console.log("tron initiated2", this.state);
+
     await this.getLevelMembersCount(userId);
     await this.getLevelsLoss(userId);
 
     await this.initUser(userId);
     await this.getDailyUsers();
+    }catch(err){
+      console.log("dsdsdsssd",err)
+    }
 
     console.log(this.state);
   }
@@ -90,15 +98,14 @@ class TronProvider extends React.Component {
       }
 
       let tries = 0;
-
+      let tronWeb=null
       const timer = setInterval(() => {
         if (tries >= 10) {
-          const TRONGRID_API = "https://api.trongrid.io";
-
-          window.tronWeb = new TronWeb(
-            TRONGRID_API,
-            TRONGRID_API,
-            TRONGRID_API
+//""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+          tronWeb = new TronWeb(
+            Utils.TRONGRID_API,
+            Utils.TRONGRID_API,
+            Utils.TRONGRID_API
           );
 
           this.setState({
@@ -108,11 +115,13 @@ class TronProvider extends React.Component {
             },
           });
 
+          window.tronWeb = tronWeb
+
           clearInterval(timer);
           return resolve();
         }
 
-        tronWebState.installed = !!window.tronWeb;
+        tronWebState.installed = !!tronWeb;
         tronWebState.loggedIn = window.tronWeb && window.tronWeb.ready;
 
         if (!tronWebState.installed) return tries++;
@@ -130,9 +139,12 @@ class TronProvider extends React.Component {
       // Directly overwrites the address object as TronLink disabled the
       // function call
       window.tronWeb.defaultAddress = {
-        hex: window.tronWeb.address.toHex(FOUNDATION_ADDRESS),
-        base58: FOUNDATION_ADDRESS,
+        hex: window.tronWeb.address.toHex(Utils.FOUNDATION_ADDRESS),
+        base58: Utils.FOUNDATION_ADDRESS,
       };
+
+      window.tronWeb.setAddress(Utils.FOUNDATION_ADDRESS);
+
       window.tronWeb.on("addressChanged", () => {
         if (this.state.tronWeb.loggedIn) {
           return;
@@ -145,35 +157,27 @@ class TronProvider extends React.Component {
         });
       });
     }
+
     await Utils.setTronWeb(window.tronWeb);
     this.fetchPlatformData();
-    this.startRegisterEventListener();
-    // this.startBuyLevelEventListner();
-    // this.startRewardDistributionEventListener();
-    // this.startLevelRewardDistributionEventListener();
+   
     this.setState({ InitError: true });
   }
 
-  startRegisterEventListener() {
-    Utils.contract.Register().watch((err, { result }) => {
-      if (err) {
-        console.log("Failed Register", err);
-      }
-      console.log("register--->", result);
-      // window.alert("Registered");
-      // window.location.reload();
-    });
-  }
 
-  // startBuyLevelEventListner() {
-  //   Utils.contract.buyLevelEvent().watch((err) => {
-  //     if (err) {
-  //       return console.log("Failed to BuyLevel", err);
-  //     }
 
-  //     window.location.reload();
-  //   });
+  // async initTron() {
+    
+    
+  //   // await Utils.initTron();
+
+   
   // }
+
+
+
+
+
 
   async initUser(id) {
     if (!Utils.contract) {
@@ -305,54 +309,8 @@ class TronProvider extends React.Component {
       });
   }
 
-  startRewardDistributionEventListener() {
-    Utils.contract.distributeRewardEvent().watch((err, { result }) => {
-      if (err) {
-        // alert("Something went Wrong please try again");
-        return console.log("Failed reward distribution", err);
-      }
-      console.log("reward distribution", result);
-      alert("Distribution successful");
-      window.location.reload();
-    });
-  }
+ 
 
-  // startRewardDistributionEventListener() {
-  //   Utils.contract.distributeRewardEvent().watch((err, { result }) => {
-  //     if (err) {
-  //       // alert("Something went Wrong please try again");
-  //       return console.log("Failed reward distribution", err);
-  //     }
-  //     console.log("reward distribution", result);
-  //     alert("Distribution successful");
-  //     window.location.reload();
-  //   });
-  // }
-
-  // startLevelRewardDistributionEventListener() {
-  //   Utils.contract.distributeLevelRewardEvent().watch((err) => {
-  //     if (err) {
-  //       // alert("Something went Wrong please try again");
-  //       return console.log("level reward distribution failed", err);
-  //     }
-  //     alert("Distributed level reward Successfully");
-  //     window.location.reload();
-  //   });
-  // }
-
-  async register(id) {
-    this.setState({ loading: true });
-    await Utils.contract.register(id).send({
-      callValue: this.state.entryFees,
-      shouldPollResponse: true,
-    });
-    // .then((receipt) => {
-    //   console.log("receipt", receipt);
-    // })
-    // .catch((err) => {
-    //   console.log("error while registering user", err);
-    // });
-  }
 
   async buyLevel(level) {
     Utils.contract
@@ -392,8 +350,10 @@ class TronProvider extends React.Component {
   }
 
   async fetchPlatformData() {
-    const totalUsers = (await Utils.contract.totalUsers().call()).toNumber();
+    const totalUsers =  parseInt(await(Utils.contract.totalUsers().call()));
     const entryFees = (await Utils.contract.levels(0).call()).toNumber();
+    console.log("tfdddf",entryFees)
+
     const ownerWallet =
       (await Utils.contract.ownerAmount().call()).toNumber() / 1000000;
     this.setState({
@@ -542,6 +502,8 @@ class TronProvider extends React.Component {
       position: 1,
       amount: 50000000000000000,
       icon: require("../../images/levels/l1.png"),
+      disicon: require("../../images/levels/l1d.png"),
+
       isBought: levelNumber >= 1,
       amountTag: "200",
 
@@ -553,6 +515,8 @@ class TronProvider extends React.Component {
       position: 2,
       amount: 100000000000000000,
       icon: require("../../images/levels/l2.png"),
+      disicon: require("../../images/levels/l2d.png"),
+
       isBought: levelNumber >= 2,
       amountTag: "300",
 
@@ -566,6 +530,8 @@ class TronProvider extends React.Component {
       amountTag: "400",
 
       icon: require("../../images/levels/l3.png"),
+      disicon: require("../../images/levels/l3d.png"),
+
       isBought: levelNumber >= 3,
       bgStartColor: "#fdcb6e",
       bgEndColor: "#bf8415",
@@ -577,6 +543,8 @@ class TronProvider extends React.Component {
       amountTag: "500",
 
       icon: require("../../images/levels/l4.png"),
+      disicon: require("../../images/levels/l4d.png"),
+
       isBought: levelNumber >= 4,
       bgStartColor: "#787777",
       bgEndColor: "#a8a8a8",
@@ -586,6 +554,8 @@ class TronProvider extends React.Component {
       position: 5,
       amount: 2500,
       icon: require("../../images/levels/l5.png"),
+      disicon: require("../../images/levels/l5d.png"),
+
       isBought: levelNumber >= 5,
       amountTag: "600",
 
@@ -599,6 +569,8 @@ class TronProvider extends React.Component {
       amountTag: "700",
 
       icon: require("../../images/levels/l6.png"),
+      disicon: require("../../images/levels/l6d.png"),
+
       isBought: levelNumber >= 6,
       bgStartColor: "#0984e3",
       bgEndColor: "#06508a",
@@ -608,6 +580,8 @@ class TronProvider extends React.Component {
       position: 7,
       amount: 3500,
       icon: require("../../images/levels/l7.png"),
+      disicon: require("../../images/levels/l7d.png"),
+
       isBought: levelNumber >= 7,
       amountTag: "800",
 
@@ -621,6 +595,8 @@ class TronProvider extends React.Component {
       amountTag: "900",
 
       icon: require("../../images/levels/l8.png"),
+      disicon: require("../../images/levels/l8d.png"),
+
       isBought: levelNumber >= 8,
       bgStartColor: "#fdcb6e",
       bgEndColor: "#bf8415",
@@ -632,6 +608,8 @@ class TronProvider extends React.Component {
       amountTag: "1000",
 
       icon: require("../../images/levels/l9.png"),
+      disicon: require("../../images/levels/l9d.png"),
+
       isBought: levelNumber >= 9,
       bgStartColor: "#787777",
       bgEndColor: "#a8a8a8",
@@ -643,6 +621,8 @@ class TronProvider extends React.Component {
 
       amount: 5000,
       icon: require("../../images/levels/l10.png"),
+      disicon: require("../../images/levels/l10d.png"),
+
       isBought: levelNumber >= 10,
       bgStartColor: "#961516",
       bgEndColor: "#d63031",

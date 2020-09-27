@@ -14,7 +14,7 @@ const Counter = (props) => {
 
   const SimpleHook = () => {
     const { countUp } = useCountUp({ end: props.counts });
-    return <h3>{countUp}</h3>;
+    return <h2><strong>{countUp}</strong></h2>;
   };
 
 
@@ -24,7 +24,7 @@ const Counter = (props) => {
 
     {SimpleHook()}
 
-  <strong>{props.title}</strong>
+    <h4><strong>{props.title}</strong></h4>
    
    </Col>
   

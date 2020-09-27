@@ -8,7 +8,7 @@
   }
 
   a {
-    font-size: 14px;
+    font-size: 18px;
     display: block;
     color: $sidebar-color;
     text-decoration: none;
@@ -74,7 +74,7 @@
 
 a.headerLinkActive {
   font-weight: bold;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .accordionToggle:focus {
@@ -103,7 +103,7 @@ a.headerLinkActive {
 
     a {
       padding: $sidebar-sub-item-padding;
-      font-size: $font-size-mini;
+      font-size: 16;
 
       &:hover {
         background-color: $sidebar-item-hover-bg-color;

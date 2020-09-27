@@ -38,7 +38,7 @@ import { updateProfile } from "../../actions/profileActions";
 
 let isProfileLoaded = false;
 class Dashboard extends React.Component {
-  async componentDidMount() {}
+  async componentDidMount() { }
 
   constructor(props) {
     super(props);
@@ -49,7 +49,7 @@ class Dashboard extends React.Component {
       currentReferralTree: null,
       referralTreeHistory: [],
       levelsMembers: null,
-      showBuyLevel:false
+      showBuyLevel: false
     };
     this.Web3Ref = React.createRef();
     this.userTreeRef = React.createRef();
@@ -67,8 +67,8 @@ class Dashboard extends React.Component {
     console.log("updatedUser", props.user);
     if (props.user.referralTree) {
       let showBuyLevel = false;
-      if(props.user.levelsLoss){
-        showBuyLevel= true
+      if (props.user.levelsLoss) {
+        showBuyLevel = true
       }
       this.setState({
         currentReferralTree: props.user.referralTree,
@@ -106,16 +106,16 @@ class Dashboard extends React.Component {
   }
 
   renderRefferalsInfo() {
-    if (this.state.levelsMembers && this.state.levelsMembers.length >0) {
+    if (this.state.levelsMembers && this.state.levelsMembers.length > 0) {
       return (
         <>
           <Col size={12} style={{ height: "100%" }}>
 
-            <ReferalTable data={this.state.levelsMembers} myId={this.props.user.id}/>
+            <ReferalTable data={this.state.levelsMembers} myId={this.props.user.id} />
           </Col>
 
           <Col size={12} style={{ height: "100%" }}>
-            <ReferalGraph />
+            {/* <ReferalGraph /> */}
           </Col>
 
           <Col size={12}>
@@ -123,10 +123,10 @@ class Dashboard extends React.Component {
           </Col>
 
           <Row>
-            <Col size={6} style={{ paddingTop: 5 }}>
+            {/* <Col size={6} style={{ paddingTop: 5 }}>
               {this.renderTree()}
             </Col>
-            <Col size={6} style={{ paddingTop: 5 }}></Col>
+            <Col size={6} style={{ paddingTop: 5 }}></Col> */}
           </Row>
         </>
       );
@@ -136,13 +136,19 @@ class Dashboard extends React.Component {
   }
 
   onLevelClicked = (level) => {
-    if (level.isBought) {
-      toast.success("You have already bought this level!");
-    } else if (level.isThisNextLevel) {
-      this.buyLevel(level);
+    if (this.props.user.sameAddress) {
+      if (level.isBought) {
+        toast.success("You have already bought this level!");
+      } else if (level.isThisNextLevel) {
+        this.buyLevel(level);
+      } else {
+        toast.error("Please Buy previous level first!");
+      }
     } else {
-      toast.error("Please Buy previous level first!");
+      toast.error("You are not authorize to buy!");
+
     }
+
   };
 
   buyLevel = (level) => {
@@ -171,9 +177,9 @@ class Dashboard extends React.Component {
         ref={this.userTreeRef}
         data={
           this.state.currentReferralTree[
-            this.state.referralTreeHistory[
-              this.state.referralTreeHistory.length - 1
-            ]
+          this.state.referralTreeHistory[
+          this.state.referralTreeHistory.length - 1
+          ]
           ]
         }
         levelNumber={this.state.treeLevel}
@@ -221,64 +227,63 @@ class Dashboard extends React.Component {
         <TronProvider ref={this.Web3Ref} />
 
         <div className={s.root}>
-          <Widget>
-            <Row>
-              <Col size={3}>
-                {this.props.user.totalUsers ? (
-                  <Counter
-                    title={"ALL PARTICIPANTS"}
-                    counts={this.props.user ? this.props.user.totalUsers : 0}
-                  />
-                ) : null}
-              </Col>
+          <Row style={{ paddingBottom: 20 }}>
+            <Col size={3}>
+              {this.props.user.totalUsers ? (
+                <Counter
+                  title={"ALL PARTICIPANTS"}
+                  counts={this.props.user ? this.props.user.totalUsers : 0}
+                />
+              ) : null}
+            </Col>
 
-              <Col size={3}>
-                {this.props.user.totalUSDAmountDistributed ? (
-                  <Counter
-                    title={"JOINED IN 24 HOURS"}
-                    counts={
-                      this.props.user
-                        ? this.props.user.dailyUsersCount
-                        : 0
-                    }
-                  />
-                ) : null}
-              </Col>
+            <Col size={3}>
+              {this.props.user.totalUSDAmountDistributed ? (
+                <Counter
+                  title={"JOINED IN 24 HOURS"}
+                  counts={
+                    this.props.user
+                      ? this.props.user.dailyUsersCount
+                      : 0
+                  }
+                />
+              ) : null}
+            </Col>
 
-              <Col size={3}>
-                {this.props.user.totalUSDAmountDistributed ? (
-                  <Counter
-                    title={"Distribution Amount(USD)"}
-                    counts={
-                      this.props.user
-                        ? this.props.user.totalUSDAmountDistributed
-                        : 0
-                    }
-                  />
-                ) : null}
-              </Col>
+            <Col size={3}>
+              {this.props.user.totalUSDAmountDistributed ? (
+                <Counter
+                  title={"DISTRIBUTED AMOUNT(USD)"}
+                  counts={
+                    this.props.user
+                      ? this.props.user.totalUSDAmountDistributed
+                      : 0
+                  }
+                />
+              ) : null}
+            </Col>
 
-              <Col size={3}>
-                {this.props.user.totalAmountDistributed ? (
-                  <Counter
-                    title={"Distribution Amount(TRX)"}
-                    counts={
-                      this.props.user
-                        ? this.props.user.totalAmountDistributed
-                        : 0
-                    }
-                  />
-                ) : null}
-              </Col>
-            </Row>
-          </Widget>
+            <Col size={3}>
+              {this.props.user.totalAmountDistributed ? (
+                <Counter
+                  title={"DISTRIBUTED AMOUNT(TRX)"}
+                  counts={
+                    this.props.user
+                      ? this.props.user.totalAmountDistributed
+                      : 0
+                  }
+                />
+              ) : null}
+            </Col>
+          </Row>
+
           <Row style={{ alignItems: "baseline" }}>
-    
+
             <Col xs={8} lg={8} sm={8} md={8} xl={8} >
               <Row>
                 <Col size={4}>
                   <InfoTile
-                    primaryTitle={"Direct Income"}
+                    primaryTitle={"Direct Bonus"}
                     secondaryTitle={"Total Direct"}
                     primaryAmount={
                       this.props.user.income
@@ -292,27 +297,28 @@ class Dashboard extends React.Component {
                     }
                   />
                 </Col>
-                <Col size={4}>
-                  <InfoTile
-                    primaryTitle={"Reward Income"}
-                    secondaryTitle={"Total Win"}
-                    primaryAmount={
-                      this.props.user.income
-                        ? this.props.user.income.rewardIncome
-                        : "-"
-                    }
-                    bgStartColor={"#0984e3"}
-                    bgEndColor={"#06508a"}
-                    secondaryAmount={
-                      this.props.user ? this.props.user.totalWins : "-"
-                    }
-                  />
-                </Col>
+                
 
                 <Col size={4}>
                   <InfoTile
-                    primaryTitle={"Level Income"}
-                    secondaryTitle={"Loss"}
+                    primaryTitle={"DIRECT TEAM BONUS"}
+                    secondaryTitle={""}
+                    primaryAmount={
+                      this.props.user.income
+                        ? this.props.user.income.upgradeIncome
+                        : "-"
+                    }
+                    secondaryAmount={""}
+                    bgEndColor={"#db4b32"}
+                    bgStartColor={"#ff7f50"}
+                  />
+                </Col>
+
+
+                <Col size={4}>
+                  <InfoTile
+                    primaryTitle={"Level Bonus"}
+                    secondaryTitle={"Level Loss"}
                     primaryAmount={
                       this.props.user.income
                         ? this.props.user.income.levelIncome
@@ -330,7 +336,7 @@ class Dashboard extends React.Component {
               <Row style={{ marginTop: 10, marginBottom: 10 }}>
                 <Col size={4}>
                   <InfoTile
-                    primaryTitle={"Recycle Income"}
+                    primaryTitle={"Recycle Bonus"}
                     secondaryTitle={"Total Recycle"}
                     primaryAmount={
                       this.props.user.income
@@ -381,99 +387,210 @@ class Dashboard extends React.Component {
               </Row>
 
               <Row>
-                <Col size={4}>
+              
+              <Col size={4}>
                   <InfoTile
-                    primaryTitle={"Upgrade Income"}
-                    secondaryTitle={""}
+                    primaryTitle={"Reward Bonus"}
+                    secondaryTitle={"Total Win"}
                     primaryAmount={
                       this.props.user.income
-                        ? this.props.user.income.upgradeIncome
+                        ? this.props.user.income.rewardIncome
                         : "-"
                     }
-                    secondaryAmount={""}
-                    bgEndColor={"#db4b32"}
-                    bgStartColor={"#ff7f50"}
+                    bgStartColor={"#0984e3"}
+                    bgEndColor={"#06508a"}
+                    secondaryAmount={
+                      this.props.user ? this.props.user.totalWins : "-"
+                    }
+                  />
+                </Col>
+                <Col size={4} style={{ paddingTop: 5 }}>
+                  <InfoTile
+                    primaryTitle={"Level Reward Wallet"}
+                    secondaryTitle={""}
+                    primaryAmount={
+                      this.props.user.rewardWallet
+                        ? this.props.user.rewardWallet
+                        : null}
+                    bgStartColor={"#00b894"}
+                    bgEndColor={"#018067"}
+                    secondaryAmount={
+                      ""
+                    }
+                  />
+                </Col>
+                <Col size={4} style={{ paddingTop: 5 }}>
+                  <InfoTile
+                    primaryTitle={"Performance Reward Wallet"}
+                    secondaryTitle={""}
+                    primaryAmount={
+                      this.props.user.levelRewardWallet
+                        ? this.props.user.levelRewardWallet
+                        : null}
+                    bgStartColor={"#00b894"}
+                    bgEndColor={"#018067"}
+                    secondaryAmount={
+                      ""
+                    }
                   />
                 </Col>
 
-                <Col size={4} />
-
-                <Col size={4} />
               </Row>
 
-              <SecondRewardWallet
-                levelRewardWallet={
-                  this.props.user.levelRewardWallet
-                    ? this.props.user.levelRewardWallet
-                    : null
+              <Widget style={{ marginTop: 25}}>
+
+
+                <Row  >
+                  <Col  xs={5} lg={5} sm={5} md={5} xl={5} style={{ paddingTop: 5 }}>
+
+                    <SecondRewardWallet
+                      levelRewardWallet={
+                        this.props.user.levelRewardWallet
+                          ? this.props.user.levelRewardWallet
+                          : null
+                      }
+                      rewardWallet={
+                        this.props.user.rewardWallet
+                          ? this.props.user.rewardWallet
+                          : null
+                      }
+                      refPercent={
+                        this.props.user.refPercent ? this.props.user.refPercent : 0
+                      }
+                    />
+
+
+
+                  </Col>
+
+
+                  <Col  xs={7} lg={7} sm={7} md={7} xl={7} style={{ paddingTop: 5 }}>
+                    {this.renderTree()}
+                  </Col>
+
+                </Row>
+
+              </Widget>
+
+
+
+            </Col>
+
+            <Col xs={4} lg={4} sm={4} md={4} xl={4}>
+              <RewardRankWinner />
+            </Col>
+          </Row>
+
+
+
+          {this.state.showBuyLevel ? <Widget
+            title={
+              <Row style={{ justifyContent: "space-between", paddingRight: 20, paddingLeft: 20 }}>
+                <h3>
+                  Buy <span className="fw-semi-bold">Levels</span>
+                </h3>
+                {this.props.user.sameAddress ? <Button color="primary" onClick={() => {
+                  this.Web3Ref.current.getWrappedInstance().buyAllLevel();
+                }}>Buy All Levels</Button>
+                  : null}
+              </Row>
+            }
+          >
+            <Row style={{ padding: 5 }}>
+              <Level
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[0] : null
                 }
-                rewardWallet={
-                  this.props.user.rewardWallet
-                    ? this.props.user.rewardWallet
-                    : null
+                onLevelClicked={this.onLevelClicked}
+                isLoss={this.props.user.levelsLoss[0]}
+
+              />
+
+              <Level
+                onLevelClicked={this.onLevelClicked}
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[1] : null
                 }
-                refPercent={
-                  this.props.user.refPercent ? this.props.user.refPercent : 0
+                isLoss={this.props.user.levelsLoss[1]}
+
+              />
+
+              <Level
+                onLevelClicked={this.onLevelClicked}
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[2] : null
                 }
+                isLoss={this.props.user.levelsLoss[2]}
+
+              />
+
+              <Level
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[3] : null
+                }
+                isLoss={this.props.user.levelsLoss[3]}
+
+                onLevelClicked={this.onLevelClicked}
+              />
+
+              <Level
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[4] : null
+                }
+                onLevelClicked={this.onLevelClicked}
+                isLoss={this.props.user.levelsLoss[4]}
+
               />
 
 
-                {this.state.showBuyLevel? <Widget
-                title={
-                  <h3>
-                    Buy <span className="fw-semi-bold">Levels</span>
-                  </h3>
+
+              <Level
+                onLevelClicked={this.onLevelClicked}
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[5] : null
                 }
-              >
-                <Row style={{ padding: 5 }}>
-                  <Level
-                    levelData={
-                      this.props.user.levels ? this.props.user.levels[0] : null
-                    }
-                    onLevelClicked={this.onLevelClicked}
-                    isLoss={this.props.user.levelsLoss[0]}
+                isLoss={this.props.user.levelsLoss[5]}
+              />
 
-                  />
+              <Level
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[6] : null
+                }
+                isLoss={this.props.user.levelsLoss[6]}
 
-                  <Level
-                    onLevelClicked={this.onLevelClicked}
-                    levelData={
-                      this.props.user.levels ? this.props.user.levels[1] : null
-                    }
-                    isLoss={this.props.user.levelsLoss[1]}
+                onLevelClicked={this.onLevelClicked}
+              />
 
-                  />
+              <Level
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[7] : null
+                }
+                isLoss={this.props.user.levelsLoss[7]}
 
-                  <Level
-                    onLevelClicked={this.onLevelClicked}
-                    levelData={
-                      this.props.user.levels ? this.props.user.levels[2] : null
-                    }
-                    isLoss={this.props.user.levelsLoss[2]}
+                onLevelClicked={this.onLevelClicked}
+              />
 
-                  />
+              <Level
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[8] : null
+                }
+                isLoss={this.props.user.levelsLoss[8]}
 
-                  <Level
-                    levelData={
-                      this.props.user.levels ? this.props.user.levels[3] : null
-                    }
-                    isLoss={this.props.user.levelsLoss[3]}
+                onLevelClicked={this.onLevelClicked}
+              />
 
-                    onLevelClicked={this.onLevelClicked}
-                  />
+              <Level
+                levelData={
+                  this.props.user.levels ? this.props.user.levels[9] : null
+                }
+                isLoss={this.props.user.levelsLoss[9]}
 
-                  <Level
-                    levelData={
-                      this.props.user.levels ? this.props.user.levels[4] : null
-                    }
-                    onLevelClicked={this.onLevelClicked}
-                    isLoss={this.props.user.levelsLoss[4]}
+                onLevelClicked={this.onLevelClicked}
+              />
+            </Row>
 
-                  />
-                </Row>
-
-                <Row>
-                  <Level
+            <Row>
+              {/* <Level
                     onLevelClicked={this.onLevelClicked}
                     levelData={
                       this.props.user.levels ? this.props.user.levels[5] : null
@@ -515,19 +632,16 @@ class Dashboard extends React.Component {
                     isLoss={this.props.user.levelsLoss[9]}
 
                     onLevelClicked={this.onLevelClicked}
-                  />
-                </Row>
-              </Widget>
-           :null}
-             
-           </Col>
-
-            <Col  xs={4} lg={4} sm={4} md={4} xl={4}>
-              <RewardRankWinner />
-            </Col>
-          </Row>
+                  /> */}
+            </Row>
+          </Widget>
+            : null}
           {this.renderRefferalsInfo()}
-          <input type="text" id="refId"></input>
+
+
+
+
+          {/* <input type="text" id="refId"></input>
           <button
             onClick={() => {
               {
@@ -558,7 +672,6 @@ class Dashboard extends React.Component {
           <button
             onClick={() => {
               {
-                this.Web3Ref.current.getWrappedInstance().buyAllLevel();
               }
             }}
           >
@@ -566,15 +679,11 @@ class Dashboard extends React.Component {
           </button>
           <br></br>
           <br></br>
-          {/* <input type="text" id="winner1" placeholder="Winner1"></input>
-          <input type="text" id="winner2" placeholder="Winner2"></input>
-          <input type="text" id="winner3" placeholder="Winner3"></input> */}
+       
           <button
             onClick={() => {
               {
-                // let w1 = document.getElementById("winner1").value;
-                // let w2 = document.getElementById("winner2").value;
-                // let w3 = document.getElementById("winner3").value;
+              
                 this.Web3Ref.current.getWrappedInstance().distributeReward();
               }
             }}
@@ -618,16 +727,15 @@ class Dashboard extends React.Component {
                     document.getElementById("UserLevel").value
                   );
 
-                // document.getElementById("levelWinners").innerHTML=this.Web3Ref.current.getWrappedInstance().getLevelWinners()
               }
             }}
           >
             Get Level Members
-          </button>
+          </button> */}
+          {/* <br></br>
           <br></br>
-          <br></br>
-          <br></br>
-          <button
+          <br></br> */}
+          {/* <button
             onClick={() => {
               {
                 this.Web3Ref.current.getWrappedInstance().getDailyUsers();
@@ -635,10 +743,10 @@ class Dashboard extends React.Component {
             }}
           >
             Get Daily Users
-          </button>
-          <br></br>
-          <br></br>
-          <button
+          </button> */}
+          {/* <br></br>
+          <br></br> */}
+          {/* <button
             onClick={() => {
               {
                 this.Web3Ref.current
@@ -648,12 +756,13 @@ class Dashboard extends React.Component {
             }}
           >
             ReInitialize daily users
-          </button>
-          <br></br>
-          <br></br>{" "}
+          </button> */}
+          {/* <br></br>
+          <br></br>{" "} */}
+                  {this.renderPageLoadingDialoge()}
+
         </div>
 
-        {this.renderPageLoadingDialoge()}
       </>
     );
   }
