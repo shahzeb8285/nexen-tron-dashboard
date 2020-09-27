@@ -17,6 +17,7 @@ import { Sparklines, SparklinesBars } from 'react-sparklines';
 
 import Widget from '../../components/Widget/Widget';
 import s from './LastRewards.module.scss';
+import Avatar from '../../components/Avatar/Avatar';
 
 class LastRewards extends React.Component {
 
@@ -25,87 +26,7 @@ class LastRewards extends React.Component {
 
     this.state = {
       firstTableData:[],
-      tableStyles: [
-        {
-          id: 1,
-          picture: require('../../images/tables/1.png'), // eslint-disable-line global-require
-          description: 'Palo Alto',
-          info: {
-            type: 'JPEG',
-            dimensions: '200x150',
-          },
-          date: new Date('September 14, 2012'),
-          size: '45.6 KB',
-          progress: {
-            percent: 29,
-            colorClass: 'success',
-          },
-        },
-        {
-          id: 2,
-          picture: require('../../images/tables/2.png'), // eslint-disable-line global-require
-          description: 'The Sky',
-          info: {
-            type: 'PSD',
-            dimensions: '2400x1455',
-          },
-          date: new Date('November 14, 2012'),
-          size: '15.3 MB',
-          progress: {
-            percent: 33,
-            colorClass: 'warning',
-          },
-        },
-        {
-          id: 3,
-          picture: require('../../images/tables/3.png'), // eslint-disable-line global-require
-          description: 'Down the road',
-          label: {
-            colorClass: 'primary',
-            text: 'INFO!',
-          },
-          info: {
-            type: 'JPEG',
-            dimensions: '200x150',
-          },
-          date: new Date('September 14, 2012'),
-          size: '49.0 KB',
-          progress: {
-            percent: 38,
-            colorClass: 'inverse',
-          },
-        },
-        {
-          id: 4,
-          picture: require('../../images/tables/4.png'), // eslint-disable-line global-require
-          description: 'The Edge',
-          info: {
-            type: 'PNG',
-            dimensions: '210x160',
-          },
-          date: new Date('September 15, 2012'),
-          size: '69.1 KB',
-          progress: {
-            percent: 17,
-            colorClass: 'danger',
-          },
-        },
-        {
-          id: 5,
-          picture: require('../../images/tables/5.png'), // eslint-disable-line global-require
-          description: 'Fortress',
-          info: {
-            type: 'JPEG',
-            dimensions: '1452x1320',
-          },
-          date: new Date('October 1, 2012'),
-          size: '2.3 MB',
-          progress: {
-            percent: 41,
-            colorClass: 'primary',
-          },
-        },
-      ],
+     
      
     };
 
@@ -114,7 +35,7 @@ class LastRewards extends React.Component {
 
 
   componentDidMount(){
-    this.initTableData()
+    // this.initTableData()
   }
   parseDate(date) {
     this.dateSet = date.toDateString().split(' ');
@@ -130,7 +51,7 @@ class LastRewards extends React.Component {
       rank:1,
       userId:1,
       name:"Shahzeb",
-      avatar: require('../../images/tables/1.png'), // eslint-disable-line global-require
+      avatar: require(''), // eslint-disable-line global-require
       
       totalDirects:12,
     
@@ -141,7 +62,7 @@ class LastRewards extends React.Component {
       rank:2,
       userId:1,
       name:"Shahzeb",
-      avatar: require('../../images/tables/1.png'), // eslint-disable-line global-require
+      avatar: require(''), // eslint-disable-line global-require
       
       totalDirects:6,
     
@@ -153,7 +74,7 @@ class LastRewards extends React.Component {
       rank:3,
       userId:1,
       name:"Shahzeb",
-      avatar: require('../../images/tables/1.png'), // eslint-disable-line global-require
+      avatar: require(''), // eslint-disable-line global-require
       
       totalDirects:3,
     
@@ -165,7 +86,7 @@ class LastRewards extends React.Component {
       rank:4,
       userId:1,
       name:"Shahzeb",
-      avatar: require('../../images/tables/1.png'), // eslint-disable-line global-require
+      avatar: require(''), // eslint-disable-line global-require
       
       totalDirects:2,
     
@@ -235,8 +156,10 @@ class LastRewards extends React.Component {
                       <td>{row.userId}</td>
 
                       <td>
-                        <img className="img-rounded" src={row.avatar} alt="" style={{borderRadius:"50%", 
+                        <Avatar src={row.avatar}  extraStyle={{borderRadius:"50%", 
                         height:50,width:50}}/>
+                        {/* <img className="img-rounded" src={row.avatar} alt="" style={{borderRadius:"50%", 
+                        height:50,width:50}}/> */}
                       </td>
                         
                       <td className="text-muted">

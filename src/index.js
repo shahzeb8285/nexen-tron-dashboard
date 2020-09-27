@@ -7,7 +7,6 @@ import * as serviceWorker from './serviceWorker';
 
 import App from './components/App';
 import reducers from './reducers';
-import ProfilePage from './pages/profile/Profile';
 import { HashRouter } from 'react-router-dom';
 
 const store = createStore(

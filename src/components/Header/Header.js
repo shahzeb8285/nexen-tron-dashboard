@@ -9,7 +9,6 @@ import { logoutUser } from '../../actions/user';
 import avatar from '../../images/people/a5.jpg';
 import Notifications from '../Notifications';
 import s from './Header.module.scss';
-import ProfilePage from '../../pages/profile/Profile'
 
 
 

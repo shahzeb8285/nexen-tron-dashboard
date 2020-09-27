@@ -9,31 +9,16 @@ import { closeSidebar, openSidebar } from "../../actions/navigation";
 import { incomeFetched, userFetched } from "../../actions/web3Actions";
 import WinnerSlider from "../../pages/dashboard/components/WinnerSlider/WinnerSlider";
 import ProfilePage from "../../pages/Profile/Profile";
-import LastRewards from "../../pages/LastRewards/LastRewards"
-import {
-  Badge,
-  Table,
-  Button,
-  Modal,
-  Spinner,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from "reactstrap";
+// import LastRewards from "../../pages/LastRewards/LastRewards"
+
 import Widget from "../../components/Widget";
 import Charts from "../../pages/components/charts/Charts";
 import UIIcons from "../../pages/components/icons";
-import MapsGoogle from "../../pages/components/maps/google";
 import Dashboard from "../../pages/dashboard";
 import UINotifications from "../../pages/notifications";
-import TablesStatic from "../../pages/tables/static";
-import CoreTypography from "../../pages/typography";
-import Header from "../Header";
 import Sidebar from "../Sidebar";
 import s from "./Layout.module.scss";
 import { toast } from "react-toastify";
-import WinnerTile from "../../pages/dashboard/components/WinnerSlider/WinnerTile";
-// import BlockchainManager from '../../utils/BlockchainManager';
 
 class Layout extends React.Component {
   constructor(props) {
@@ -74,35 +59,7 @@ class Layout extends React.Component {
     sidebarOpened: false,
   };
 
-  copyToClipboard = (name, data) => {
-    // const el =document.createElement('txtps');
-    // el.value = data;
-    // document.body.appendChild(el);
-    // el.querySelectorAll(0,111111111);
-    // document.execCommand("copy");
-    // document.body.removeChild(el);
-
-    navigator.clipboard
-      .writeText(data)
-      .then(() => {
-        toast.success(name + " copied successfully", {
-          position: "bottom-right",
-          autoClose: 5000,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-        });
-      })
-      .catch((err) => {
-        toast.success(err, {
-          position: "bottom-right",
-          autoClose: 5000,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-        });
-      });
-  };
+ 
   handleSwipe(e) {
     if ("ontouchstart" in window) {
       if (e.direction === 4 && !this.state.chatOpen) {
@@ -160,16 +117,11 @@ class Layout extends React.Component {
 
                     <Route path="/dashboard/profile" exact component={ProfilePage} />
                     
-                    <Route path="/dashboard/LastRewards" exact component={LastRewards} />
+                    {/* <Route path="/dashboard/LastRewards" exact component={LastRewards} /> */}
 
                     <Route path="/app/charts" exact component={Charts} />
-                    <Route path="/dashboard/tables" exact component={TablesStatic} />
-                    <Route path="/app/maps" exact component={MapsGoogle} />
-                    <Route
-                      path="/app/typography"
-                      exact
-                      component={CoreTypography}
-                    />
+                    
+                   
                   </Switch>
                 </CSSTransition>
               </TransitionGroup>

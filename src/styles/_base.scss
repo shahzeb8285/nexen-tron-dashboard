@@ -25,6 +25,12 @@
   }
 }
 
+.winnerTitle{
+  background: radial-gradient(farthest-side ellipse at 10% 0,#c31432  20%,  #240b36);
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .form-control {
   color: $content-color;
   &:focus,&:active {

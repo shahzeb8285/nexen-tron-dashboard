@@ -34,12 +34,13 @@ export function logoutUser() {
     return (dispatch) => {
         dispatch(requestLogout());
         localStorage.removeItem('authenticated');
+        localStorage.removeItem('userId')
+
         dispatch(receiveLogout());
     };
 }
 
 export function loginUser(creds) {
-    console.log("loginggg",creds)
     return (dispatch) => {
         localStorage.setItem('userId', creds.userId)
 
