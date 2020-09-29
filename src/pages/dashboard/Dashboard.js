@@ -28,11 +28,9 @@ import { toast } from "react-toastify";
 import UserTree from "../../components/Tree/UserTree";
 import { apiService } from "../../Services/api.service";
 import CurrencyConverter from "../../utils/CurrencyConverter";
-import ReferalGraph from "../../components/ReferalGraph/ReferalGraph";
 import RewardRankWinner from "../../components/RewardRankWinner/RewardRankWinner";
 import ReferalTable from "../../components/ReferalTable/ReferalTable";
 import MyRewards from "../../components/MyRewards/MyRewards";
-
 import Counter from "../../components/Counter/Counter";
 import { updateProfile } from "../../actions/profileActions";
 
@@ -175,6 +173,7 @@ class Dashboard extends React.Component {
     return (
       <UserTree
         ref={this.userTreeRef}
+
         data={
           this.state.currentReferralTree[
           this.state.referralTreeHistory[
@@ -203,6 +202,9 @@ class Dashboard extends React.Component {
           }
         }}
       />
+
+
+      
     );
   }
 
@@ -277,11 +279,13 @@ class Dashboard extends React.Component {
             </Col>
           </Row>
 
-          <Row style={{ alignItems: "baseline" }}>
+          <Row style={{ alignItems: "flex-start" }} className="row-eq-height">
 
             <Col xs={8} lg={8} sm={8} md={8} xl={8} >
-              <Row>
-                <Col size={4}>
+
+
+              <Row style={{ marginTop: 10, marginBottom: 10 }}>
+                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
                   <InfoTile
                     primaryTitle={"Direct Bonus"}
                     secondaryTitle={"Total Direct"}
@@ -297,25 +301,25 @@ class Dashboard extends React.Component {
                     }
                   />
                 </Col>
-                
 
-                <Col size={4}>
+                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
                   <InfoTile
-                    primaryTitle={"DIRECT TEAM BONUS"}
-                    secondaryTitle={""}
+                    primaryTitle={"Reward Bonus"}
+                    secondaryTitle={"Total Win"}
                     primaryAmount={
                       this.props.user.income
-                        ? this.props.user.income.upgradeIncome
+                        ? this.props.user.income.rewardIncome
                         : "-"
                     }
-                    secondaryAmount={""}
-                    bgEndColor={"#db4b32"}
-                    bgStartColor={"#ff7f50"}
+                    bgStartColor={"#0984e3"}
+                    bgEndColor={"#06508a"}
+                    secondaryAmount={
+                      this.props.user ? this.props.user.totalWins : "-"
+                    }
                   />
                 </Col>
 
-
-                <Col size={4}>
+                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
                   <InfoTile
                     primaryTitle={"Level Bonus"}
                     secondaryTitle={"Level Loss"}
@@ -331,10 +335,9 @@ class Dashboard extends React.Component {
                     bgEndColor={"#bf8415"}
                   />
                 </Col>
-              </Row>
 
-              <Row style={{ marginTop: 10, marginBottom: 10 }}>
-                <Col size={4}>
+
+                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
                   <InfoTile
                     primaryTitle={"Recycle Bonus"}
                     secondaryTitle={"Total Recycle"}
@@ -351,7 +354,7 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-                <Col size={4}>
+                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
                   <InfoTile
                     primaryTitle={"Level Fund"}
                     secondaryTitle={"Level Bought"}
@@ -368,7 +371,7 @@ class Dashboard extends React.Component {
                   />
                 </Col>
 
-                <Col size={4}>
+                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
                   <InfoTile
                     primaryTitle={"Recycle Fund"}
                     secondaryTitle={"Total Recycle"}
@@ -384,27 +387,28 @@ class Dashboard extends React.Component {
                     bgEndColor={"#a1511b"}
                   />
                 </Col>
-              </Row>
 
-              <Row>
-              
-              <Col size={4}>
+
+                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
                   <InfoTile
-                    primaryTitle={"Reward Bonus"}
-                    secondaryTitle={"Total Win"}
+                    primaryTitle={"DIRECT TEAM BONUS"}
+                    secondaryTitle={""}
                     primaryAmount={
                       this.props.user.income
-                        ? this.props.user.income.rewardIncome
+                        ? this.props.user.income.upgradeIncome
                         : "-"
                     }
-                    bgStartColor={"#0984e3"}
-                    bgEndColor={"#06508a"}
-                    secondaryAmount={
-                      this.props.user ? this.props.user.totalWins : "-"
-                    }
+                    secondaryAmount={""}
+                    bgEndColor={"#db4b32"}
+                    bgStartColor={"#ff7f50"}
                   />
                 </Col>
-                <Col size={4} style={{ paddingTop: 5 }}>
+
+
+
+
+
+                <Col xs={4} lg={4} sm={4} md={4} xl={4} style={{ paddingTop: 5 }}>
                   <InfoTile
                     primaryTitle={"Level Reward Wallet"}
                     secondaryTitle={""}
@@ -419,7 +423,7 @@ class Dashboard extends React.Component {
                     }
                   />
                 </Col>
-                <Col size={4} style={{ paddingTop: 5 }}>
+                <Col xs={4} lg={4} sm={4} md={4} xl={4} style={{ paddingTop: 5 }}>
                   <InfoTile
                     primaryTitle={"Performance Reward Wallet"}
                     secondaryTitle={""}
@@ -437,11 +441,17 @@ class Dashboard extends React.Component {
 
               </Row>
 
-              <Widget style={{ marginTop: 25}}>
+
+
+              <Widget style={{ marginTop: 25 }}>
 
 
                 <Row  >
-                  <Col  xs={5} lg={5} sm={5} md={5} xl={5} style={{ paddingTop: 5 }}>
+                  <Col xs={12} lg={8} sm={12} md={12} xl={8} style={{ paddingTop: 5 }}>
+                    {this.renderTree()}
+                  </Col>
+
+                  <Col xs={12} lg={4} sm={12} md={12} xl={4} style={{ paddingTop: 5 }}>
 
                     <SecondRewardWallet
                       levelRewardWallet={
@@ -464,9 +474,6 @@ class Dashboard extends React.Component {
                   </Col>
 
 
-                  <Col  xs={7} lg={7} sm={7} md={7} xl={7} style={{ paddingTop: 5 }}>
-                    {this.renderTree()}
-                  </Col>
 
                 </Row>
 
@@ -485,7 +492,7 @@ class Dashboard extends React.Component {
 
           {this.state.showBuyLevel ? <Widget
             title={
-              <Row style={{ justifyContent: "space-between", paddingRight: 20, paddingLeft: 20 }}>
+              <Row style={{  justifyContent:"space-between" ,marginLeft:20,marginRight:20}}>
                 <h3>
                   Buy <span className="fw-semi-bold">Levels</span>
                 </h3>
@@ -637,129 +644,7 @@ class Dashboard extends React.Component {
           </Widget>
             : null}
           {this.renderRefferalsInfo()}
-
-
-
-
-          {/* <input type="text" id="refId"></input>
-          <button
-            onClick={() => {
-              {
-                this.Web3Ref.current
-                  .getWrappedInstance()
-                  .register(document.getElementById("refId").value);
-              }
-            }}
-          >
-            Register
-          </button>
-          <br></br>
-          <br></br>
-          <input type="text" id="level"></input>
-          <button
-            onClick={() => {
-              {
-                this.Web3Ref.current
-                  .getWrappedInstance()
-                  .buyLevel(document.getElementById("level").value);
-              }
-            }}
-          >
-            Buy Level
-          </button>
-          <br></br>
-          <br></br>
-          <button
-            onClick={() => {
-              {
-              }
-            }}
-          >
-            Buy All Levels
-          </button>
-          <br></br>
-          <br></br>
-       
-          <button
-            onClick={() => {
-              {
-              
-                this.Web3Ref.current.getWrappedInstance().distributeReward();
-              }
-            }}
-          >
-            Distribute Reward
-          </button>
-          <br></br>
-          <br></br>
-          <button
-            onClick={() => {
-              {
-                this.Web3Ref.current
-                  .getWrappedInstance()
-                  .distributeLevelReward();
-              }
-            }}
-          >
-            Distribute Level Reward
-          </button>
-          <br></br>
-          <br></br>
-          <button
-            onClick={() => {
-              {
-                this.Web3Ref.current.getWrappedInstance().withDrawlevelFund();
-              }
-            }}
-          >
-            Withdraw Level Fund
-          </button>
-          <br></br>
-          <input type="text" id="UserId"></input>
-          <input type="text" id="UserLevel"></input>
-          <button
-            onClick={() => {
-              {
-                const res = this.Web3Ref.current
-                  .getWrappedInstance()
-                  .getLevelMembers(
-                    document.getElementById("UserId").value,
-                    document.getElementById("UserLevel").value
-                  );
-
-              }
-            }}
-          >
-            Get Level Members
-          </button> */}
-          {/* <br></br>
-          <br></br>
-          <br></br> */}
-          {/* <button
-            onClick={() => {
-              {
-                this.Web3Ref.current.getWrappedInstance().getDailyUsers();
-              }
-            }}
-          >
-            Get Daily Users
-          </button> */}
-          {/* <br></br>
-          <br></br> */}
-          {/* <button
-            onClick={() => {
-              {
-                this.Web3Ref.current
-                  .getWrappedInstance()
-                  .reInitializeDailyUsersInfo();
-              }
-            }}
-          >
-            ReInitialize daily users
-          </button> */}
-          {/* <br></br>
-          <br></br>{" "} */}
-                  {this.renderPageLoadingDialoge()}
+          {this.renderPageLoadingDialoge()}
 
         </div>
 

@@ -22,8 +22,11 @@ import TronWeb from "tronweb";
 import Utils from "../../utils";
 import { copySync } from "fs-extra";
 import CurrencyConverter from "../../utils/CurrencyConverter";
+import TronHelper from "../../utils/TronHelper"
 
 
+
+let levelBuyTimeStamp = null
 class TronProvider extends React.Component {
   constructor(props) {
     super(props);
@@ -33,6 +36,9 @@ class TronProvider extends React.Component {
       income: {},
       levelsMembers: [],
       mlm: null,
+      showTronErrorDialog: false,
+      showLevelBoughtDialog: false,
+
       selectedLevel: {
         position: 1,
         amount: 50000000000000000,
@@ -51,10 +57,7 @@ class TronProvider extends React.Component {
         levelRewardWallet: 0,
         totalAmountDistributed: 0,
         loading: false,
-        tronWeb: {
-          installed: false,
-          loggedIn: false,
-        },
+
       },
     };
   }
@@ -62,142 +65,139 @@ class TronProvider extends React.Component {
   async componentDidMount() {
     let userId = this.props.auth.userId;
 
-    var isTronInstalledAndLogin=false;
-    try{
+    try {
       await this.initTron();
       console.log("tron initiated");
 
-    await this.fetchPlatformData();
-    console.log("tron initiated2", this.state);
+      await this.fetchPlatformData();
+      console.log("tron initiated2", this.state);
 
-    await this.getLevelMembersCount(userId);
-    await this.getLevelsLoss(userId);
+      await this.getLevelMembersCount(userId);
+      await this.getLevelsLoss(userId);
 
-    await this.initUser(userId);
-    await this.getDailyUsers();
-    }catch(err){
-      console.log("dsdsdsssd",err)
+      await this.initUser(userId);
+      await this.getDailyUsers();
+    } catch (err) {
+      console.log("dsdsdsssd", err)
     }
 
     console.log(this.state);
   }
 
-  async initTron() {
-    await new Promise((resolve) => {
-      const tronWebState = {
-        installed: !!window.tronWeb,
-        loggedIn: window.tronWeb && window.tronWeb.ready,
-      };
-
-      if (tronWebState.installed) {
-        this.setState({
-          tronWeb: tronWebState,
-        });
-
-        return resolve();
-      }
-
-      let tries = 0;
-      let tronWeb=null
-      const timer = setInterval(() => {
-        if (tries >= 10) {
-//""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-          tronWeb = new TronWeb(
-            Utils.TRONGRID_API,
-            Utils.TRONGRID_API,
-            Utils.TRONGRID_API
-          );
-
-          this.setState({
-            tronWeb: {
-              installed: false,
-              loggedIn: false,
-            },
-          });
-
-          window.tronWeb = tronWeb
-
-          clearInterval(timer);
-          return resolve();
-        }
-
-        tronWebState.installed = !!tronWeb;
-        tronWebState.loggedIn = window.tronWeb && window.tronWeb.ready;
-
-        if (!tronWebState.installed) return tries++;
-
-        this.setState({
-          tronWeb: tronWebState,
-        });
-
-        resolve();
-      }, 100);
-    });
-
-    if (!this.state.tronWeb.loggedIn) {
-      // Set default address (foundation address) used for contract calls
-      // Directly overwrites the address object as TronLink disabled the
-      // function call
-      window.tronWeb.defaultAddress = {
-        hex: window.tronWeb.address.toHex(Utils.FOUNDATION_ADDRESS),
-        base58: Utils.FOUNDATION_ADDRESS,
-      };
-
-      window.tronWeb.setAddress(Utils.FOUNDATION_ADDRESS);
-
-      window.tronWeb.on("addressChanged", () => {
-        if (this.state.tronWeb.loggedIn) {
-          return;
-        }
-        this.setState({
-          tronWeb: {
-            installed: true,
-            loggedIn: true,
-          },
-        });
-      });
-    }
-
-    await Utils.setTronWeb(window.tronWeb);
-    this.fetchPlatformData();
-   
-    this.setState({ InitError: true });
-  }
-
-
-
   // async initTron() {
-    
-    
-  //   // await Utils.initTron();
+  //   await new Promise((resolve) => {
+  //     const tronWebState = {
+  //       installed: !!window.tronWeb,
+  //       loggedIn: window.tronWeb && window.tronWeb.ready,
+  //     };
 
-   
+  //     if (tronWebState.installed) {
+  //       this.setState({
+  //         tronWeb: tronWebState,
+  //       });
+
+  //       return resolve();
+  //     }
+
+  //     let tries = 0;
+  //     let tronWeb=null
+  //     const timer = setInterval(() => {
+  //       if (tries >= 10) {
+  //         tronWeb = new TronWeb(
+  //           Utils.TRONGRID_API,
+  //           Utils.TRONGRID_API,
+  //           Utils.TRONGRID_API
+  //         );
+
+  //         this.setState({
+  //           tronWeb: {
+  //             installed: false,
+  //             loggedIn: false,
+  //           },
+  //         });
+
+  //         window.tronWeb = tronWeb
+
+  //         clearInterval(timer);
+  //         return resolve();
+  //       }
+
+  //       tronWebState.installed = !!tronWeb;
+  //       tronWebState.loggedIn = window.tronWeb && window.tronWeb.ready;
+
+  //       if (!tronWebState.installed) return tries++;
+
+  //       this.setState({
+  //         tronWeb: tronWebState,
+  //       });
+
+  //       resolve();
+  //     }, 100);
+  //   });
+
+  //   if (!this.state.tronWeb.loggedIn) {
+  //     // Set default address (foundation address) used for contract calls
+  //     // Directly overwrites the address object as TronLink disabled the
+  //     // function call
+  //     window.tronWeb.defaultAddress = {
+  //       hex: window.tronWeb.address.toHex(Utils.FOUNDATION_ADDRESS),
+  //       base58: Utils.FOUNDATION_ADDRESS,
+  //     };
+
+  //     window.tronWeb.setAddress(Utils.FOUNDATION_ADDRESS);
+
+  //     window.tronWeb.on("addressChanged", () => {
+  //       if (this.state.tronWeb.loggedIn) {
+  //         return;
+  //       }
+  //       this.setState({
+  //         tronWeb: {
+  //           installed: true,
+  //           loggedIn: true,
+  //         },
+  //       });
+  //     });
+  //   }
+
+  //   await Utils.setTronWeb(window.tronWeb);
+  //   this.fetchPlatformData();
+
+  //   this.setState({ InitError: true });
   // }
 
 
 
 
 
+  // startListeningForLevelBuyEvent(){
+
+  // }
+
+
+  async initTron() {
+    await TronHelper.initTron();
+
+  }
 
   async initUser(id) {
-    if (!Utils.contract) {
+    if (!TronHelper.localContract) {
       return;
     }
     console.log("initUser", "Gggg");
 
-    Utils.contract
+    TronHelper.localContract
       .getUserInfo(id)
       .call()
       .then((User) => {
-        Utils.contract
+        TronHelper.localContract
           .getUsersIncomes(id)
           .call()
           .then((Income) => {
-            Utils.contract
+            TronHelper.localContract
               .getUsersFundsAndUserAddress(id)
               .call()
               .then((Fund) => {
-                Utils.contract
+                TronHelper.localContract
                   .viewUserReferral(id)
                   .call()
                   .then(async (res) => {
@@ -294,7 +294,7 @@ class TronProvider extends React.Component {
                     user.levelMembers = this.state.levelsMembers;
                     user.publicAddress = this.state.publicAddress;
                     user.dailyUsersCount = this.state.dailyUsersCount;
-                    user.levelsLoss= this.state.levelsLoss 
+                    user.levelsLoss = this.state.levelsLoss
                     if (user.walletAddress === user.publicAddress) {
                       user.sameAddress = true;
                     } else {
@@ -309,11 +309,14 @@ class TronProvider extends React.Component {
       });
   }
 
- 
+
 
 
   async buyLevel(level) {
-    Utils.contract
+    if (!TronHelper.userContract) {
+
+    }
+    TronHelper.userContract
       .buyLevel(level)
       .send({
         callValue: this.state.levelsPrice[level - 1],
@@ -334,8 +337,8 @@ class TronProvider extends React.Component {
     for (let i = level; i < 10; i++) {
       price = price + this.state.levelsPrice[i];
     }
-    console.log(price);
-    Utils.contract
+    console.log("price",price,"level",level);
+    TronHelper.userContract
       .buyAllLevels()
       .send({
         callValue: price,
@@ -350,12 +353,14 @@ class TronProvider extends React.Component {
   }
 
   async fetchPlatformData() {
-    const totalUsers =  parseInt(await(Utils.contract.totalUsers().call()));
-    const entryFees = (await Utils.contract.levels(0).call()).toNumber();
-    console.log("tfdddf",entryFees)
+    const totalUsers = parseInt(await (TronHelper.localContract.totalUsers().call()));
+    const entryFees = (await TronHelper.localContract
+      .levels(0).call()).toNumber();
+    console.log("tfdddf", entryFees)
 
     const ownerWallet =
-      (await Utils.contract.ownerAmount().call()).toNumber() / 1000000;
+      (await TronHelper.localContract
+        .ownerAmount().call()).toNumber() / 1000000;
     this.setState({
       entryFees: entryFees,
       ownerWallet: ownerWallet,
@@ -364,7 +369,8 @@ class TronProvider extends React.Component {
     const levels = [];
 
     for (var i = 1; i <= 10; i++) {
-      let tempLevelsPrice = (await Utils.contract.levels(i).call()).toNumber();
+      let tempLevelsPrice = (await TronHelper.localContract.
+        levels(i).call()).toNumber();
       // console.log(tempLevelsPrice);
       levels.push(tempLevelsPrice);
     }
@@ -373,21 +379,27 @@ class TronProvider extends React.Component {
       levelsPrice: levels,
     });
     const totalAmountDistributed =
-      (await Utils.contract.totalAmountDistributed().call()).toNumber() /
+      (await TronHelper.localContract
+        .totalAmountDistributed().call()).toNumber() /
       1000000;
     const rewardWallet =
-      (await Utils.contract.rewardWallet().call()).toNumber() / 1000000;
+      (await TronHelper.localContract
+        .rewardWallet().call()).toNumber() / 1000000;
     const levelRewardWallet =
-      (await Utils.contract.levelRewardWallet().call()).toNumber() / 1000000;
+      (await TronHelper.localContract
+        .levelRewardWallet().call()).toNumber() / 1000000;
     const maxReferrals = (
-      await Utils.contract.maxReferrals().call()
+      await TronHelper.localContract
+        .maxReferrals().call()
     ).toNumber();
     const idWithMaxReferrals = (
-      await Utils.contract.idWithMaxReferrals().call()
+      await TronHelper.localContract
+        .idWithMaxReferrals().call()
     ).toNumber();
 
     const dailyUsersCount = (
-      await Utils.contract.dailyUsersCount().call()
+      await TronHelper.localContract
+        .dailyUsersCount().call()
     ).toNumber();
 
     this.setState({
@@ -400,17 +412,19 @@ class TronProvider extends React.Component {
       dailyUsersCount: dailyUsersCount,
     });
 
-    let contractAddress = await TronWeb.address.fromHex(Utils.contract.address);
-    const publicAddress = await window.tronWeb.defaultAddress.base58;
+    let contractAddress = await TronWeb.address.fromHex(TronHelper.localContract
+      .address);
+    const publicAddress = await TronHelper.userTronAddress;
     this.setState({
       publicAddress: publicAddress,
     });
-    console.log(contractAddress);
+    console.log("contractAddress", publicAddress);
     this.setState({ contractAddress: contractAddress });
   }
 
   async getUserReferrals(id) {
-    return Utils.contract
+    return TronHelper.localContract
+
       .viewUserReferral(id)
       .call()
       .then((res) => {
@@ -440,36 +454,37 @@ class TronProvider extends React.Component {
   }
 
   async distributeReward() {
-    console.log("distribute");
-    Utils.contract
-      .distributeReward()
-      .send({ from: window.tronWeb.defaultAddress.base58, callValue: 0 })
-      .then((res) => {
-        console.log("enter distribute", res);
-        if (res == true) console.log("success");
-      })
-      .catch((err) => {
-        console.log("error while reward distribution", err);
-      });
+    // console.log("distribute");
+    // Utils.contract
+    //   .distributeReward()
+    //   .send({ from: window.tronWeb.defaultAddress.base58, callValue: 0 })
+    //   .then((res) => {
+    //     console.log("enter distribute", res);
+    //     if (res == true) console.log("success");
+    //   })
+    //   .catch((err) => {
+    //     console.log("error while reward distribution", err);
+    //   });
   }
 
   async distributeLevelReward() {
-    Utils.contract
-      .distributeLevelReward()
-      .send({
-        shouldPollResponse: true,
-        callValue: 0,
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("error while distributing levelReward", err);
-      });
+    // Utils.contract
+    //   .distributeLevelReward()
+    //   .send({
+    //     shouldPollResponse: true,
+    //     callValue: 0,
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log("error while distributing levelReward", err);
+    //   });
   }
 
   async getLevelsLoss(id) {
-    Utils.contract
+    TronHelper.localContract
+
       .getLevelsLoss(id)
       .call()
       .then((res) => {
@@ -491,6 +506,7 @@ class TronProvider extends React.Component {
   }
 
   showBuyLevelDialog(level) {
+
     this.setState({ visibleBuyModal: true, selectedLevel: level });
   }
 
@@ -641,7 +657,8 @@ class TronProvider extends React.Component {
   }
 
   async getLevelWinners() {
-    Utils.contract
+    TronHelper.localContract
+
       .getLevelWinners()
       .call()
       .then((res) => {
@@ -654,7 +671,8 @@ class TronProvider extends React.Component {
   }
 
   async setLevelWinners() {
-    Utils.contract
+    TronHelper.localContract
+
       .setLevelWinners()
       .send({ callValue: 0 })
       .then((res) => {
@@ -666,19 +684,20 @@ class TronProvider extends React.Component {
   }
 
   async withDrawlevelFund() {
-    Utils.contract
-      .withDrawlevelFund()
-      .send({ callValue: 0, shouldPollResponse: true })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("error while fetching winners", err);
-      });
+    // Utils.contract
+    //   .withDrawlevelFund()
+    //   .send({ callValue: 0, shouldPollResponse: true })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log("error while fetching winners", err);
+    //   });
   }
 
   async getUplines(id) {
-    Utils.contract
+    TronHelper.localContract
+
       .getUplines(id)
       .call()
       .then((res) => {
@@ -693,7 +712,8 @@ class TronProvider extends React.Component {
   }
 
   async getLevelMembers(id, level) {
-    Utils.contract
+    TronHelper.localContract
+
       .getLevelMembers(id, level)
       .call()
       .then((res) => {
@@ -709,7 +729,8 @@ class TronProvider extends React.Component {
   }
 
   async getLevelMembersCount(id) {
-    Utils.contract
+    TronHelper.localContract
+
       .getLevelMembersCount(id)
       .call()
       .then((res) => {
@@ -718,7 +739,7 @@ class TronProvider extends React.Component {
           levelMembersCount[i] = res[i].toNumber();
           console.log("member1", res[i].toNumber());
         }
-        this.setState({levelsMembers:levelMembersCount})
+        this.setState({ levelsMembers: levelMembersCount })
         console.log("level members count ---> ", levelMembersCount);
       })
       .catch((err) => {
@@ -727,7 +748,8 @@ class TronProvider extends React.Component {
   }
 
   async getLevelMembers(id, level) {
-    Utils.contract
+    TronHelper.localContract
+
       .getLevelMembers(id, level)
       .call()
       .then((res) => {
@@ -743,7 +765,8 @@ class TronProvider extends React.Component {
   }
 
   async getDailyUsers() {
-    Utils.contract
+    TronHelper.localContract
+
       .getDailyUsers()
       .call()
       .then((res) => {
@@ -759,7 +782,8 @@ class TronProvider extends React.Component {
   }
 
   async reInitializeDailyUsersInfo() {
-    Utils.contract
+    TronHelper.localContract
+
       .reInitializeDailyUsersInfo()
       .send({ shouldPollResponse: true, callValue: 0 })
       .then((reciept) => {
@@ -781,6 +805,43 @@ class TronProvider extends React.Component {
     });
   }
 
+
+
+
+  listenForLevelBuyUpdate() {
+    console.log("point22")
+    setInterval(async () => {
+      try {
+        const options = {
+          eventName: "buyLevelEvent",
+          orderBy: "block_timestamp,asc",
+          minBlockTimestamp: levelBuyTimeStamp
+        };
+        const resp = await TronHelper.tronGrid.contract.getEvents(TronHelper.CONTRACT_ADDRESS,
+          options);
+        const data = resp.data
+        console.log("data123", data)
+
+        if (data) {
+          for (var user of data) {
+            if (user.result._user === this.props.auth.userId) {
+              this.setState({ showLevelBoughtDialog: true })
+              break
+            }
+            console.log("userrr", user)
+
+          }
+
+
+
+        }
+      } catch (err) {
+        console.log("errrrrr", err)
+      }
+    }, 1000)
+
+  }
+
   renderBuyDialog() {
     return (
       <>
@@ -799,7 +860,7 @@ class TronProvider extends React.Component {
                 <Level
                   levelData={this.state.selectedLevel}
                   enable={true}
-                  onLevelClicked={() => {}}
+                  onLevelClicked={() => { }}
                 />
               </Col>
 
@@ -826,6 +887,10 @@ class TronProvider extends React.Component {
             <Button
               color="primary"
               onClick={() => {
+                levelBuyTimeStamp = new Date().getTime()
+                this.listenForLevelBuyUpdate()
+
+                this.setState({loadingBuy:true})
                 this.buyLevel(
                   this.state.selectedLevel.position,
                   this.state.selectedLevel.amount,
@@ -833,7 +898,7 @@ class TronProvider extends React.Component {
                     console.log("gffgfgg", receipt);
                     toast.success(
                       "Successfully bought level " +
-                        this.state.selectedLevel.position,
+                      this.state.selectedLevel.position,
                       {
                         position: "bottom-center",
                         autoClose: 7000,
@@ -850,6 +915,8 @@ class TronProvider extends React.Component {
                 );
               }}
             >
+              {this.state.loadingBuy ? <Spinner color="secondary" />
+                : null}
               Pay
               {this.state.selectedLevel
                 ? " " + this.state.selectedLevel.amountTag + "  Trx"
@@ -869,8 +936,115 @@ class TronProvider extends React.Component {
     );
   }
 
+
+  renderTronError() {
+    if (TronHelper.isTronInstalled) {
+
+      if (!TronHelper.isTronLoggedIn) {
+
+        return <>
+          <h3>You have not Logged in TronLink</h3>
+
+          <span>Please Login into TronLink </span></>
+      } else {
+        this.setState({ showTronErrorDialog: false })
+        return null
+      }
+    } else {
+      return <>
+
+        <h3>You have not installed TronLink</h3>
+
+        <span>Please Install Tron Link from <a href="https://www.google.com/search?q=tronlink+install"
+          target="_blank">Here</a></span>
+      </>
+    }
+  }
+
+  renderTronErrorDialog() {
+    return (
+      <>
+        <Modal isOpen={this.state.showTronErrorDialog}>
+          <ModalHeader>
+            <h3 className="fw-semi-bold">
+              Tron Error
+            </h3>
+          </ModalHeader>
+          <ModalBody>
+
+
+            {this.renderTronError()}
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="danger"
+              onClick={() => {
+                this.setState({ showTronErrorDialog: false });
+              }}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </>
+    );
+  }
+
+
+
+  renderLevelBoughtDialog() {
+    return (
+      <>
+        <Modal isOpen={this.state.showLevelBoughtDialog}>
+          <ModalHeader>
+            <h3 className="fw-semi-bold">
+              Success
+            </h3>
+          </ModalHeader>
+          <ModalBody>
+            <Row>
+              <Col>
+                <Level
+                  levelData={this.state.selectedLevel}
+                  enable={true}
+                  onLevelClicked={() => { }}
+                />
+              </Col>
+
+              <Col>
+                <h3>  You have Successfully Bought Level
+              {this.state.selectedLevel
+                    ? " " + this.state.selectedLevel.position
+                    : ""}</h3>
+              </Col>
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="danger"
+              onClick={() => {
+                // this.setState({ visibleBuyModal: false });
+                window.location.reload();
+              }}
+            >
+              Close
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </>
+    );
+  }
+
+
   render() {
-    return <>{this.state.visibleBuyModal ? this.renderBuyDialog() : null}</>;
+    return <>
+      {this.state.visibleBuyModal ? this.renderBuyDialog() : null}
+
+      {this.state.showTronErrorDialog ? this.renderTronErrorDialog() : null}
+
+      {this.state.showLevelBoughtDialog ? this.renderLevelBoughtDialog() : null}
+
+    </>;
   }
 }
 function mapStateToProps(store) {

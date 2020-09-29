@@ -21,7 +21,9 @@ import { toast } from "react-toastify";
 import { apiService } from '../../Services/api.service';
 import { connect } from "react-redux";
 import { Redirect, Route, Switch, withRouter } from "react-router";
-import { updateProfile } from "../../actions/profileActions"
+import { updateProfile } from "../../actions/profileActions";
+import Resizer from 'react-image-file-resizer';
+
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +35,7 @@ class Profile extends Component {
       islogin: true,
       defaultImage: require("../../images/avatar.png"),
       isLoading: false,
-      avatarChanged:false
+      avatarChanged: false
     }
 
 
@@ -44,13 +46,13 @@ class Profile extends Component {
     // this.setState({ islogin: !true })
   }
 
-  fileChangedHandler = (event) => {
-    const file = event.target.files[0];
-    console.log(file);
-    let name = file.name;
-    this.setState({ image: name });
+  // fileChangedHandler = (event) => {
+  //   const file = event.target.files[0];
+  //   console.log(file);
+  //   let name = file.name;
+  //   this.setState({ image: name });
 
-  }
+  // }
 
   async handleOnSubmitClick() {
 
@@ -82,7 +84,7 @@ class Profile extends Component {
         email: this.state.email
       }
 
-      if(this.state.avatarChanged){
+      if (this.state.avatarChanged) {
         payload.profile_pic = this.state.avatar
       }
 
@@ -96,7 +98,7 @@ class Profile extends Component {
 
           console.log("Resssssss", resp)
           this.props.dispatch(updateProfile(user));
-
+          
 
         } else {
           toast.error("Error in updating profile");
@@ -145,9 +147,25 @@ class Profile extends Component {
     console.log(event.target.files)
     const file = event.target.files[0];
     console.log(file);
-    let name = file.name;
-    const base64 = await this.convertBase64(file);
-    this.setState({avatar:base64,avatarChanged:true})
+    // let name = file.name;
+    // const base64 = await this.convertBase64(file);
+   
+    Resizer.imageFileResizer(
+      file,
+      100,
+      100,
+      'JPEG',
+      10,
+      0,
+      base64 => {
+          console.log("bas1232",base64)
+          this.setState({ avatar: base64, avatarChanged: true })
+
+      },
+      'base64',
+      200,
+      200,
+  );
 
   }
 

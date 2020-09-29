@@ -113,10 +113,10 @@ class RewardRankWinner extends React.Component {
         // rankWinners.push(this.getRankWinner(winner))
         rankWinners.push(<Row
           noGutters
+          key={winner.user.userId}
           style={{
             background: "radial-gradient(farthest-side ellipse at 10% 0, " + "#fdcb6e"
               + " 20%, " + "#bf8415" + ")", justifyContent: "start",
-            marginTop: 10,
             paddingLeft: 15, paddingTop: 10,
             paddingBottom: 10,
             borderRadius: 10,

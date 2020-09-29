@@ -18,8 +18,8 @@ export default class UserTree extends Component {
   render() {
     return (
       <>
-        {this.props.data ? <Row style={{alignItems:"flex-start"}}>
-          <Col >
+        {this.props.data ? <div style={{alignItems:"flex-start",padding:20}}>
+          <Row style={{justifyContent:"space-between"}}>
             {this.props.disablePrevButton ? <div className="prev--button">
               <Button
 
@@ -31,24 +31,28 @@ export default class UserTree extends Component {
                 Prev
             </Button>
             </div> : null}
-          </Col>
-          <Col style={{width:"100%"}} >
+         
+         
+            <h5 style={{
+
+background: "radial-gradient(farthest-side ellipse at 10% 0, " + "#c31432"
+  + " 20%, " + "#240b36" + ")",
+textAlign: "center",
+borderRadius: "5px",
+color: "white",
+padding: "8px 6px 6px 6px",
+fontWeight: "600",
+fontSize: "18px}"
+}}>Level Number {this.props.levelNumber}</h5>
+
+          </Row>
+          <Col style={{}} >
             <Tree
               lineWidth={"2px"}
               lineColor={"green"}
               lineBorderRadius={"10px"}
               label={
                 <Row noGutters>
-{/* 
-                  <Button
-
-                    color="primary"
-                    onClick={() => {
-                      this.props.onPreviousButtonClick();
-                    }}
-                  >
-                    Prev
-</Button> */}
 
 
 
@@ -61,18 +65,7 @@ export default class UserTree extends Component {
                     </div>
                   </div>
 
-                  {/* <h5 style={{
-
-                    background: "radial-gradient(farthest-side ellipse at 10% 0, " + "#c31432"
-                      + " 20%, " + "#240b36" + ")",
-                    textAlign: "center",
-                    borderRadius: "5px",
-                    color: "white",
-                    padding: "8px 6px 6px 6px",
-                    fontWeight: "600",
-                    fontSize: "18px}"
-                  }}>Level Number {this.props.levelNumber}</h5> */}
-
+                  
 
                 </Row>
               }
@@ -172,21 +165,8 @@ export default class UserTree extends Component {
             </Tree>
           </Col>
 
-          <Col >
-            <h5 style={{
-
-              background: "radial-gradient(farthest-side ellipse at 10% 0, " + "#c31432"
-                + " 20%, " + "#240b36" + ")",
-              textAlign: "center",
-              borderRadius: "5px",
-              color: "white",
-              padding: "8px 6px 6px 6px",
-              fontWeight: "600",
-              fontSize: "18px}"
-            }}>Level Number {this.props.levelNumber}</h5>
-
-          </Col>
-        </Row>
+         
+        </div>
           : <h3>No Data</h3>
         }
       </>

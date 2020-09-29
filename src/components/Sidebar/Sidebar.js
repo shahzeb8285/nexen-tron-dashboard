@@ -18,6 +18,7 @@ import "./Sidebar.scss";
 import Header from "../Header/Header";
 import { closeSidebar, openSidebar } from "../../actions/navigation";
 import MyRewards from "../../components/MyRewards/MyRewards";
+import Clipboard from 'react-clipboard.js';
 
 let levelBadge = [
   require("../../images/level_badges/1.png"),
@@ -56,6 +57,8 @@ class Sidebar extends React.Component {
   }
 
   componentDidMount() {
+    // this.onSuccess = this.onSuccess.bind(this);
+
     this.element.addEventListener(
       "transitionend",
       () => {
@@ -124,6 +127,16 @@ class Sidebar extends React.Component {
 
   doLogout() {
     this.props.dispatch(logoutUser());
+  }
+
+  onSuccessCopy() {
+    toast.success(" copied successfully", {
+      position: "bottom-right",
+      autoClose: 5000,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+    });
   }
 
   render() {
@@ -335,10 +348,10 @@ class Sidebar extends React.Component {
             </div>
           </div>
 
-          <Widget title={"Withdraw"}>
+          {/* <Widget title={"Withdraw"}>
           <Button color="primary">Withdraw Your Earnings</Button>{' '}
 
-          </Widget>
+          </Widget> */}
 
 
 
@@ -347,27 +360,58 @@ class Sidebar extends React.Component {
               className="fw-semi-bold tile-hover"
               onClick={(f) => {
                 console.log("clickedddddd", f);
-                this.copyToClipboard(
-                  "Affiliate Link",
-                  "http://dash.nexen.live/" + this.props.auth.userId
-                );
+                // this.copyToClipboard(
+                //   "Affiliate Link",
+                //   "http://dash.nexen.live/" + this.props.auth.userId
+                // );
               }}
             >
-              http://dash.nexen.live/{this.props.auth.userId}
+              <Clipboard
+                style={{
+                  background: "transparent",
+                  backgroundColor: "transparent",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  borderColor: "transparent"
+                }}
+                onSuccess={this.onSuccessCopy}
+                data-clipboard-text={"http://dash.nexen.live/" + this.props.auth.userId}>
+                http://dash.nexen.live/{this.props.auth.userId}
+
+              </Clipboard>
             </p>
+          </Widget>
+
+          <Widget title={"Share Us"}>
+            <div className="sharethis-inline-share-buttons"></div>
           </Widget>
 
           <Widget title={"Smart Contract Address"}>
             <p
               className="fw-semi-bold tile-hover"
               onClick={(f) => {
-                this.copyToClipboard(
-                  "Smart Contract Address",
-                  this.props.user.contractAddress
-                );
+                // this.copyToClipboard(
+                //   "Smart Contract Address",
+                //   this.props.user.contractAddress
+                // );
               }}
             >
-              {this.props.user ? this.props.user.contractAddress : "0000000000"}
+
+              <Clipboard
+                style={{
+                  background: "transparent",
+                  backgroundColor: "transparent",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  borderColor: "transparent"
+                }}
+                onSuccess={this.onSuccessCopy}
+                data-clipboard-text={this.props.user ? 
+                  this.props.user.contractAddress : "0000000000"}
+                >
+                {this.props.user ? this.props.user.contractAddress : "0000000000"}
+
+              </Clipboard>
             </p>
           </Widget>
 
@@ -375,21 +419,33 @@ class Sidebar extends React.Component {
             <p
               className="fw-semi-bold tile-hover"
               onClick={(f) => {
-                this.copyToClipboard(
-                  "Etherium Wallet Address",
-                  this.props.user.walletAddress
-                );
+                // this.copyToClipboard(
+                //   "Etherium Wallet Address",
+                //   this.props.user.walletAddress
+                // );
               }}
             >
+              <Clipboard
+                style={{
+                  background: "transparent",
+                  backgroundColor: "transparent",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  borderColor: "transparent"
+                }}
+                onSuccess={this.onSuccessCopy}
+                data-clipboard-text={this.props.user ? 
+                  this.props.user.walletAddress : "0000000000"}
+
+                >
               {this.props.user ? this.props.user.walletAddress : "0000000000"}
+
+              </Clipboard>
             </p>
           </Widget>
 
-          <Widget title={"Share Us"}>
-          <div className="sharethis-inline-share-buttons"></div>
-          </Widget>
 
-        
+
 
 
           {/* <MyRewards /> */}

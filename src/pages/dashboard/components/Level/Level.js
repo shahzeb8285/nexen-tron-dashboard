@@ -70,95 +70,30 @@ const Level = (props) => {
         }}
 
         style={{
-          position: "relative",
-          paddingTop: "20px",
-          display: "inline-block",
+          // position: "relative",
+          // paddingTop: "20px",
+          // display: "inline-block",
 
         }}
         className="hoverItem">
 
 
-        <Col style={{
-          padding: "5px",
-          alignContent: "center"
-        }}
-          // className={isThisNextLevel ? "shiver" : ""}
-
-        >
-          <Col style={{
-            // background: "radial-gradient(farthest-side ellipse at 10% 0, " + startClr
-            //   + " 20%, " + endClr + ")",
-
-            // filter: isBought ? null : " blur(2px)",
-            // WebkitFilter: isBought ? null : "blur(2px)",
-            borderRadius: "8px 8px 0px 0px",
-            padding: "2px",
-            textAlign: "center",
-            alignContent: "center",
-            alignItems: "center",
-
-            display: "block"
-
-
-          }}
-
-          >
-            <img src={isBought?icon:disicon} className="img-responsive" style={{
-              height: 250,
-              // width: 100,
-              // borderRadius: "50%",
-              objectFit: "cover",
-            }} alt="" />
-
-
-          </Col>
-
-          {/* <Col style={{
-            background: "radial-gradient(farthest-side ellipse at 10% 0, " + bottomStartClr
-              + " 20%, " + bottomEndClr + ")",
-            borderRadius: "0px 0px 8px 8px",
-            textAlign: "center",
-            padding: 5,
-            margin: "0 auto"
-
-          }}>
-
-            <h5 className="">{amount} <span className="fw-bold">TRX</span></h5>
-
-          </Col> */}
+        <img src={isBought ? icon : disicon} style={{
+          height:250,
+          width: "100%",
+          objectFit: "contain",
+        }} alt="" />
 
 
 
 
-
-        </Col>
-
-
-
-
-        {/* {isBought ? <h5 style={{
-          position: "absolute",
-          left: "-20px",
-          top: "10px",
-          marginLeft: "20px",
-          background: "radial-gradient(farthest-side ellipse at 10% 0, " + startClr
-            + " 20%, " + endClr + ")",
-          textAlign: "center",
-          borderRadius: "5px",
-          color: "white",
-          padding: "8px 6px 6px 6px",
-          fontWeight: "600",
-          fontSize: "18px}"
-        }}>{position}</h5> */}
-
-          {/* : null} */}
-           <h5 style={{
+        <h5 style={{
           position: "absolute",
           // right: "5px",
           bottom: "0",
           marginLeft: "20px",
           // background: "radial-gradient(farthest-side ellipse at 10% 0, " + startClr
-            // + " 20%, " + endClr + ")",
+          // + " 20%, " + endClr + ")",
           textAlign: "center",
           borderRadius: "5px",
           color: "white",
@@ -167,9 +102,9 @@ const Level = (props) => {
           fontSize: "18px}"
         }}>
 
-          {props.isLoss && !isBought? <img src={danger} style={{height:"20px"}}></img>:null}
-          
-         </h5>
+          {props.isLoss && !isBought ? <img src={danger} style={{ height: "20px" }}></img> : null}
+
+        </h5>
 
       </Col>
 
