@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { Redirect, Route, Switch, withRouter } from "react-router";
 import Widget from '../Widget/Widget';
 import s from './MyRewards.module.scss';
+import moment from "moment";
 
 class MyRewards extends React.Component {
 
@@ -56,7 +57,7 @@ class MyRewards extends React.Component {
       var item1 = item;
       item1.date = item.created_at
       item1.rewardAmount = item.rewardAmount
-      item1.rank = item.rank
+      item1.totalReferreral = item.totalReferreral
 
       data1.push(item1);
 
@@ -68,11 +69,16 @@ class MyRewards extends React.Component {
   }
 
 
+  getDate(date){
+    // DD/MMMM/YYYY
+    return moment(date).format("DD-MMM-YYYY")
+  }
+
   render() {
     return (
       <Widget
-          title={<h3>
-            My <span className="fw-semi-bold">Rewards</span>
+          title={<h3  style={{textAlign:"center"}}>
+            MY <span className="fw-semi-bold">REWARDS HISTORY</span>
           </h3>}
           bodyClass={s.mainTableWidget}
         >
@@ -81,7 +87,7 @@ class MyRewards extends React.Component {
               <tr className="fs-sm">
                 <th className="hidden-sm-down">Date</th>
 
-                <th className="hidden-sm-down">Rank</th>
+                <th className="hidden-sm-down">Total Directs</th>
 
                 <th className="hidden-sm-down">Reward Amount</th>
 
@@ -93,9 +99,9 @@ class MyRewards extends React.Component {
               <tbody>
                 {
                   this.state.rewards.map(row =>
-                    <tr key={row.date}>
-                      <td><span>{row.date}</span></td>
-                      <td>{row.rank}</td>
+                    <tr key={row.created_at}>
+                      <td><span>{this.getDate(row.created_at)}</span></td>
+                      <td>{row.totalReferreral}</td>
 
                       <td><strong>{row.rewardAmount}</strong></td>
 

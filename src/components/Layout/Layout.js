@@ -10,13 +10,17 @@ import { incomeFetched, userFetched } from "../../actions/web3Actions";
 import WinnerSlider from "../../pages/dashboard/components/WinnerSlider/WinnerSlider";
 import ProfilePage from "../../pages/Profile/Profile";
 // import LastRewards from "../../pages/LastRewards/LastRewards"
-
+import TronProvider from "../Blockchain/TronProvider"
 import Widget from "../../components/Widget";
 import Charts from "../../pages/components/charts/Charts";
 import UIIcons from "../../pages/components/icons";
 import Dashboard from "../../pages/dashboard";
 import UINotifications from "../../pages/notifications";
 import Sidebar from "../Sidebar";
+import Ledger from "../../pages/Ledger/Ledger";
+import ShareAndMarket from "../../pages/ShareAndMarket/ShareAndMarket";
+
+
 import s from "./Layout.module.scss";
 import { toast } from "react-toastify";
 
@@ -32,6 +36,8 @@ class Layout extends React.Component {
 
   async componentDidMount() {
     console.log("fffffffffff", this.props);
+    this.Web3Ref = React.createRef();
+
     // const instance = await BlockchainManager.getInstance();
     // console.log(instance);
     // const data = instance.data;
@@ -76,6 +82,22 @@ class Layout extends React.Component {
     }
   }
 
+
+  // renderPageLoadingDialoge() {
+  //   return (
+  //     <>
+  //       <Modal isOpen={!this.state.isPageLoaded}>
+  //         <ModalBody>
+  //           <Row>
+  //             <Spinner color="secondary" />
+  //             <h4 style={{ marginLeft: 10 }}>Loading Page...</h4>
+  //           </Row>
+  //         </ModalBody>
+  //       </Modal>
+  //     </>
+  //   );
+  // }
+
   render() {
     return (
       <div
@@ -89,6 +111,7 @@ class Layout extends React.Component {
           {/* <Header /> */}
           {/* <Chat chatOpen={this.state.chatOpen} /> */}
           {/* <Helper /> */}
+          <TronProvider ref={this.Web3Ref} />
 
           <Sidebar />
 
@@ -107,19 +130,22 @@ class Layout extends React.Component {
 
 
                     <Route path="/" exact render={() => <Redirect to="/dashboard" />} />
-                    <Route path="/dashboard" exact component={Dashboard} />
-                    <Route path="/app/icons" exact component={UIIcons} />
-                    <Route
+                    <Route path="/dashboard" exact  render={() => <Dashboard to="/dashboard" Web3Ref={this.Web3Ref} />}/>
+                    <Route path="/ledger" exact component={Ledger} />
+                    <Route path="/market" exact component={ShareAndMarket} />
+
+                    {/* <Route path="/app/icons" exact component={UIIcons} /> */}
+                    {/* <Route
                       path="/app/notifications"
                       exact
                       component={UINotifications}
-                    />
+                    /> */}
 
-                    <Route path="/dashboard/profile" exact component={ProfilePage} />
+                    <Route path="/profile" exact component={ProfilePage} />
                     
                     {/* <Route path="/dashboard/LastRewards" exact component={LastRewards} /> */}
 
-                    <Route path="/app/charts" exact component={Charts} />
+                    {/* <Route path="/app/charts" exact component={Charts} /> */}
                     
                    
                   </Switch>

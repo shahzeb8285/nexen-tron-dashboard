@@ -4,7 +4,7 @@
     
 }
 .id__btn{
-    background-color: #6ed89c;
+    background-color: #2198c1;
     // margin: 14%;
     display: flex;
     justify-content: center;
@@ -16,7 +16,11 @@
     display: flex;
 }
 .value{
+    // width: 100%;
     margin-left: 20px;
+    text-align: start;
+    font-weight: bold;
+    font-size: 18px;
 }
 .id{
     margin-bottom: 20px;

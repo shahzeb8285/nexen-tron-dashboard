@@ -59,15 +59,15 @@ class Profile extends Component {
     console.log("user", this.state.username);
     console.log("email", this.state.email);
     var isError = false;
-    if (!this.state.username) {
-      isError = true;
-      toast.error("Please Enter UserName!");
-    }
+    // if (!this.state.username) {
+    //   isError = true;
+    //   toast.error("Please Enter UserName!");
+    // }
 
-    if (!this.state.email) {
-      isError = true;
-      toast.error("Please Enter Email!");
-    }
+    // if (!this.state.email) {
+    //   isError = true;
+    //   toast.error("Please Enter Email!");
+    // }
 
 
     if (!this.props.user.id) {
@@ -81,7 +81,18 @@ class Profile extends Component {
       var payload = {
         id: this.props.user.id,
         name: this.state.username,
-        email: this.state.email
+      }
+
+      if (this.state.email) {
+        payload.email = this.state.email
+      }
+
+      if (this.state.username) {
+        payload.name = this.state.username
+      }
+
+      if (this.state.phone) {
+        payload.phone = this.state.phone
       }
 
       if (this.state.avatarChanged) {
@@ -98,7 +109,7 @@ class Profile extends Component {
 
           console.log("Resssssss", resp)
           this.props.dispatch(updateProfile(user));
-          
+
 
         } else {
           toast.error("Error in updating profile");
@@ -149,7 +160,7 @@ class Profile extends Component {
     console.log(file);
     // let name = file.name;
     // const base64 = await this.convertBase64(file);
-   
+
     Resizer.imageFileResizer(
       file,
       100,
@@ -158,14 +169,14 @@ class Profile extends Component {
       10,
       0,
       base64 => {
-          console.log("bas1232",base64)
-          this.setState({ avatar: base64, avatarChanged: true })
+        console.log("bas1232", base64)
+        this.setState({ avatar: base64, avatarChanged: true })
 
       },
       'base64',
       200,
       200,
-  );
+    );
 
   }
 
@@ -204,16 +215,19 @@ class Profile extends Component {
                   <FormGroup>
 
 
-                    <label
-                      className="form-control-label"
-                      htmlFor="input-username"
-                    >
-                      Username
-         </label>
-                    <Input
+                    <input
                       className="form-control-alternative"
                       id="input-username"
                       placeholder="Your Name"
+                      style={{   
+                        marginTop:10,
+                        padding:10,
+                        borderWidth:3,
+                        borderColor:"#2198c1",
+                        color:"#fff",
+                        width:"100%",
+                        background: "radial-gradient(farthest-side ellipse at 10% 0, #000 20%, #232323)"}}
+                     
                       type="text"
                       value={this.state.username}
                       onChange={(text) => {
@@ -221,15 +235,20 @@ class Profile extends Component {
                       }}
                     />
 
-                    <label
-                      className="form-control-label"
-                      htmlFor="input-email"
-                    >
-                      Email address
-         </label>
-                    <Input
+
+                    <input
                       className="form-control-alternative"
                       id="input-email"
+                      style={{   
+                        width:"100%",
+
+                        padding:10,
+                        borderWidth:3,
+                        marginTop:10,
+
+                        borderColor:"#402493",
+                        color:"#fff",
+                        background: "radial-gradient(farthest-side ellipse at 10% 0, #000 20%, #232323)"}}
                       placeholder="Enter Your Email"
                       type="email"
                       value={this.state.email}
@@ -239,10 +258,36 @@ class Profile extends Component {
                       }}
                     />
 
+                    <input
+                      className="form-control-alternative"
+                      id="input-phone"
+                      
+                      placeholder="Enter Your Phone With Country Code"
+                      type="phone"
+                      value={this.state.phone}
+                      style={{   
+                        width:"100%",
 
+                        padding:10,
+                        borderWidth:3,
+                        marginTop:10,
+                        borderColor:"#b01ec6",
+                        color:"#fff",
+                        background: "radial-gradient(farthest-side ellipse at 10% 0, #000 20%, #232323)"}}
+                     
+                      onChange={(text) => {
+                        this.setState({ phone: text.target.value })
+                      }}
+                    />
+
+
+
+                    <div style={{ marginTop: 10, marginBottom: 10 }}>
+                      Details are required only for your  Marketing and Promotional Activities only.. (OPTIONAL)
+                      </div>
 
                     <Button
-                      color="success"
+                      color="primary"
                       onClick={() => {
                         this.handleOnSubmitClick()
                       }}
@@ -251,7 +296,7 @@ class Profile extends Component {
                     >
                       {this.state.isLoading ? <Spinner color="secondary" />
                         : null}
-                      <span className="fw-semi-bold"> Update Profile</span>
+                      <span className="fw-semi-bold" style={{fontSize:20}}> Update Profile</span>
                     </Button>
 
                   </FormGroup>

@@ -24,12 +24,12 @@ export default class SecondRewardWallet extends Component {
    fontWeight:900,
    justifyContent:"center"}}>
    
-   <h3>Level Reward</h3>
-   <h3>Bonus</h3>
+   <h3 style={{color:"#fff"}}>Level Reward</h3>
+   <h3 style={{color:"#fff"}}>Bonus</h3>
 
     <CircularProgressbar
       value={this.props.refPercent}
-      text={`${this.props.refPercent}%`}
+      text={this.props.refPercent==100?this.props.rewardAmount+"TRX":this.props.refPercent+"%"}
       styles={{
         // Customize the root svg element
         root: {
@@ -38,7 +38,7 @@ export default class SecondRewardWallet extends Component {
         // Customize the path, i.e. the "completed progress"
         path: {
           // Path color
-          stroke: `rgba(62, 152, 199, ${this.props.refPercent / 100})`,
+          stroke: `rgba(237, 11, 215)`,
           // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
           strokeLinecap: "butt",
           // Customize transition animation
@@ -61,13 +61,14 @@ export default class SecondRewardWallet extends Component {
         text: {
           // Text color
           fontWeight: "bold",
-          fill: `rgb(110 172 204)`,
+          fill: `#ed0bd7`,
+          padding:18,
           fontSize: "16px",
         
         },
         // Customize background - only used when the `background` prop is true
         background: {
-          fill: "#3e98c7",
+          fill: "#2198c1",
         },
       }}
     />

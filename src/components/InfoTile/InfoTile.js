@@ -100,57 +100,27 @@ class InfoTile extends React.Component {
 
 
     return (
-      <div 
+      <div
+        style={{
+          background: "radial-gradient(farthest-side ellipse at 10% 0, " + this.props.bgStartColor
+            + " 20%, " + this.props.bgEndColor + ")"
+        }}
 
-      // xs?: ColumnProps;
-      // sm?: ColumnProps;
-      // md?: ColumnProps;
-      // lg?: ColumnProps;
-      // xl?: ColumnProps;
-      // xs={4}
-      // sm={4}
-      // md={4}
-      // lg={4}
-      // xl={4}
-            style={{
-              marginLeft:5,
-              width:"100%",
-              height:"100%",
-              marginBottom:5,
-        background: "radial-gradient(farthest-side ellipse at 10% 0, " + this.props.bgStartColor
-          + " 20%, " + this.props.bgEndColor + ")" ,
-          // height:180
-      }}
+        className={s.body}
+      >
 
-      className={s.body}
-    >
-
-      <Col style={{
-
-      }}>
-        <h5 className={"fw-bold"}>{this.props.primaryAmount}</h5>
+        <h4 className={"fw-bold"}  style={{ color:"#000"}}>{this.props.primaryAmount}</h4>
+        <h4 style={{ color:"#000"}}>{this.props.primaryTitle}</h4>
 
 
-        <h5  style={{ fontSize: "18px" }}>{this.props.primaryTitle}</h5>
 
-      </Col>
+        <hr className="solid" />
 
-      <hr className="solid" />
-
-      <div style={{
-        "paddingLeft": "20px",
-
-      }}>
-        <h5>{this.props.secondaryTitle}</h5>
-        <h5 className={"fw-bold"}>{this.props.secondaryAmount}</h5>
-
+        <h4 className={"fw-bold"}  style={{ color:"#000"}}>{this.props.secondaryAmount}</h4>
+        <h4  style={{ color:"#000"}}>{this.props.secondaryTitle}</h4>
 
 
       </div>
-
-
-
-    </div>
 
     );
   }

@@ -241,6 +241,7 @@ class TronProvider extends React.Component {
                       totalRecyclesIn:totalRecyclesIn
                     };
 
+                    // const levelsLoss = [];
                     let levelFund =  Math.round((( Fund.levelFund.toNumber() / divider) + Number.EPSILON) * 100) / 100
                     let recycleFund =Math.round((( Fund.recycleFund.toNumber() / divider) + Number.EPSILON) * 100) / 100 
                     let walletAddress = TronWeb.address.fromHex(Fund.add);
@@ -273,7 +274,7 @@ class TronProvider extends React.Component {
                     //   id : id
                     // }]
 
-                    user.referralTree = {
+                    user.referralTree[id.toString()] = {
                       referrals: referrals,
                       id: id,
                     };
@@ -440,16 +441,21 @@ class TronProvider extends React.Component {
           id: id,
           referrals: referrals,
         };
-        
-        return data;
+        // var userReferralsTree = [...this.state.user.referralTree, data];
+        var user = this.state.user;
+        user.referralTree[id.toString()] = data;
+        this.setState({
+          user,
+        });
+        console.log("update referral 1", this.state.user);
+        this.props.dispatch(userFetched(user));
+        // console.log("update referral",user);
+        return user;
       })
       .catch((err) => {
         console.log("error while fetching referrals", err);
       });
   }
-
-
- 
 
   async distributeReward() {
     // console.log("distribute");

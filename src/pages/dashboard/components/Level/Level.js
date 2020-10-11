@@ -79,7 +79,7 @@ const Level = (props) => {
 
 
         <img src={isBought ? icon : disicon} style={{
-          height:250,
+          height:"auto",
           width: "100%",
           objectFit: "contain",
         }} alt="" />

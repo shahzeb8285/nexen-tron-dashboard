@@ -1,7 +1,6 @@
 import TronWeb from "tronweb";
 import TronGrid from 'trongrid';
-
-const contractAddress = "TLxdvdv6SCG63Lg5Qu3eUERZPHRi1brXNa";
+const contractAddress = "TKB6iQmZrq9KkUFqw51fHBD2t9miifH7CW";
 const TRONGRID_API = "https://api.shasta.trongrid.io"
 const FOUNDATION_ADDRESS = "TQ4yeCKh3W627TCiRLXeYJbdFfr2eNahJk";
 

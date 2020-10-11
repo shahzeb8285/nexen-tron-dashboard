@@ -33,10 +33,22 @@ import ReferalTable from "../../components/ReferalTable/ReferalTable";
 import MyRewards from "../../components/MyRewards/MyRewards";
 import Counter from "../../components/Counter/Counter";
 import { updateProfile } from "../../actions/profileActions";
+import TronHelper from "../../utils/TronHelper";
 
 let isProfileLoaded = false;
 class Dashboard extends React.Component {
-  async componentDidMount() { }
+  async componentDidMount() { 
+
+
+    try{
+      var resp = await apiService.getTodayJoin();
+      if(resp.data && resp.data.counts){
+          this.setState({dailyUsersCount: resp.data.counts})
+      }
+    }catch(err){
+
+    }
+  }
 
   constructor(props) {
     super(props);
@@ -47,9 +59,10 @@ class Dashboard extends React.Component {
       currentReferralTree: null,
       referralTreeHistory: [],
       levelsMembers: null,
-      showBuyLevel: false
+      showBuyLevel: false,
+      dailyUsersCount:0,
     };
-    this.Web3Ref = React.createRef();
+    // this.Web3Ref = React.createRef();
     this.userTreeRef = React.createRef();
   }
 
@@ -150,11 +163,16 @@ class Dashboard extends React.Component {
   };
 
   buyLevel = (level) => {
-    this.Web3Ref.current.getWrappedInstance().showBuyLevelDialog(level);
+    if(TronHelper.userContract){
+    this.props.Web3Ref.current.getWrappedInstance().showBuyLevelDialog(level);
+    }else{
+      toast.error("Please Install and Login TronLink");
+
+    }
   };
 
   loadReferrals = async (id) => {
-    var user = await this.Web3Ref.current
+    var user = await this.props.Web3Ref.current
       .getWrappedInstance()
       .getUserReferrals(id);
 
@@ -173,7 +191,7 @@ class Dashboard extends React.Component {
     return (
       <UserTree
         ref={this.userTreeRef}
-
+        tronRef={this.props.Web3Ref.current.getWrappedInstance()}
         data={
           this.state.currentReferralTree[
           this.state.referralTreeHistory[
@@ -204,7 +222,7 @@ class Dashboard extends React.Component {
       />
 
 
-      
+
     );
   }
 
@@ -226,7 +244,7 @@ class Dashboard extends React.Component {
   render() {
     return (
       <>
-        <TronProvider ref={this.Web3Ref} />
+        {/* <TronProvider ref={this.props.Web3Ref} /> */}
 
         <div className={s.root}>
           <Row style={{ paddingBottom: 20 }}>
@@ -244,9 +262,7 @@ class Dashboard extends React.Component {
                 <Counter
                   title={"JOINED IN 24 HOURS"}
                   counts={
-                    this.props.user
-                      ? this.props.user.dailyUsersCount
-                      : 0
+                   this.state.dailyUsersCount
                   }
                 />
               ) : null}
@@ -255,7 +271,7 @@ class Dashboard extends React.Component {
             <Col size={3}>
               {this.props.user.totalUSDAmountDistributed ? (
                 <Counter
-                  title={"DISTRIBUTED AMOUNT(USD)"}
+                  title={"DISTRIBUTED AMOUNT (USD)"}
                   counts={
                     this.props.user
                       ? this.props.user.totalUSDAmountDistributed
@@ -268,7 +284,7 @@ class Dashboard extends React.Component {
             <Col size={3}>
               {this.props.user.totalAmountDistributed ? (
                 <Counter
-                  title={"DISTRIBUTED AMOUNT(TRX)"}
+                  title={"DISTRIBUTED AMOUNT (TRX)"}
                   counts={
                     this.props.user
                       ? this.props.user.totalAmountDistributed
@@ -279,181 +295,166 @@ class Dashboard extends React.Component {
             </Col>
           </Row>
 
-          <Row style={{ alignItems: "flex-start" }} className="row-eq-height">
+          <Row style={{
+            alignItems: "flex-start"
+          }}
+            className="row-eq-height">
 
             <Col xs={8} lg={8} sm={8} md={8} xl={8} >
 
 
-              <Row style={{ marginTop: 10, marginBottom: 10 }}>
-                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
-                  <InfoTile
-                    primaryTitle={"Direct Bonus"}
-                    secondaryTitle={"Total Direct"}
-                    primaryAmount={
-                      this.props.user.income
-                        ? this.props.user.income.directIncome
-                        : "-"
-                    }
-                    bgStartColor={"#00b894"}
-                    bgEndColor={"#018067"}
-                    secondaryAmount={
-                      this.props.user ? this.props.user.totalReferals : 0
-                    }
-                  />
-                </Col>
+              <div style={{
+                marginTop: 10, marginBottom: 10, display: "grid",
+                gridTemplateColumns: "repeat(3, 2fr)",
+              }}>
+                <InfoTile
+                  primaryTitle={"Direct Bonus"}
+                  secondaryTitle={"Total Direct"}
+                  primaryAmount={
+                    this.props.user.income
+                      ? this.props.user.income.directIncome
+                      : "-"
+                  }
+                  bgEndColor={"#b01ec6"}
+                  bgStartColor={"#ed0bd7"}
+                  secondaryAmount={
+                    this.props.user ? this.props.user.totalReferals : "-i"
+                  }
+                />
 
-                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
-                  <InfoTile
-                    primaryTitle={"Reward Bonus"}
-                    secondaryTitle={"Total Win"}
-                    primaryAmount={
-                      this.props.user.income
-                        ? this.props.user.income.rewardIncome
-                        : "-"
-                    }
-                    bgStartColor={"#0984e3"}
-                    bgEndColor={"#06508a"}
-                    secondaryAmount={
-                      this.props.user ? this.props.user.totalWins : "-"
-                    }
-                  />
-                </Col>
-
-                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
-                  <InfoTile
-                    primaryTitle={"Level Bonus"}
-                    secondaryTitle={"Level Loss"}
-                    primaryAmount={
-                      this.props.user.income
-                        ? this.props.user.income.levelIncome
-                        : "-"
-                    }
-                    secondaryAmount={
-                      this.props.user.loss ? this.props.user.loss / 1000000 : 0
-                    }
-                    bgStartColor={"#fdcb6e"}
-                    bgEndColor={"#bf8415"}
-                  />
-                </Col>
+                <InfoTile
+                  primaryTitle={"Reward Bonus"}
+                  secondaryTitle={"Total Win"}
+                  primaryAmount={
+                    this.props.user.income
+                      ? this.props.user.income.rewardIncome
+                      : "-"
+                  }
+                  bgStartColor={"#402493"}
+                  bgEndColor={"#8c24ad"}
+                  secondaryAmount={
+                    this.props.user ? this.props.user.totalWins : "-"
+                  }
+                />
+                <InfoTile
+                  primaryTitle={"Level Bonus"}
+                  secondaryTitle={"Level Loss"}
+                  primaryAmount={
+                    this.props.user.income
+                      ? this.props.user.income.upgradeIncome
+                      : "-"
+                  }
+                  secondaryAmount={
+                    this.props.user.loss ? this.props.user.loss / 1000000 : "-"
+                  }
+                  bgStartColor={"#4c28b5"}
+                  bgEndColor={"#2198c1"}
+                />
 
 
-                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
-                  <InfoTile
-                    primaryTitle={"Recycle Bonus"}
-                    secondaryTitle={"Total Recycle"}
-                    primaryAmount={
-                      this.props.user.income
-                        ? this.props.user.income.recycleIncome
-                        : "-"
-                    }
-                    secondaryAmount={
-                      this.props.user ? this.props.user.totalRecycles : "-"
-                    }
-                    bgStartColor={"#621e94"}
-                    bgEndColor={"#240b36"}
-                  />
-                </Col>
+                <InfoTile
+                  primaryTitle={"Recycle Bonus"}
+                  secondaryTitle={"Total Recycle In"}
+                  primaryAmount={
+                    this.props.user.income
+                      ? this.props.user.income.recycleIncome
+                      : "-"
+                  }
+                  secondaryAmount={
+                    this.props.user && this.props.user.income ?
+                      this.props.user.income.totalRecyclesIn : "-"
+                  }
+                  bgEndColor={"#b01ec6"}
+                  bgStartColor={"#ed0bd7"}
+                />
 
-                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
-                  <InfoTile
-                    primaryTitle={"Level Fund"}
-                    secondaryTitle={"Level Bought"}
-                    primaryAmount={
-                      this.props.user.funds
-                        ? this.props.user.funds.levelFund
-                        : "-"
-                    }
-                    secondaryAmount={
-                      this.props.user ? this.props.user.levelsPurchased : "-"
-                    }
-                    bgStartColor={"#961516"}
-                    bgEndColor={"#d63031"}
-                  />
-                </Col>
+                <InfoTile
+                  primaryTitle={"Level Fund"}
+                  secondaryTitle={"Level Bought"}
+                  primaryAmount={
+                    this.props.user.funds
+                      ? this.props.user.funds.levelFund
+                      : "-"
+                  }
+                  secondaryAmount={
+                    this.props.user ? this.props.user.levelsPurchased : "-"
+                  }
+                  bgStartColor={"#402493"}
+                  bgEndColor={"#8c24ad"}
+                />
 
-                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
-                  <InfoTile
-                    primaryTitle={"Recycle Fund"}
-                    secondaryTitle={"Total Recycle"}
-                    primaryAmount={
-                      this.props.user.funds
-                        ? this.props.user.funds.recycleFund
-                        : "-"
-                    }
-                    secondaryAmount={
-                      this.props.user ? this.props.user.totalRecycles : "-"
-                    }
-                    bgStartColor={"#d35400"}
-                    bgEndColor={"#a1511b"}
-                  />
-                </Col>
+                <InfoTile
+                  primaryTitle={"Recycle Fund"}
+                  secondaryTitle={"Total Recycle Out"}
+                  primaryAmount={
+                    this.props.user.funds
+                      ? this.props.user.funds.recycleFund
+                      : "-"
+                  }
+                  secondaryAmount={
+                    this.props.user ? this.props.user.totalRecycles : "-"
+                  }
+                  bgStartColor={"#4c28b5"}
+                  bgEndColor={"#2198c1"}
+                />
 
 
-                <Col xs={4} lg={4} sm={4} md={4} xl={4}>
-                  <InfoTile
-                    primaryTitle={"DIRECT TEAM BONUS"}
-                    secondaryTitle={""}
-                    primaryAmount={
-                      this.props.user.income
-                        ? this.props.user.income.upgradeIncome
-                        : "-"
-                    }
-                    secondaryAmount={""}
-                    bgEndColor={"#db4b32"}
-                    bgStartColor={"#ff7f50"}
-                  />
-                </Col>
+                <InfoTile
+                  primaryTitle={"Direct Team Bonus"}
+                  secondaryTitle={""}
+                  primaryAmount={
+                    this.props.user.income
+                      ? this.props.user.income.levelIncome
+                      : "-"
+                  }
+                  secondaryAmount={""}
+                  bgEndColor={"#b01ec6"}
+                  bgStartColor={"#ed0bd7"}
+                />
 
 
 
-
-
-                <Col xs={4} lg={4} sm={4} md={4} xl={4} style={{ paddingTop: 5 }}>
-                  <InfoTile
-                    primaryTitle={"Level Reward Wallet"}
-                    secondaryTitle={""}
-                    primaryAmount={
-                      this.props.user.rewardWallet
-                        ? this.props.user.rewardWallet
-                        : null}
-                    bgStartColor={"#00b894"}
-                    bgEndColor={"#018067"}
-                    secondaryAmount={
-                      ""
-                    }
-                  />
-                </Col>
-                <Col xs={4} lg={4} sm={4} md={4} xl={4} style={{ paddingTop: 5 }}>
-                  <InfoTile
-                    primaryTitle={"Performance Reward Wallet"}
-                    secondaryTitle={""}
-                    primaryAmount={
-                      this.props.user.levelRewardWallet
-                        ? this.props.user.levelRewardWallet
-                        : null}
-                    bgStartColor={"#00b894"}
-                    bgEndColor={"#018067"}
-                    secondaryAmount={
-                      ""
-                    }
-                  />
-                </Col>
-
-              </Row>
+                <InfoTile
+                  primaryTitle={"Level Reward Wallet"}
+                  secondaryTitle={""}
+                  primaryAmount={
+                    this.props.user.levelRewardWallet
+                      ? this.props.user.levelRewardWallet
+                      : "-"}
+                  bgStartColor={"#402493"}
+                  bgEndColor={"#8c24ad"}
+                  secondaryAmount={
+                    ""
+                  }
+                />
+                <InfoTile
+                  primaryTitle={"Performance Reward Wallet"}
+                  secondaryTitle={""}
+                  primaryAmount={
+                    this.props.user.rewardWallet
+                      ? this.props.user.rewardWallet
+                      : "-"}
+                  bgStartColor={"#4c28b5"}
+                  bgEndColor={"#2198c1"}
+                  secondaryAmount={
+                    ""
+                  }
+                />
+              </div>
 
 
 
-              <Widget style={{ marginTop: 25 }}>
+              {this.props.user && this.props.user.income ? <Widget style={{ marginTop: 25 }}>
 
 
                 <Row  >
-                  <Col xs={12} lg={8} sm={12} md={12} xl={8} style={{ paddingTop: 5 }}>
+                  <Col xs={12} lg={5} sm={12} md={12} xl={5} style={{ paddingTop: 5 }}>
                     {this.renderTree()}
                   </Col>
 
-                  <Col xs={12} lg={4} sm={12} md={12} xl={4} style={{ paddingTop: 5 }}>
+                  <Col xs={12} lg={7} sm={12} md={12} xl={7} style={{ paddingTop: 5 }}>
 
-                    <SecondRewardWallet
+                  <SecondRewardWallet
                       levelRewardWallet={
                         this.props.user.levelRewardWallet
                           ? this.props.user.levelRewardWallet
@@ -464,10 +465,15 @@ class Dashboard extends React.Component {
                           ? this.props.user.rewardWallet
                           : null
                       }
+                      rewardAmount={
+                        this.props.user.income.levelRewardIncome
+                          ? this.props.user.income.levelRewardIncome
+                          : 0}
                       refPercent={
                         this.props.user.refPercent ? this.props.user.refPercent : 0
                       }
-                    />
+                    /> 
+
 
 
 
@@ -479,7 +485,7 @@ class Dashboard extends React.Component {
 
               </Widget>
 
-
+                : null}
 
             </Col>
 
@@ -492,12 +498,12 @@ class Dashboard extends React.Component {
 
           {this.state.showBuyLevel ? <Widget
             title={
-              <Row style={{  justifyContent:"space-between" ,marginLeft:20,marginRight:20}}>
-                <h3>
-                  Buy <span className="fw-semi-bold">Levels</span>
+              <Row style={{ justifyContent: "space-between", marginLeft: 20, marginRight: 20 }}>
+                <h3  style={{textAlign:"center"}} >
+                  BUY <span className="fw-semi-bold">LEVELS</span>
                 </h3>
                 {this.props.user.sameAddress ? <Button color="primary" onClick={() => {
-                  this.Web3Ref.current.getWrappedInstance().buyAllLevel();
+                  this.props.Web3Ref.current.getWrappedInstance().buyAllLevel();
                 }}>Buy All Levels</Button>
                   : null}
               </Row>
@@ -644,9 +650,9 @@ class Dashboard extends React.Component {
           </Widget>
             : null}
           {this.renderRefferalsInfo()}
-          {this.renderPageLoadingDialoge()}
+          {/* {this.renderPageLoadingDialoge()} */}
 
-        </div>
+            </div>
 
       </>
     );

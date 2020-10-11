@@ -141,103 +141,146 @@ class Sidebar extends React.Component {
 
   render() {
     return (
-      <nav
-        className={cx(s.root)}
-        ref={(nav) => {
-          this.element = nav;
-        }}
-      >
-        <ul className={s.nav}>
-          <img
-            src={logo}
-            className={"LinksGroup_headerLink__vI_3u "}
-            style={{ width: "90%", height: "auto", marginTop: 30 }}
-            alt="Logo"
-          />
 
-          {/* <Header></Header> */}
+      <>
+        {/* <TronProvider ref={this.Web3Ref} /> */}
 
-          <hr className="solid" />
+        <nav
+          className={cx(s.root)}
+          ref={(nav) => {
+            this.element = nav;
+          }}
+        >
+          <ul className={s.nav}>
+            <img
+              src={logo}
+              className={"LinksGroup_headerLink__vI_3u "}
+              style={{ width: "90%", height: "auto", marginTop: 30 }}
+              alt="Logo"
+            />
 
-          {this.props.profile.name ? (
-            <>
-              <div className="avatar">
-                <span className="avatar__pic">
-                  {this.props.profile ? (
-                    <div style={{
-                      position: "relative",
-                      display: "inline-block"
-                    }}>
-                      {this.props.profile.levelNumber ?
-                        <img src={levelBadge[this.props.profile.levelNumber - 1]}
-                          alt="..." style={
+            {/* <Header></Header> */}
+
+            <hr className="solid" />
+
+            {this.props.profile.name ? (
+              <>
+                <Col style={{textAlign:"center"}}>
+                {this.props.profile ? (
+                      <div style={{
+                        display: "inline-block"
+                      }}>
+                        {this.props.profile.levelNumber ?
+                          <img src={levelBadge[this.props.profile.levelNumber - 1]}
+                            alt="..." style={
+                              {
+                                marginBottom: 5,
+                                height: 40, width: 40,
+                                objectFit: "cover",
+                                position: "absolute",
+                                top: "5",
+                                right: 0
+                              }} /> : null}
+
+                        <img src={this.props.profile.profile_pic ?
+                          this.props.profile.profile_pic : defaultAvatar} alt="..." style={
                             {
-                              marginBottom: 5,
-                              height: 30, width: 30,
+                              borderRadius: "50%", marginBottom: 5,
+                              height: 80, width: 80,
                               objectFit: "cover",
-                              position: "absolute",
-                              top: "-10",
-                              right: 0
-                            }} /> : null}
 
-                      <img src={this.props.profile.profile_pic ?
-                        this.props.profile.profile_pic : defaultAvatar} alt="..." style={
-                          {
-                            borderRadius: "50%", marginBottom: 5,
-                            height: 80, width: 80,
-                            objectFit: "cover",
-
-                          }} />
+                            }} />
 
 
 
 
-                    </div>
-                  ) : null}
-                </span>
-                <span className="avatar__name" style={{ fontSize: 22 }}>
-                  {this.props.profile
-                    ? this.props.profile.name
-                    : this.props.auth.userId}
-                </span>
-              </div>
-            </>
-          ) : null}
+                      </div>
+                    ) : null}
+
+                  <span className="avatar__name" style={{ fontSize: 22 }}>
+                    {this.props.profile
+                      ? this.props.profile.name
+                      : this.props.auth.userId}
+                  </span>
+                 
+                </Col>
+              </>
+            ) : null}
 
 
 
 
 
-          <LinksGroup
-            onActiveSidebarItemChange={(activeItem) =>
-              this.props.dispatch(changeActiveSidebarItem(activeItem))
-            }
-            activeItem={this.props.activeItem}
-            header="Dashboard"
-            isHeader
-            iconName="flaticon-home"
-            link="/dashboard"
-            index="main"
-          />
-          {/* <h5 className={[s.navTitle, s.groupTitle].join(' ')}>TEMPLATE</h5> */}
+            <LinksGroup
+              onActiveSidebarItemChange={(activeItem) =>
+                this.props.dispatch(changeActiveSidebarItem(activeItem))
+              }
+              activeItem={this.props.activeItem}
+              header="Dashboard"
+              isHeader
+              iconName="flaticon-home"
+              link="/dashboard"
+              index="main"
+            />
+            {this.props.user && this.props.user.sameAddress ? <LinksGroup
+              onActiveSidebarItemChange={(activeItem) =>
+                this.props.dispatch(changeActiveSidebarItem(activeItem))
+              }
+              activeItem={this.props.activeItem}
+              header="Profile"
+              isHeader
+              iconName="flaticon-user"
+              link="/profile"
+              index="core"
+            /> : null}
+
+            {/* <LinksGroup
+              onActiveSidebarItemChange={(activeItem) =>
+                this.props.dispatch(changeActiveSidebarItem(activeItem))
+              }
+              activeItem={this.props.activeItem}
+              header="Promotions"
+              isHeader
+              iconName="flaticon-share"
+              link="/market"
+              index="main"
+            /> */}
+
+            <LinksGroup
+              onActiveSidebarItemChange={(activeItem) =>
+                this.props.dispatch(changeActiveSidebarItem(activeItem))
+              }
+              activeItem={this.props.activeItem}
+              header="Ledger A/c"
+              isHeader
+              iconName="flaticon-notebook"
+              link="/ledger"
+              index="main"
+            />
+
+
+            <LinksGroup
+              onActiveSidebarItemChange={(activeItem) => {
+                this.props.dispatch(changeActiveSidebarItem(activeItem))
+
+                // this.doLogout()
+
+              }}
+              activeItem={this.props.activeItem}
+              header="Logout"
+              isHeader
+              link="#"
+
+              iconName="flaticon-exit"
+              index="main"
+            />
 
 
 
-          {this.props.user && this.props.user.sameAddress ? <LinksGroup
-            onActiveSidebarItemChange={(activeItem) =>
-              this.props.dispatch(changeActiveSidebarItem(activeItem))
-            }
-            activeItem={this.props.activeItem}
-            header="Profile"
-            isHeader
-            iconName="flaticon-user"
-            link="/dashboard/profile"
-            index="core"
-          /> : null}
 
 
 
-          {/* <LinksGroup
+            {/* <LinksGroup
             // onActiveSidebarItemChange={(t) =>
             //   // this.props.dispatch(changeActiveSidebarItem(t))
             // }
@@ -252,210 +295,289 @@ class Sidebar extends React.Component {
             // index="tables"
           /> */}
 
-          <div style={{ padding: "13px 20px" }}>
+            {/* <div style={{ padding: "13px 20px", fontSize: 18 }}>
 
-            <span >
-              <i className={`fi flaticon-exit`} />
-            </span>
+              <span  className={`fi flaticon-exit`} style={{    color:"#ed0bd7"
+}}>
+              </span>
 
-            <a onClick={() => {
-              console.log("logout")
+              <a onClick={() => {
+                console.log("logout")
 
-              this.doLogout()
-            }}> Log out</a>
-          </div>
+                this.doLogout()
 
-
-          <hr className="solid" />
+              }}> Log out</a>
+            </div> */}
 
 
-          <div className="id">
+            <hr className="solid" />
 
-            <div className="eth">
-              <div className="value">
-                <Row style={{ justifyContent: "space-between", }}>
 
-                  <h4>
+            <div className="id">
 
-                    <span
-                      className="fa fa-id-card-o"
-                      style={{ marginRight: 5, color: "#6ed89c" }}
-                    /></h4>
+              <div className="eth">
 
-                  <h4>
 
-                    {this.props.auth ? this.props.auth.userId : "0"}
-                  </h4>
+
+                <Row>
+
+                  <Col>
+                    <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
+
+                      <span
+                        className="fa fa-id-card-o"
+                        style={{ marginRight: 5, color: "#2198c1" }}
+                      /></h4>
+
+
+                    <h4 style={{ fontWeight: "bold", fontSize: 26, marginTop: 10 }}>
+
+                      <span
+                        className="fa fa-group"
+                        style={{ marginRight: 5, color: "#2198c1" }}
+                      /></h4>
+
+
+                    <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
+
+                      <span
+                        className="fa fa-dollar"
+                        style={{ marginRight: 5, color: "#2198c1" }}
+                      /></h4>
+
+
+                  </Col>
+
+                  <Col>
+
+                    <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
+
+                      {this.props.auth ? this.props.auth.userId : "0"}
+                    </h4>
+                    <h4 style={{ fontWeight: "bold", fontSize: 26, marginTop: 10 }}>
+
+
+                      {this.state.totalTeams}
+                    </h4>
+                    <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
+
+
+
+                      {this.props.user.income
+                        ? Math.round(
+                          (this.props.user.income.directIncome +
+                            this.props.user.income.levelIncome +
+                            this.props.user.income.recycleIncome) *
+                          0.0236 *
+                          100
+                        ) / 100
+                        : 0}
+                    </h4>
+
+                  </Col>
+
                 </Row>
+                {/* 
+                <div className="value">
+                  <Row style={{ justifyContent: "space-between", }}>
+
+                    <h4>
+
+                      <span
+                        className="fa fa-id-card-o"
+                        style={{ marginRight: 5, color: "#2198c1" }}
+                      /></h4>
+
+                    <h4>
+
+                      {this.props.auth ? this.props.auth.userId : "0"}
+                    </h4>
+                  </Row>
 
 
 
-                <Row style={{ justifyContent: "space-between", }}>
+                  <Row style={{ justifyContent: "space-between", }}>
 
-                  <h4>
+                    <h4>
 
-                    <span
-                      className="fa fa-group"
-                      style={{ marginRight: 5, color: "#6ed89c" }}
-                    /></h4>
+                      <span
+                        className="fa fa-group"
+                        style={{ marginRight: 5, color: "#2198c1" }}
+                      /></h4>
 
-                  <h4>
 
-                    {this.state.totalTeams}
-                  </h4>
-                </Row>
+                    <h4>
 
-                <Row style={{ justifyContent: "space-between" }}>
 
-                  <h4>
+                      {this.state.totalTeams}
+                    </h4>
+                  </Row>
 
-                    <span
-                      className="fa fa-dollar"
-                      style={{ marginRight: 5, color: "#6ed89c" }}
-                    /></h4>
+                  <Row style={{ justifyContent: "space-between" }}>
 
-                  <h4>
+                    <h4>
 
-                    {this.props.user.income
-                      ? Math.round(
-                        (this.props.user.income.directIncome +
-                          this.props.user.income.levelIncome +
-                          this.props.user.income.recycleIncome) *
-                        0.0236 *
-                        100
-                      ) / 100
-                      : 0}
-                  </h4>
-                </Row>
+                      <span
+                        className="fa fa-dollar"
+                        style={{ marginRight: 5, color: "#2198c1" }}
+                      /></h4>
+
+
+                    <h4>
 
 
 
+                      {this.props.user.income
+                        ? Math.round(
+                          (this.props.user.income.directIncome +
+                            this.props.user.income.levelIncome +
+                            this.props.user.income.recycleIncome) *
+                          0.0236 *
+                          100
+                        ) / 100
+                        : 0}
+                    </h4>
+                  </Row>
+
+
+
+                </div>
+           
+            */}
+              </div>
+              <div className="id__btn">
+                {/* <img src={eth} style={{ height: 30, margin: 5 }}></img> */}
+
+                <h4 className={"fw-bold"} style={{fontSize:28,textAlign:"center",paddingRight:8,paddingLeft:8}}>
+                Trx{" "}
+                  {this.props.user.income
+                    ? this.props.user.income.directIncome +
+                    this.props.user.income.levelIncome +
+                    this.props.user.income.recycleIncome +
+                    this.props.user.income.rewardIncome +
+                    this.props.user.income.levelRewardIncome +
+                    this.props.user.income.upgradeIncome
+                    : 0}
+                
+              </h4>
               </div>
             </div>
-            <div className="id__btn">
-              <img src={eth} style={{ height: 30, margin: 5 }}></img>
 
-              <h4 className={"fw-bold"}>
-                {this.props.user.income
-                  ? this.props.user.income.directIncome +
-                  this.props.user.income.levelIncome +
-                  this.props.user.income.recycleIncome +
-                  this.props.user.income.upgradeIncome
+            <Widget title={"Withdraw"}>
+              <Button color="primary" style={{ marginBottom: 10, background: "#ed0bd7", borderWidth: 0,  fontWeight: "bold" }}>Level Fund Withdrawal</Button>{' '}
+              <Button color="primary" style={{ background: "#2198c1",  borderWidth: 0, fontWeight: "bold", marginBottom: 10 }}>Recycle Fund Withdrawal</Button>{' '}
+              <Button color="primary" style={{
+                background: "#ca9024", fontWeight: "bold", borderWidth: 0, color: "#000"
+                , width: "100%"
+              }}>Extra Benefits</Button>{' '}
 
-                  : 0}{" "}
-                trx
-              </h4>
-            </div>
-          </div>
-
-          {/* <Widget title={"Withdraw"}>
-          <Button color="primary">Withdraw Your Earnings</Button>{' '}
-
-          </Widget> */}
+            </Widget>
 
 
 
-          <Widget title={"Affiliate Link"}>
-            <p
-              className="fw-semi-bold tile-hover"
-              onClick={(f) => {
-                console.log("clickedddddd", f);
-                // this.copyToClipboard(
-                //   "Affiliate Link",
-                //   "http://dash.nexen.live/" + this.props.auth.userId
-                // );
-              }}
-            >
-              <Clipboard
-                style={{
-                  background: "transparent",
-                  backgroundColor: "transparent",
-                  color: "#fff",
-                  fontWeight: "bold",
-                  borderColor: "transparent"
+            <Widget title={"Affiliate Link"}>
+              <p
+                className="fw-semi-bold tile-hover"
+                onClick={(f) => {
+                  console.log("clickedddddd", f);
+                  // this.copyToClipboard(
+                  //   "Affiliate Link",
+                  //   "http://dash.nexen.live/" + this.props.auth.userId
+                  // );
                 }}
-                onSuccess={this.onSuccessCopy}
-                data-clipboard-text={"http://dash.nexen.live/" + this.props.auth.userId}>
-                http://dash.nexen.live/{this.props.auth.userId}
+              >
+                <Clipboard
+                  style={{
+                    background: "transparent",
+                    backgroundColor: "transparent",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    borderColor: "transparent"
+                  }}
+                  onSuccess={this.onSuccessCopy}
+                  data-clipboard-text={"http://dash.nexen.live/" + this.props.auth.userId}>
+                  http://dash.nexen.live/{this.props.auth.userId}
 
-              </Clipboard>
-            </p>
-          </Widget>
+                </Clipboard>
+              </p>
+            </Widget>
+{/* 
+            <Widget title={"Share Us"}>
+              <div className="sharethis-inline-share-buttons"></div>
+            </Widget> */}
 
-          <Widget title={"Share Us"}>
-            <div className="sharethis-inline-share-buttons"></div>
-          </Widget>
-
-          <Widget title={"Smart Contract Address"}>
-            <p
-              className="fw-semi-bold tile-hover"
-              onClick={(f) => {
-                // this.copyToClipboard(
-                //   "Smart Contract Address",
-                //   this.props.user.contractAddress
-                // );
-              }}
-            >
-
-              <Clipboard
-                style={{
-                  background: "transparent",
-                  backgroundColor: "transparent",
-                  color: "#fff",
-                  fontWeight: "bold",
-                  borderColor: "transparent"
+            <Widget title={"Smart Contract Address"}>
+              <p
+                className="fw-semi-bold tile-hover"
+                onClick={(f) => {
+                  // this.copyToClipboard(
+                  //   "Smart Contract Address",
+                  //   this.props.user.contractAddress
+                  // );
                 }}
-                onSuccess={this.onSuccessCopy}
-                data-clipboard-text={this.props.user ? 
-                  this.props.user.contractAddress : "0000000000"}
+              >
+
+                <Clipboard
+                  style={{
+                    background: "transparent",
+                    backgroundColor: "transparent",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    borderColor: "transparent"
+                  }}
+                  onSuccess={this.onSuccessCopy}
+                  data-clipboard-text={this.props.user ?
+                    this.props.user.contractAddress : "0000000000"}
                 >
-                {this.props.user ? this.props.user.contractAddress : "0000000000"}
+                  {this.props.user ? this.props.user.contractAddress : "0000000000"}
 
-              </Clipboard>
-            </p>
-          </Widget>
+                </Clipboard>
+              </p>
+            </Widget>
 
-          <Widget title={"TRON WALLET"}>
-            <p
-              className="fw-semi-bold tile-hover"
-              onClick={(f) => {
-                // this.copyToClipboard(
-                //   "Etherium Wallet Address",
-                //   this.props.user.walletAddress
-                // );
-              }}
-            >
-              <Clipboard
-                style={{
-                  background: "transparent",
-                  backgroundColor: "transparent",
-                  color: "#fff",
-                  fontWeight: "bold",
-                  borderColor: "transparent"
+            <Widget title={"TRON WALLET"}>
+              <p
+                className="fw-semi-bold tile-hover"
+                onClick={(f) => {
+                  // this.copyToClipboard(
+                  //   "Etherium Wallet Address",
+                  //   this.props.user.walletAddress
+                  // );
                 }}
-                onSuccess={this.onSuccessCopy}
-                data-clipboard-text={this.props.user ? 
-                  this.props.user.walletAddress : "0000000000"}
+              >
+                <Clipboard
+                  style={{
+                    background: "transparent",
+                    backgroundColor: "transparent",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    borderColor: "transparent"
+                  }}
+                  onSuccess={this.onSuccessCopy}
+                  data-clipboard-text={this.props.user ?
+                    this.props.user.walletAddress : "0000000000"}
 
                 >
-              {this.props.user ? this.props.user.walletAddress : "0000000000"}
+                  {this.props.user ? this.props.user.walletAddress : "0000000000"}
 
-              </Clipboard>
-            </p>
-          </Widget>
-
-
+                </Clipboard>
+              </p>
+            </Widget>
 
 
 
-          {/* <MyRewards /> */}
 
 
-        </ul>
+            {/* <MyRewards /> */}
+
+
+          </ul>
 
 
 
-      </nav>
+        </nav>
+
+      </>
     );
   }
 }

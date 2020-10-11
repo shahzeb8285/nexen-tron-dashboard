@@ -23,7 +23,7 @@ import { apiService } from '../../Services/api.service';
 import defaultAvatar from "../../images/avatar.png";
 import "./ReferalTable.scss"
 const levelPrice = [
-  200,300,400,500,600,700,800,900,1000,1100
+  200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100
 ]
 class ReferalTable extends React.Component {
 
@@ -35,7 +35,8 @@ class ReferalTable extends React.Component {
       selectedLevel: null,
       levelExpandData: [],
       isDataLoading: false,
-      currentExpandUiItems:[]
+      currentExpandUiItems: [],
+      isMyRefFilterChecked:false,
     }
   }
 
@@ -72,55 +73,69 @@ class ReferalTable extends React.Component {
     var totalReferals = this.getMaxReferals(levelNumber);
 
     if (referalNumber == totalReferals) {
-      return <Badge color="success" className="text-secondary" pill>Completed</Badge>
+      return <Badge style={{background:"#ed0bd7",width:"100%"}} className="text-secondary" pill>Completed</Badge>
     } else if (referalNumber == 0) {
-      return <Badge color="gray" className="text-secondary" pill>Not Started</Badge>
+      return <Badge  style={{width:"100%"}}  color="gray" className="text-secondary" pill>Not Started</Badge>
     } else if (referalNumber < totalReferals) {
-      return <Badge color="primary" className="text-secondary" pill>Going On</Badge>
+      return <Badge  style={{width:"100%"}} color="primary" className="text-secondary" pill>Going On</Badge>
     }
   }
 
 
-
-  async fetchLevelData(levelNumber){
-    var totalBonus=0
-    var resp = await apiService.getUserTree(parseInt(this.props.myId),
-    parseInt(levelNumber))
-    if(resp.status == 200){
-      var data = resp.data;
-      var levelExpandData  = this.state.levelExpandData;
-      for(var i=0;i<data.tree.length;i++){
-        var user = data.tree[i];
-        var bonus =0;
-        for(var j =0;j<user.levelNumber;j++){
-          bonus = bonus+(levelPrice[j]*8/100)
-          totalBonus=bonus+totalBonus
-        }
-
-        data.tree[i].totalLevelBonus=bonus
+  calculateLevelBonus(levels) {
+    console.log("levewl", level)
+    var total = 0
+    for (var level of levels) {
+      var levelBonus = 0;
+      for (var j = 0; j < level.levelNumber; j++) {
+        levelBonus = levelBonus + (parseInt(levelPrice[j]) * 8 / 100)
       }
-      levelExpandData[levelNumber-1] = data.tree;
-      this.setState({levelExpandData,currentExpandUiItems:data.tree,totalBonus})
-      console.log("refereadata",JSON.stringify(data.tree))
+      total = total + levelBonus
+    }
 
-    }else{
+    return total
+  }
+
+  async fetchLevelData(levelNumber) {
+    var totalBonus = 0
+    var resp = await apiService.getUserTree(parseInt(this.props.myId),
+      parseInt(levelNumber))
+    if (resp.status == 200) {
+      var data = resp.data;
+      var levelExpandData = this.state.levelExpandData;
+      for (var i = 0; i < data.tree.length; i++) {
+        var user = data.tree[i];
+        var bonus = 0;
+        for (var j = 0; j < user.levelNumber; j++) {
+          bonus = bonus + (parseInt(levelPrice[j]) * 8 / 100)
+          totalBonus = bonus + parseInt(totalBonus)
+        }
+        console.log("totalBonus", totalBonus)
+
+        data.tree[i].totalLevelBonus = bonus
+      }
+      levelExpandData[levelNumber - 1] = data.tree;
+      this.setState({ levelExpandData, currentExpandUiItems: data.tree, totalBonus })
+      console.log("refereadata", JSON.stringify(data.tree))
+
+    } else {
 
     }
 
 
-    this.setState({isDataLoading:false})
+    this.setState({ isDataLoading: false })
   }
 
   onLevelClicked(level) {
-    var isDataLoading= false
+    var isDataLoading = false
     var currentExpandUiItems = []
-    if(!this.state.levelExpandData[level.level-1]){
+    if (!this.state.levelExpandData[level.level - 1]) {
       isDataLoading = true
       this.fetchLevelData(level.level)
-    }else{
-      currentExpandUiItems = this.state.levelExpandData[level.level-1]
+    } else {
+      currentExpandUiItems = this.state.levelExpandData[level.level - 1]
     }
-    this.setState({ selectedLevel: level.level,isDataLoading,currentExpandUiItems })
+    this.setState({ selectedLevel: level.level, isDataLoading, currentExpandUiItems })
   }
 
 
@@ -132,55 +147,121 @@ class ReferalTable extends React.Component {
       <span>Filter By</span>
 
       <Col>
-          <Input type="checkbox" />{' '}
-          Filter My Referals
+        <Input type="checkbox" onChange={()=>{
+          var isPrevChecked = this.state.isMyRefFilterChecked
+         
+          if(isPrevChecked){
+
+            this.setState({isMyRefFilterChecked:!isPrevChecked})
+
+          }else{
+            var filteredData = [];
+
+            for(var data of this.state.currentExpandUiItems){
+              if(data.rootReferrer == this.props.myId){
+                filteredData.push(data)
+
+              }
+            }
+            this.setState({isMyRefFilterChecked:!isPrevChecked,filteredData})
+
+          }
+        }} />{' '}
+          Filter My Referrals
       </Col>
 
 
-    
+
       <Table striped>
         <thead>
           <tr className="fs-sm">
             <th className="hidden-sm-down">Id</th>
-            <th>Picture</th>
+            <th>Image</th>
             <th className="hidden-sm-down">Name</th>
             <th className="hidden-sm-down">Level Badge</th>
 
             <th className="hidden-sm-down">Level</th>
-            <th className="hidden-sm-down">Is Direct Referal</th>
+            <th className="hidden-sm-down">Is Direct Referral</th>
             <th className="hidden-sm-down">Total Level Bonus</th>
+            <th className="hidden-sm-down">View Dashboard</th>
 
             {/* <th className="hidden-sm-down">Reward Amount</th>
           <th className="hidden-sm-down">Total referal</th> */}
           </tr>
         </thead>
         <tbody>
-          {
-            this.state.currentExpandUiItems.map(row =>
+          {this.state.isMyRefFilterChecked? this.state.filteredData.map(row =>
               <tr key={row.userId}>
                 <td>{row.userId}</td>
                 <td>
-                  <Avatar src={row.profile_pic?row.profile_pic:defaultAvatar} extraStyle={{
+                  <Avatar src={row.profile_pic ? row.profile_pic : defaultAvatar} extraStyle={{
                     borderRadius: "50%",
                     height: 50, width: 50
                   }} />
 
-                </td>                
-                <td>{row.name?row.name:"-"}</td>
+                </td>
+                <td>{row.name ? row.name : "-"}</td>
 
                 <td>
-                 {!row.levelNumber || row.levelNumber ==0?"-": 
-                 <img src={require("../../images/level_badges/"+row.levelNumber+".png")} style={{
-                    height: 50, 
-                    // width: 50
-                  }} />}
+                  {!row.levelNumber || row.levelNumber == 0 ? "-" :
+                    <img src={require("../../images/level_badges/" + row.levelNumber + ".png")} style={{
+                      height: 50,
+                      // width: 50
+                    }} />}
 
-                </td>  
-                <td>{row.levelNumber?row.levelNumber:0}</td>
-                <td>{row.rootReferrer==this.props.myId ?"Yes":"No"}</td>
+                </td>
+                <td>{row.levelNumber ? row.levelNumber : 0}</td>
+                <td>{row.rootReferrer == this.props.myId ? "Yes" : "No"}</td>
                 <td>{row.totalLevelBonus}</td>
+                <td> <Button
+                  color="primary"
+                  onClick={() => {
+                    var win = window.open("https://dash.nexen.live/"+row.userId, '_blank');
+                    win.focus();
+                  }}
+                >
+                  View
+            </Button></td>
 
-               
+
+
+              </tr>
+            )
+        :
+            this.state.currentExpandUiItems.map(row =>
+              <tr key={row.userId}>
+                <td>{row.userId}</td>
+                <td>
+                  <Avatar src={row.profile_pic ? row.profile_pic : defaultAvatar} extraStyle={{
+                    borderRadius: "50%",
+                    height: 50, width: 50
+                  }} />
+
+                </td>
+                <td>{row.name ? row.name : "-"}</td>
+
+                <td>
+                  {!row.levelNumber || row.levelNumber == 0 ? "-" :
+                    <img src={require("../../images/level_badges/" + row.levelNumber + ".png")} style={{
+                      height: 50,
+                      // width: 50
+                    }} />}
+
+                </td>
+                <td>{row.levelNumber ? row.levelNumber : 0}</td>
+                <td>{row.rootReferrer == this.props.myId ? "Yes" : "No"}</td>
+                <td>{row.totalLevelBonus}</td>
+                <td> <Button
+                  color="primary"
+                  onClick={() => {
+                    var win = window.open("https://dash.nexen.live/"+row.userId, '_blank');
+                    win.focus();
+                  }}
+                >
+                  View
+            </Button></td>
+
+
 
               </tr>
             )
@@ -198,7 +279,7 @@ class ReferalTable extends React.Component {
       <>
         <Modal isOpen={this.state.selectedLevel != null} size="xl">
           <ModalHeader>
-            <span className='fw-semi-bold'>{this.state.selectedLevel} Level Referals Details</span>
+            <span className='fw-semi-bold'>{this.state.selectedLevel} Level Referrals Details</span>
 
           </ModalHeader>
           <ModalBody>
@@ -215,16 +296,19 @@ class ReferalTable extends React.Component {
           </ModalBody>
           <ModalFooter>
 
-            <Row style={{alignItems:"flex-start",
-            width:"100%",justifyContent:"flex-start"}}>
-           <h5> <strong>* TOTAL LEVEL BONUS is calculated from the 8% of each level bonus </strong></h5>
-            <h5> | Total {this.state.totalBonus} TRX</h5> 
+            <Row style={{
+              alignItems: "flex-start",
+              width: "100%", justifyContent: "flex-start"
+            }}>
+              <h5> * TOTAL LEVEL BONUS is calculated from the 8% of each level bonus</h5>
+              <h5> | <strong>Total {this.calculateLevelBonus(this.state.currentExpandUiItems)} TRX</strong></h5>
 
             </Row>
             <Button
               color="danger"
               onClick={() => {
-                this.setState({ selectedLevel: null,currentExpandUiItems:[] });
+                this.setState({ selectedLevel: null, currentExpandUiItems: [],
+                  isMyRefFilterChecked:false,filteredData:[] });
               }}
             >
               Close
@@ -239,10 +323,10 @@ class ReferalTable extends React.Component {
   renderTableItems() {
     var items = this.state.levelData.map((level) => {
       return (
-        <tr key={level.level}  onClick={() => {
+        <tr key={level.level} onClick={() => {
           this.onLevelClicked(level)
         }}>
-          <td className='fw-semi-bold'>{level.level }</td>
+          <td className='fw-semi-bold'>{level.level}</td>
           <td className='fw-semi-bold'>{level.referals}</td>
           <td>{this.getMaxReferals(level.level)}</td>
           <td className='fw-semi-bold'>{this.getMaxReferals(level.level) - level.referals}</td>
@@ -259,15 +343,15 @@ class ReferalTable extends React.Component {
       <>
         {this.renderLevelExpandModal()}
         <Widget
-          title={<h3>Level <span className='fw-semi-bold'>Details</span></h3>}
+          title={<h3 style={{textAlign:"center"}}> <span className='fw-semi-bold' style={{textAlign:"center"}}>LEVEL DETAILS</span></h3>}
         >
           {this.state.levelData ? <Table>
             <thead>
               <tr>
                 <th>Level Number</th>
-                <th>Your Referals</th>
-                <th>Max Referals</th>
-                <th>Differnce</th>
+                <th>Your Referrals</th>
+                <th>Max Referrals</th>
+                <th>Difference</th>
                 <th>Status</th>
               </tr>
             </thead>
