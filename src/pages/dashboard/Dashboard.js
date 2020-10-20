@@ -147,6 +147,7 @@ class Dashboard extends React.Component {
   }
 
   onLevelClicked = (level) => {
+   
     if (this.props.user.sameAddress) {
       if (level.isBought) {
         toast.success("You have already bought this level!");
@@ -251,7 +252,7 @@ class Dashboard extends React.Component {
             <Col size={3}>
               {this.props.user.totalUsers ? (
                 <Counter
-                  title={"ALL PARTICIPANTS"}
+                  title={"Total Users"}
                   counts={this.props.user ? this.props.user.totalUsers : 0}
                 />
               ) : null}
@@ -260,7 +261,7 @@ class Dashboard extends React.Component {
             <Col size={3}>
               {this.props.user.totalUSDAmountDistributed ? (
                 <Counter
-                  title={"JOINED IN 24 HOURS"}
+                  title={"Daily Users"}
                   counts={
                    this.state.dailyUsersCount
                   }
@@ -271,7 +272,7 @@ class Dashboard extends React.Component {
             <Col size={3}>
               {this.props.user.totalUSDAmountDistributed ? (
                 <Counter
-                  title={"DISTRIBUTED AMOUNT (USD)"}
+                  title={"Total USD Distributed"}
                   counts={
                     this.props.user
                       ? this.props.user.totalUSDAmountDistributed
@@ -284,7 +285,7 @@ class Dashboard extends React.Component {
             <Col size={3}>
               {this.props.user.totalAmountDistributed ? (
                 <Counter
-                  title={"DISTRIBUTED AMOUNT (TRX)"}
+                  title={"Total TRX Distributed"}
                   counts={
                     this.props.user
                       ? this.props.user.totalAmountDistributed
@@ -448,11 +449,11 @@ class Dashboard extends React.Component {
 
 
                 <Row  >
-                  <Col xs={12} lg={5} sm={12} md={12} xl={5} style={{ paddingTop: 5 }}>
+                  <Col xs={12} lg={12} sm={12} md={12} xl={12} style={{ paddingTop: 5 }}>
                     {this.renderTree()}
                   </Col>
 
-                  <Col xs={12} lg={7} sm={12} md={12} xl={7} style={{ paddingTop: 5 }}>
+                  {/* <Col xs={12} lg={7} sm={12} md={12} xl={7} style={{ paddingTop: 5 }}>
 
                   <SecondRewardWallet
                       levelRewardWallet={
@@ -477,7 +478,7 @@ class Dashboard extends React.Component {
 
 
 
-                  </Col>
+                  </Col> */}
 
 
 

@@ -19,6 +19,8 @@ import Header from "../Header/Header";
 import { closeSidebar, openSidebar } from "../../actions/navigation";
 import MyRewards from "../../components/MyRewards/MyRewards";
 import Clipboard from 'react-clipboard.js';
+import SecondRewardWallet from "../../pages/SecondRewardWallet/SecondRewardWallet";
+import htmlToImage from 'html-to-image';
 
 let levelBadge = [
   require("../../images/level_badges/1.png"),
@@ -68,6 +70,9 @@ class Sidebar extends React.Component {
       },
       false
     );
+
+    this.winnerPhoto = React.createRef()
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -165,45 +170,47 @@ class Sidebar extends React.Component {
 
             {this.props.profile.name ? (
               <>
-                <Col style={{textAlign:"center"}}>
-                {this.props.profile ? (
-                      <div style={{
-                        display: "inline-block"
-                      }}>
-                        {this.props.profile.levelNumber ?
-                          <img src={levelBadge[this.props.profile.levelNumber - 1]}
-                            alt="..." style={
-                              {
-                                marginBottom: 5,
-                                height: 40, width: 40,
-                                objectFit: "cover",
-                                position: "absolute",
-                                top: "5",
-                                right: 0
-                              }} /> : null}
-
-                        <img src={this.props.profile.profile_pic ?
-                          this.props.profile.profile_pic : defaultAvatar} alt="..." style={
+                <div style={{ textAlign: "center", flexDirection: "column" }}>
+                  {this.props.profile ? (
+                    <div style={{
+                      // display: "inline-block"
+                      flexDirection: "column",
+                    }}>
+                      {this.props.profile.levelNumber ?
+                        <img src={levelBadge[this.props.profile.levelNumber - 1]}
+                          alt="..." style={
                             {
-                              borderRadius: "50%", marginBottom: 5,
                               height: 80, width: 80,
-                              objectFit: "cover",
+                              objectFit: "contain",
+                              marginRight: -10
+                              // position: "absolute",
 
-                            }} />
+                            }} /> : null}
+
+                      <img src={this.props.profile.profile_pic ?
+                        this.props.profile.profile_pic : defaultAvatar} alt="..." style={
+                          {
+                            borderRadius: "50%", marginBottom: 5,
+                            height: 80, width: 80,
+                            objectFit: "cover",
+
+                          }} />
 
 
 
 
-                      </div>
-                    ) : null}
+                    </div>
+                  ) : null}
 
                   <span className="avatar__name" style={{ fontSize: 22 }}>
                     {this.props.profile
                       ? this.props.profile.name
                       : this.props.auth.userId}
                   </span>
-                 
-                </Col>
+
+
+
+                </div>
               </>
             ) : null}
 
@@ -234,7 +241,7 @@ class Sidebar extends React.Component {
               index="core"
             /> : null}
 
-            {/* <LinksGroup
+            <LinksGroup
               onActiveSidebarItemChange={(activeItem) =>
                 this.props.dispatch(changeActiveSidebarItem(activeItem))
               }
@@ -244,7 +251,7 @@ class Sidebar extends React.Component {
               iconName="flaticon-share"
               link="/market"
               index="main"
-            /> */}
+            />
 
             <LinksGroup
               onActiveSidebarItemChange={(activeItem) =>
@@ -350,16 +357,16 @@ class Sidebar extends React.Component {
 
                   <Col>
 
-                    <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
+                    <h4 style={{ fontWeight: "bold", fontSize: 26 ,fontSize:"1.5rem"}}>
 
                       {this.props.auth ? this.props.auth.userId : "0"}
                     </h4>
-                    <h4 style={{ fontWeight: "bold", fontSize: 26, marginTop: 10 }}>
+                    <h4 style={{ fontWeight: "bold", fontSize: 26, marginTop: 10,fontSize:"1.5rem" }}>
 
 
                       {this.state.totalTeams}
                     </h4>
-                    <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
+                    <h4 style={{ fontWeight: "bold", fontSize: 26 ,fontSize:"1.5rem"}}>
 
 
 
@@ -448,8 +455,8 @@ class Sidebar extends React.Component {
               <div className="id__btn">
                 {/* <img src={eth} style={{ height: 30, margin: 5 }}></img> */}
 
-                <h4 className={"fw-bold"} style={{fontSize:28,textAlign:"center",paddingRight:8,paddingLeft:8}}>
-                Trx{" "}
+                <h4 className={"fw-bold"} style={{ fontSize: 28, textAlign: "center", paddingRight: 8, paddingLeft: 8 }}>
+                  Trx{" "}
                   {this.props.user.income
                     ? this.props.user.income.directIncome +
                     this.props.user.income.levelIncome +
@@ -458,20 +465,187 @@ class Sidebar extends React.Component {
                     this.props.user.income.levelRewardIncome +
                     this.props.user.income.upgradeIncome
                     : 0}
-                
-              </h4>
+
+                </h4>
               </div>
             </div>
 
+
+            {/* <Widget style={{ textAlign: "center" }}>
+
+
+
+
+              <div
+                style={{
+                  position: "relative",
+                  marginTop: 10
+                }}>
+
+
+                <div
+
+                  ref={this.winnerPhoto}
+
+                  style={{
+                    background: "radial-gradient(farthest-side ellipse at 10% 0, #fdcb6e 20%, #bf8415)",
+                    // width: "100%",
+                    borderRadius: "8px",
+                    padding: "15px",
+                    textAlign: "center",
+                    marginTop: 0
+
+                  }}>
+                  <div className="image-crop" style={{
+                    display: "block",
+                    position: "relative",
+                    backgroundColor: "#E6EBEE",
+                    width: 100,
+                    height: 100,
+                    margin: "0 auto",
+                    overflow: "hidden",
+                    borderRadius: "50%",
+                    boxs: "1px 1px 5px #4069E2",
+                  }}>
+                    <img src={defaultAvatar} style={{
+                      width: 100,
+                      height: 100,
+                      objectFit: "contain",
+                      borderRadius: "50%"
+                    }} alt="" />
+                  </div>
+
+
+                  <div style={{ display: "inline-block" }}>
+
+                    <h2 style={{ color: "#fff", fontWeight: "bold" }} >Name</h2>
+
+                    <h4 style={{ color: "#fff" }}>Winning Date 22/May/2020</h4>
+
+
+
+                    <div style={{
+                      // background: "radial-gradient(farthest-side ellipse at 10% 0, #00b894 20%, #076e59)",
+                      // width: "100%",
+                      borderRadius: "8px",
+                      padding: "15px",
+                      // textAlign: "center",
+                      marginTop: 0
+                    }}>
+
+                      <Col style={{}}>
+                        <h4 style={{ color: "#fff", }} >WON 300 TRX</h4>
+
+                        <h4 style={{ color: "#fff" }} >ID 300 </h4>
+                        <div>&nbsp;</div>
+
+
+                        <h4 style={{ color: "#fff" }} >Directs 300 </h4>
+
+                      </Col>
+
+                    </div>
+                  </div>
+                </div>
+
+
+
+              </div>
+              <Button color="primary" style={{ width: "100%", marginTop: 10 }}
+                onClick={() => {
+                  htmlToImage.toPng(this.winnerPhoto.current, { quality: 0.95 })
+                    .then(function (dataUrl) {
+                      var link = document.createElement('a');
+                      link.download = 'winner.jpeg';
+                      link.href = dataUrl;
+                      link.click();
+                    });
+
+
+                }} >
+
+
+                Download Image
+              </Button>
+
+            </Widget>
+
+ */}
+
+
+            <Widget style={{ textAlign: "center" }}>
+              {/* <Button color="primary" style={{ marginBottom: 10, background: "#ed0bd7", borderWidth: 0,  fontWeight: "bold" }}>Level Fund Withdrawal</Button>{' '} */}
+              {/* <Button color="primary" style={{ background: "#2198c1",  borderWidth: 0, fontWeight: "bold", marginBottom: 10 }}>Recycle Fund Withdrawal</Button>{' '} */}
+              {/* <Button color="primary" style={{
+                background: "#ca9024", fontWeight: "bold", borderWidth: 0, color: "#000"
+                , width: "100%"
+              }}>Trx 1028</Button>{' '} */}
+
+
+
+              {this.props.user.refPercent ?
+
+                <>
+
+                  <span style={{
+                    color: "#fff", fontWeight: "bold", fontSize: 22,
+                    textAlign: "center"
+                  }}>Level Reward Bonus</span>
+
+
+
+                  <div style={{ marginTop: 10 }}>
+
+                 
+                    <SecondRewardWallet
+                      levelRewardWallet={
+                        this.props.user.levelRewardWallet
+                          ? this.props.user.levelRewardWallet
+                          : null
+                      }
+                      rewardWallet={
+                        this.props.user.rewardWallet
+                          ? this.props.user.rewardWallet
+                          : null
+                      }
+                      rewardAmount={
+                        this.props.user.income.levelRewardIncome
+                          ? this.props.user.income.levelRewardIncome
+                          : 0}
+                      refPercent={
+                        this.props.user.refPercent ? this.props.user.refPercent : 0
+                      }
+                    />
+                       <Button color="primary" style={{
+                      marginBottom: 10,marginTop:10, width: "100%",
+                      background: "#ed0bd7", borderWidth: 0, fontWeight: "bold"
+                    }}>Trx {" "}
+                      {this.props.user.income && this.props.user.income.levelRewardIncome
+                        ? this.props.user.income.levelRewardIncome : 0}</Button>
+
+                  </div>
+
+
+                </>
+                : null
+              }
+            </Widget>
+
+
+
+
             <Widget title={"Withdraw"}>
-              <Button color="primary" style={{ marginBottom: 10, background: "#ed0bd7", borderWidth: 0,  fontWeight: "bold" }}>Level Fund Withdrawal</Button>{' '}
-              <Button color="primary" style={{ background: "#2198c1",  borderWidth: 0, fontWeight: "bold", marginBottom: 10 }}>Recycle Fund Withdrawal</Button>{' '}
+              <Button color="primary" style={{ marginBottom: 10, background: "#ed0bd7", borderWidth: 0, fontWeight: "bold" }}>Level Fund Withdrawal</Button>{' '}
+              <Button color="primary" style={{ background: "#2198c1", borderWidth: 0, fontWeight: "bold", marginBottom: 10 }}>Recycle Fund Withdrawal</Button>{' '}
               <Button color="primary" style={{
                 background: "#ca9024", fontWeight: "bold", borderWidth: 0, color: "#000"
                 , width: "100%"
               }}>Extra Benefits</Button>{' '}
 
             </Widget>
+
+
+
 
 
 
@@ -501,7 +675,7 @@ class Sidebar extends React.Component {
                 </Clipboard>
               </p>
             </Widget>
-{/* 
+            {/* 
             <Widget title={"Share Us"}>
               <div className="sharethis-inline-share-buttons"></div>
             </Widget> */}

@@ -24,16 +24,18 @@ export default class SecondRewardWallet extends Component {
    fontWeight:900,
    justifyContent:"center"}}>
    
-   <h3 style={{color:"#fff"}}>Level Reward</h3>
-   <h3 style={{color:"#fff"}}>Bonus</h3>
+   {/* <h4 style={{color:"#fff"}}>Level Reward</h4>
+   <h4 style={{color:"#fff"}}>Bonus</h4> */}
+
+   {/* <span style={{color:"#fff",fontWeight:"bold",fontSize:22}}>Level Reward Bonus</span> */}
 
     <CircularProgressbar
       value={this.props.refPercent}
-      text={this.props.refPercent==100?this.props.rewardAmount+"TRX":this.props.refPercent+"%"}
+      text={this.props.refPercent+"%"}
       styles={{
         // Customize the root svg element
         root: {
-          height:200
+          // height:200
         },
         // Customize the path, i.e. the "completed progress"
         path: {

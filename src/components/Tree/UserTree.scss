@@ -1,17 +1,17 @@
-// .node{
-//     padding: 5px;
-//     border-radius: 8px;
-//     display: inline-block;
-//     border: 1px solid red;
-// }
+.node{
+    padding: 5px;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid red;
+}
 
 
 
 .user{
     // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     // width:80px;
     img{
         height: 80px;
@@ -30,7 +30,7 @@
 
 
 .user1{
-    display: flex;
+    // display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -52,69 +52,81 @@ width: 80px;
 }
 
 
-
-.user2{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width:80px;
-    img{
-        height: 80px;
-
-    }
-    .user__id2{
+ .user__id2{
     background: radial-gradient(farthest-side at 10% 0px, #402493 20%, #8c24ad);
-border-radius: 0px 0px 8px 8px;
-
-    // text-align: center;
-    // padding: 5px;
+    border-radius: 0px 0px 8px 8px;
+    text-align: center;
+    margin-right: auto;
+    margin-left: auto;
     width:80px;
     
     }
+
+
+
+.user2{
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+    img{
+        height: 80px;
+        width: 80px;
+
+    }
+    // .user__id2{
+    // background: radial-gradient(farthest-side at 10% 0px, #402493 20%, #8c24ad);
+    // border-radius: 0px 0px 8px 8px;
+    // text-align: center;
+    // // padding: 5px;
+    // // width:80px;
+    
+    // }
 }
 
 
 
 .user3{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width:80px;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+    // width:80px;
     img{
         height: 80px;
+        width: 80px;
 
     }
     .user__id3{
     background: radial-gradient(farthest-side at 10% 0px, #ed0bd7 20%, #b01ec6);
-border-radius: 0px 0px 8px 8px;
-    // text-align: center;
-    // padding: 5px;
+    border-radius: 0px 0px 8px 8px;
+    text-align: center;
+    margin-right: auto;
+    margin-left: auto;
     width:80px;
-    
     }
 }
 
 
 
 .user4{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width:80px;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+    // width:80px;
     img{
         height: 80px;
-        width: auto;
+        width: 80px;
 
     }
     .user__id4{
         background: radial-gradient(farthest-side at 10% 0px, #2198c1 20%, #4c28b5);
         border-radius: 0px 0px 8px 8px;
-    // text-align: center;
-    // padding: 5px;
-    width:80px;
+        text-align: center;
+        margin-right: auto;
+        margin-left: auto;
+        width:80px;
     
     }
 }

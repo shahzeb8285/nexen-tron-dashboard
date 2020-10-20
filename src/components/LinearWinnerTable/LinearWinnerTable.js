@@ -28,7 +28,7 @@ const LinearWinnerTable = (props) => {
   
   
   const rankGradient = [
-    "linear-gradient(to right, #0984e3, #06508a)",
+    "linear-gradient(to right, #fdcb6e, #bf8415)",
     "linear-gradient(to right, #b01ec6,#ed0bd7)",
     "linear-gradient(to right, #402493, #8c24ad)",
     "linear-gradient(to right, #4c28b5, #2198c1)",
@@ -86,50 +86,6 @@ const LinearWinnerTable = (props) => {
       }}>
 
 
-      {/* 
-      <Col xs={2} lg={2} sm={2} md={2} xl={2}>
-        <img src={props.data.user.profile_pic ? props.data.user.profile_pic : defaultAvatar} style={{ height: 50, width: 50, borderRadius: "50%", border: "3px  solid white" }} />
-
-      </Col>
-
-      <Col xs={8} lg={8} sm={8} md={8} xl={8}>
-        <div style={{ marginLeft: 10, marginRight: 10 }}>
-
-          <h6 className='fw-semi-bold' style={{ marginTop: 5 }}>
-            <strong>Rank : {props.data.rank}</strong></h6>
-
-          <h6 className='fw-semi-bold'>ID : {props.data.user.userId} {props.data.user.name ?
-            " Name : " + props.data.user.name
-            : null}</h6>
-          <ProgressBar
-            percent={(props.data.totalReferreral / props.maxReferals) * 100}
-            style={{}}
-            filledBackground={rankGradient[props.data.rank - 1]}
-          />
-
-          <h6 className='fw-semi-bold' style={{ marginTop: 5 }}>Total Direct : {props.data.totalReferreral}</h6>
-
-
-
-        </div>
-
-      </Col>
-
-
-      <Col xs={2} lg={2} sm={2} md={2} xl={2}   >
-       
-
-          <h2 style={{ fontWeight: "bold",padding:4, borderRadius: 10,
-            background: rankGradient[props.data.rank - 1],
-            border: "3px  solid white", }}>{props.data.rank==10?
-            props.data.rank:"0"+props.data.rank}</h2>
-
-
-
-      </Col> */}
-
-
-
 
       <div style={{ position: "relative" }}>
         <span className="notify-badge" style={{
@@ -138,7 +94,8 @@ const LinearWinnerTable = (props) => {
           textAlign: "center",
           padding: "0.4vw",
           position: "absolute",
-          top: -5,
+          fontSize:12,
+          top: -10,
           left: 0
 
         }}>
@@ -158,7 +115,7 @@ const LinearWinnerTable = (props) => {
       <Col style={{ marginRight: 10, marginLeft: 10 }}>
 
         <span style={{ fontWeight: 900, fontSize: "0.9vw" }}>
-          Name : {props.data.user && props.data.user.name ? props.data.user.name : ""}</span>
+          {props.data.user && props.data.user.name ? props.data.user.name : "Name : "}</span>
 
         <ProgressBar
           percent={(props.data.totalReferreral / props.maxReferals) * 100}

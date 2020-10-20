@@ -199,7 +199,7 @@ class RewardRankWinner extends React.Component {
             <Col style={{ marginRight: 10, marginLeft: 10 }}>
 
               <span style={{ fontWeight: 900, fontSize: "0.9vw",color:"#000" }}>
-                Name : {winner.user && winner.user.name ? winner.user.name : ""}</span>
+                {winner.user && winner.user.name ? winner.user.name : "Name :"}</span>
 
               <ProgressBar
                 percent={(winner.totalReferreral / maxReferals) * 100}

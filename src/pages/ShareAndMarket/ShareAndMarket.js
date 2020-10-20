@@ -19,6 +19,9 @@ import { backgroundColor } from 'echarts/lib/theme/dark';
 import './ShareAndMarket.scss';
 import Widget from '../../components/Widget/Widget';
 import defaultAvatar from "../../images/avatar.png"
+import smallGif from "../../marketing/ADVTISE250x250.gif"
+import mediumGif from "../../marketing/ADVTISE468x90.gif"
+import largeGif from "../../marketing/large.gif"
 
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
@@ -31,7 +34,7 @@ class ShareAndMarket extends Component {
 
     this.state = {
       isPageLoaded: true,
-      reward:null
+      reward: null
     }
     this.winnerPhoto = React.createRef()
 
@@ -40,9 +43,9 @@ class ShareAndMarket extends Component {
 
   componentDidMount() {
     // this.setState({ islogin: !true })
-    var smallBanner = '<a href="https://tronex.net/?ref=TPkavcJFbnEj6MRSiCnxsucxUh4M6SRVYh"><img src="https://tronex.net/img/728.gif" width="728" height="90" alt="TRONex.net | Get +200% up to your deposit right now. Safe and legit!"></a>'
-    var mediumBanner = '<a href="https://tronex.net/?ref=TPkavcJFbnEj6MRSiCnxsucxUh4M6SRVYh"><img src="https://tronex.net/img/728.gif" width="728" height="90" alt="TRONex.net | Get +200% up to your deposit right now. Safe and legit!"></a>'
-    var largeBanner = '<a href="https://tronex.net/?ref=TPkavcJFbnEj6MRSiCnxsucxUh4M6SRVYh"><img src="https://tronex.net/img/728.gif" width="728" height="90" alt="TRONex.net | Get +200% up to your deposit right now. Safe and legit!"></a>'
+    var smallBanner = '<a href="https://nexen.live/?ref='+this.props.auth.userId+'"><img src="http://dash.nexen.live/static/media/ADVTISE250x250.gif" width="250" height="250" alt="Nexen.Live | Get 80% Direct + Daily Reward + 20%  Direct level 8% team Level bonus + Recycle bonus. Join with World`s advance smart Contract!"></a>'
+    var mediumBanner = '<a href="https://nexen.live/?ref='+this.props.auth.userId+'"><img src="http://dash.nexen.live/static/media/ADVTISE468x90.gif" width="468" height="90" alt="Nexen.Live| Get 80% Direct + Daily Reward + 20%  Direct level 8% team Level bonus + Recycle bonus. Join with World`s advance smart Contract!"></a>'
+    var largeBanner = '<a href="https://nexen.live/?ref='+this.props.auth.userId+'"><img src="http://dash.nexen.live/static/static/media/large.gif" width="728" height="90" alt="Nexen.Live | Get 80% Direct + Daily Reward + 20%  Direct level 8% team Level bonus + Recycle bonus. Join with World`s advance smart Contract!"></a>'
 
     this.setState({ smallBanner, mediumBanner, largeBanner });
 
@@ -83,13 +86,8 @@ class ShareAndMarket extends Component {
 
   render() {
     return (
-      <Container className="mt--7" fluid>
-        {this.state.isPageLoaded ? <Widget
-        // title={<h3>Promotions</h3>
-        // }
-        >
-
-          <Row style={{ alignItems: "baseline" }}>
+   <>
+      {this.state.isPageLoaded ?   <Row style={{ alignItems: "baseline" }}>
             <Col xs={8} lg={8} sm={8} md={8} xl={8}>
               <h3>
                 Promo <span className="fw-semi-bold">Material</span>
@@ -103,10 +101,10 @@ class ShareAndMarket extends Component {
               }}>
 
 
-                <Col style={{ height: 125, width: 125, background: "yellow", marginBottom: 15 }}></Col>
+                <img src={smallGif} style={{ height: 150, width: 150, marginBottom: 15 }}></img>
 
                 <h4>
-                  Size <span className="fw-semi-bold">125px x 125px</span>
+                  Size <span className="fw-semi-bold">250px x 250px</span>
                 </h4>
 
 
@@ -138,7 +136,7 @@ class ShareAndMarket extends Component {
               }}>
 
 
-                <Col style={{ height: 90, width: 468, background: "yellow", marginBottom: 15 }}></Col>
+                <img src={mediumGif} style={{ height: 90, width: 468, marginBottom: 15 }}></img>
 
                 <h4>
                   Size <span className="fw-semi-bold">468px x 90px</span>
@@ -173,8 +171,7 @@ class ShareAndMarket extends Component {
                 display: "block"
               }}>
 
-
-                <Col style={{ height: 90, width: 728, background: "yellow", marginBottom: 15 }}></Col>
+                <img src={largeGif} style={{ height: 90, width: 500, marginBottom: 15 }}></img>
 
                 <h4>
                   Size <span className="fw-semi-bold">728px x 90px</span>
@@ -202,11 +199,7 @@ class ShareAndMarket extends Component {
             </Col>
 
 
-            <Col xs={4} lg={4} sm={4} md={4} xl={4}>
-
-             
-
-
+            {/* <Col xs={4} lg={4} sm={4} md={4} xl={4}>
               <div
                 style={{
                   position: "relative",
@@ -265,7 +258,7 @@ class ShareAndMarket extends Component {
                     }}>
                       <h2 style={{ fontSize: 30, color: "#fff", fontWeight: "bold" }} >WON 300 TRX</h2>
 
-                      <Row style={{justifyContent:"space-between"}}>
+                      <Row style={{ justifyContent: "space-between" }}>
                         <h2 style={{ fontSize: 25, color: "#fff", fontWeight: 700 }} >ID 300 </h2>
                         <div>&nbsp;</div>
 
@@ -281,31 +274,34 @@ class ShareAndMarket extends Component {
 
 
               </div>
-              <Button color="primary" style={{width:"100%",marginTop:10 }}
-                  onClick={() => {
-                    htmlToImage.toPng(this.winnerPhoto.current, { quality: 0.95 })
-                      .then(function (dataUrl) {
-                        var link = document.createElement('a');
-                        link.download = 'winner.jpeg';
-                        link.href = dataUrl;
-                        link.click();
-                      });
+              <Button color="primary" style={{ width: "100%", marginTop: 10 }}
+                onClick={() => {
+                  htmlToImage.toPng(this.winnerPhoto.current, { quality: 0.95 })
+                    .then(function (dataUrl) {
+                      var link = document.createElement('a');
+                      link.download = 'winner.jpeg';
+                      link.href = dataUrl;
+                      link.click();
+                    });
 
 
-                  }} >
+                }} >
 
 
-                  Download Image
+                Download Image
               </Button>
 
 
 
 
             </Col>
+           */}
+          
+          
+          
           </Row>
-        </Widget>
-          : this.renderPageLoadingDialoge()}
-      </Container>
+        
+          : this.renderPageLoadingDialoge()}</>
     )
   }
 }
@@ -315,6 +311,7 @@ function mapStateToProps(store) {
   return {
     user: store.Web3Reducer.user,
     profile: store.ProfileReducer.profile,
+    auth: store.auth,
 
   };
 }

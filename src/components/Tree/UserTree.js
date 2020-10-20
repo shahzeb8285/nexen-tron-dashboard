@@ -164,10 +164,11 @@ class UserTree extends Component {
                   <div className="user">
                     <a >
                       <img src={avatar}></img>
-                    </a>
-                    <div className="user__id">
+                      <div className="user__id">
                       <h4 style={{ color: "#000" }}><strong>{this.state.currentLevelData.id}</strong></h4>
                     </div>
+                    </a>
+                   
                   </div>
 
 
@@ -192,12 +193,13 @@ class UserTree extends Component {
                         >
                           <a>
                             <img src={avatar}></img>
-                          </a>
-
-                          <div className="user__id1">
+                            <div className="user__id1">
                             <h4 style={{ color: "#000" }}><strong>{this.state.currentLevelData.referrals[0]}</strong></h4>
 
                           </div>
+                          </a>
+
+                          
                         </div>
 
 
@@ -222,10 +224,10 @@ class UserTree extends Component {
                       >
                         <a>
                           <img src={avatar}></img>
+                          <h4 style={{ color: "#000" }} className="user__id2"> <strong>{this.state.currentLevelData.referrals[1]}</strong></h4>
+
                         </a>
-                        <div className="user__id2">
-                          <h4 style={{ color: "#000" }}> <strong>{this.state.currentLevelData.referrals[1]}</strong></h4>
-                        </div>
+                       
                       </div>
                     }
                   ></TreeNode>
@@ -245,10 +247,11 @@ class UserTree extends Component {
                       >
                         <a>
                           <img src={avatar}></img>
-                        </a>
-                        <div className="user__id3">
+                          <div className="user__id3">
                           <h4 style={{ color: "#000" }}><strong>{this.state.currentLevelData.referrals[2]}</strong></h4>
                         </div>
+                        </a>
+                       
                       </div>
                     }
                   /> : null}
@@ -263,11 +266,15 @@ class UserTree extends Component {
                             this.state.currentLevelData.referrals[3])
                         }}
                       >
-                        <a> <img src={avatar}></img></a>
-
+                        <a> <img src={avatar}></img>
+                        
                         <div className="user__id4">
                           <h4 style={{ color: "#000" }}><strong>{this.state.currentLevelData.referrals[3]}</strong></h4>
                         </div>
+                        
+                        </a>
+
+                       
                       </div>
                     }
                   /> : null}

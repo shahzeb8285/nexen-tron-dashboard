@@ -180,6 +180,51 @@ class TronProvider extends React.Component {
 
   }
 
+
+
+  async withDrawLevelFund() {
+    TronHelper.localContract
+      .withDrawlevelFund()
+      .send({ callValue: 0, shouldPollResponse: true })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("error while fetching winners", err);
+      });
+  }
+
+  async withDrawRecycleFundByOwner(add) {
+    TronHelper.localContract
+      .withdrawRecycleFundByOwner(add)
+      .send({ callValue: 0, shouldPollResponse: true })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("error while fetching winners", err);
+      });
+  }
+
+  async withDrawLevelFundByOwner(add) {
+    TronHelper.localContract
+      .withdrawLevelFundByOwner(add)
+      .send({ callValue: 0, shouldPollResponse: true })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("error while withdrawing amount", err);
+      });
+  }
+
+
+
+
+
+
+
+
   async initUser(id) {
     if (!TronHelper.localContract) {
       return;
@@ -840,15 +885,32 @@ class TronProvider extends React.Component {
 
   }
 
+
+  getLevelLable(levelNumber){
+    
+    var levelNames =[
+      "Bronze",
+      "Silver X",
+      "Super Gold",
+      "Diamond X",
+      "Green Diamond",
+      "Blue Diamond",
+      "Black Diamond",
+      "Platinum Pro",
+      "Supreme Pro",
+      "Supreme Commander"
+    ]
+    return "Buy "+ levelNames[levelNumber-1]+ " Level-"+levelNumber
+  }
   renderBuyDialog() {
     return (
       <>
         <Modal isOpen={this.state.visibleBuyModal}>
           <ModalHeader>
             <h3 className="fw-semi-bold">
-              Buy Level
+            
               {this.state.selectedLevel
-                ? " " + this.state.selectedLevel.position
+                ? this.getLevelLable(this.state.selectedLevel.position)
                 : ""}
             </h3>
           </ModalHeader>
@@ -863,21 +925,27 @@ class TronProvider extends React.Component {
               </Col>
 
               <Col>
-                <h2>Buy Level {this.state.selectedLevel.position}+ </h2>
+                <h2>  {this.state.selectedLevel
+                ? this.getLevelLable(this.state.selectedLevel.position)
+                : ""}</h2>
                 <hr className="solid" />
-                <Row>
-                  <Col>
-                    <h4>Buy Level {this.state.selectedLevel.position}+ </h4>
-                    <h4>Buy Level {this.state.selectedLevel.position}+ </h4>
-                  </Col>
 
-                  {/* <Spinner color="secondary" /> */}
 
-                  <Col>
-                    <h4>Buy Level {this.state.selectedLevel.position}+ </h4>
-                    <h4>Buy Level {this.state.selectedLevel.position}+ </h4>
-                  </Col>
-                </Row>
+                <h5><strong>Benefits</strong></h5>
+
+<span>
+1) After bought this level you will be able to get 8% profit from the same level of your downline.
+
+                
+</span>
+
+<br></br>
+
+<span>
+  2) Your position will be up and a badge will be displayed on your ID as per the position.
+</span>
+
+
               </Col>
             </Row>
           </ModalBody>
