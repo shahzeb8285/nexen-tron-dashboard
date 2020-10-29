@@ -36,43 +36,97 @@ function validateRoute(url) {
 
   return true
 }
+// const PrivateRoute = ({ propData, dispatch, component, ...rest }) => {
+
+
+//   //check route
+
+
+
+
+//   if(validateRoute(rest.location.pathname) && 
+//   localStorage.getItem('userId') !== rest.location.pathname.replace(/\D/g, "")){
+//     propData.dispatch(loginUser({ userId: rest.location.pathname.replace(/\D/g, "") }));
+//       return (<Redirect to="/dashboard" />)
+//   }
+
+//   if (localStorage.getItem('userId')) {
+//     propData.dispatch(loginUser({ userId: localStorage.getItem('userId') }));
+
+//     return ( // eslint-disable-line
+
+//       <Route {...rest} render={props => (React.createElement(component, props))} />
+//     );
+//   } else {
+
+
+//     if (validateRoute(rest.location.pathname)) {
+//       propData.dispatch(loginUser({ userId: rest.location.pathname.replace(/\D/g, "") }));
+//       // return (<Route {...rest} render={props => (React.createElement(component, props))} />)
+//       return (<Redirect to="/dashboard" />)
+
+//     } else {
+//       return (<Redirect to="/login" />)
+
+
+//     }
+//   }
+// };
+
+
 const PrivateRoute = ({ propData, dispatch, component, ...rest }) => {
 
+  var alreadyLoginId = localStorage.getItem('userId');
+  const urlParams = new URLSearchParams(window.location.search);
+  var newId =  urlParams.get('id');
 
-  //check route
-
-
-
-
-  if(validateRoute(rest.location.pathname) && 
-  localStorage.getItem('userId') != rest.location.pathname.replace(/\D/g, "")){
-    propData.dispatch(loginUser({ userId: rest.location.pathname.replace(/\D/g, "") }));
-      // return (<Route {...rest} render={props => (React.createElement(component, props))} />)
-      return (<Redirect to="/dashboard" />)
-  }
-
-  if (localStorage.getItem('userId')) {
-    propData.dispatch(loginUser({ userId: localStorage.getItem('userId') }));
-
-    return ( // eslint-disable-line
-
-      <Route {...rest} render={props => (React.createElement(component, props))} />
-    );
-  } else {
-
-
-    if (validateRoute(rest.location.pathname)) {
-      propData.dispatch(loginUser({ userId: rest.location.pathname.replace(/\D/g, "") }));
-      // return (<Route {...rest} render={props => (React.createElement(component, props))} />)
+  if(newId){
+    propData.dispatch(loginUser({ userId: newId}));
+    return (<Redirect to="/dashboard" />)
+  }else if(alreadyLoginId){
+    propData.dispatch(loginUser({ userId: alreadyLoginId}));
+    if(window.location.pathname ==="/"){
       return (<Redirect to="/dashboard" />)
 
-    } else {
-      return (<Redirect to="/login" />)
-
+    }else{
+     return <Route {...rest} render={props => (React.createElement(component, props))} />
 
     }
+   
+  }else{
+    return (<Redirect to="/login" />)
+
   }
+
+
+  // if (validateRoute(rest.location.pathname) &&
+  //   localStorage.getItem('userId') !== rest.location.pathname.replace(/\D/g, "")) {
+  //   propData.dispatch(loginUser({ userId: rest.location.pathname.replace(/\D/g, "") }));
+  //   return (<Redirect to="/dashboard" />)
+  // }
+
+  // if (localStorage.getItem('userId')) {
+  //   propData.dispatch(loginUser({ userId: localStorage.getItem('userId') }));
+
+  //   return ( // eslint-disable-line
+
+  //     <Route {...rest} render={props => (React.createElement(component, props))} />
+  //   );
+  // } else {
+
+
+  //   if (validateRoute(rest.location.pathname)) {
+  //     propData.dispatch(loginUser({ userId: rest.location.pathname.replace(/\D/g, "") }));
+  //     // return (<Route {...rest} render={props => (React.createElement(component, props))} />)
+  //     return (<Redirect to="/dashboard" />)
+
+  //   } else {
+  //     return (<Redirect to="/login" />)
+
+  //   }
+  // }
 };
+
 
 const CloseButton = ({ closeToast }) => <i onClick={closeToast} className="la la-close notifications-close" />
 
@@ -86,7 +140,7 @@ class App extends React.PureComponent {
     return (
       <>
         <div>
-    
+
           <ToastContainer
             autoClose={5000}
             hideProgressBar
@@ -100,9 +154,9 @@ class App extends React.PureComponent {
                     <Route path="/login" exact component={ErrorPage}/> */}
               <Route path="/login" exact component={Login} />
               {/* <Route path="/dashboard" exact component={LayoutComponent}/>  */}
-              <Route path="/notfound" exact component={NotFound}/> 
-              
-              <Route path="/MetaMaskError" exact component={MetaMaskError}/> 
+              <Route path="/notfound" exact component={NotFound} />
+
+              <Route path="/MetaMaskError" exact component={MetaMaskError} />
 
               <PrivateRoute path="*" propData={this.props} dispatch={this.props.dispatch} component={LayoutComponent} />
 
@@ -110,7 +164,7 @@ class App extends React.PureComponent {
               {/* <Redirect from="*" to="/"/> */}
 
 
-              
+
             </Switch>
           </BrowserRouter>
         </div>

@@ -32,11 +32,11 @@ export function receiveLogout() {
 // Logs the user out
 export function logoutUser() {
     return (dispatch) => {
-        dispatch(requestLogout());
+        // dispatch(requestLogout());
         localStorage.removeItem('authenticated');
         localStorage.removeItem('userId')
-
-        dispatch(receiveLogout());
+        window.location.replace("https://nexen.live");
+        // dispatch(receiveLogout());
     };
 }
 

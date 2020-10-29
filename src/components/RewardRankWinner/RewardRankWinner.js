@@ -161,8 +161,8 @@ class RewardRankWinner extends React.Component {
             noGutters
             key={winner.user.userId}
             style={{
-              background: "radial-gradient(farthest-side ellipse at 10% 0, " + "#fdcb6e"
-                + " 20%, " + "#bf8415" + ")",
+              background: "radial-gradient(farthest-side ellipse at 10% 0, " + "#ff6600"
+                + " 20%, " + "#fff000" + ")",
               paddingLeft: 15, paddingTop: 10,
               paddingBottom: 10,
               borderRadius: 10,

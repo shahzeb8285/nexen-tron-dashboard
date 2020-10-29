@@ -21,11 +21,14 @@ class Login extends React.Component {
     }
 
 
+  componentDidMount() {
+    localStorage.removeItem('authenticated');
+    localStorage.removeItem('userId')
+    window.location.replace("https://nexen.live");
+  }
 
+  
 
-    goTodashboard() {
-        this.props.history.push('/register');
-    }
 
     render() {
 
@@ -34,43 +37,7 @@ class Login extends React.Component {
 
         return (
             <div className="auth-page">
-                <Container>
-                    <Widget className="widget-auth mx-auto"
-                        title={<h3 className="mt-0">Login to Nexen Dashboard</h3>}>
-
-                        <form onSubmit={this.doLogin}>
-
-                            <FormGroup>
-                                <InputGroup className="">
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
-                                            <i className="la la-user text-white" />
-                                        </InputGroupText>
-                                    </InputGroupAddon>
-                                    <Input id="userId" className="input-transparent pl-3"
-                                        value={this.state.userId} onChange={(e) => {
-                                            this.setState({ userId: e.target.value });
-
-                                        }}
-                                        type="number"
-                                        required name="userId" placeholder="Enter ID" />
-                                </InputGroup>
-                            </FormGroup>
-
-
-                            <div className="auth-widget-footer" style={{ paddingBottom: 20 }}>
-                                <Button onClick={() => {
-                                    this.props.history.push('/'+this.state.userId);
-                                }} color="primary" className="auth-btn"
-                                    size="sm" style={{ color: '#fff' }}>
-                                    Go To Dashboard
-                                </Button>
-
-                            </div>
-                        </form>
-                    </Widget>
-                </Container>
-
+             
             </div>
         );
     }

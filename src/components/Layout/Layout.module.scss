@@ -5,6 +5,7 @@
   position: relative;
   left: 0;
   transition: left $sidebar-transition-time ease-in-out;
+  touch-action: unset;
 }
 
 

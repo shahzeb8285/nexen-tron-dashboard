@@ -19,10 +19,14 @@ import UINotifications from "../../pages/notifications";
 import Sidebar from "../Sidebar";
 import Ledger from "../../pages/Ledger/Ledger";
 import ShareAndMarket from "../../pages/ShareAndMarket/ShareAndMarket";
-
+import LogoutPage from "../../pages/Logout/Logout"
+import { updateProfile } from "../../actions/profileActions";
+import { apiService } from "../../Services/api.service";
 
 import s from "./Layout.module.scss";
 import { toast } from "react-toastify";
+
+let profileLoaded=false;
 
 class Layout extends React.Component {
   constructor(props) {
@@ -66,6 +70,34 @@ class Layout extends React.Component {
   };
 
  
+  async componentWillReceiveProps(props) {
+    if(!profileLoaded && props.user.id){
+      await this.loadProfile(props.user.id);
+      profileLoaded= true
+    }
+
+}
+
+  async loadProfile(id) {
+    try {
+      var resp = await apiService.getUser(id);
+      if (resp.status == 200) {
+        // toast.success("Profile Loaded Succssfully!");
+        var user = resp.data.result;
+
+        this.props.dispatch(updateProfile(user));
+
+        console.log("profile======", user);
+      } else {
+        toast.error("Can't Load Profile!");
+      }
+    } catch (err) {
+      console.error("profileError", err);
+      toast.error("Can't Load Profile!");
+    }
+
+    this.setState({ isPageLoaded: true, isProfileLoaded: true });
+  }
   handleSwipe(e) {
     if ("ontouchstart" in window) {
       if (e.direction === 4 && !this.state.chatOpen) {
@@ -116,8 +148,7 @@ class Layout extends React.Component {
           <Sidebar />
 
      
-          <Hammer onSwipe={this.handleSwipe}>
-            <main className={s.content}>
+          <main className={s.content}>
               {/* <BreadcrumbHistory url={this.props.location.pathname} /> */}
 
               <TransitionGroup>
@@ -128,6 +159,7 @@ class Layout extends React.Component {
                 >
                   <Switch>
 
+                  {/* <Route path="*" exact render={() => <Redirect to="/dashboard" />} /> */}
 
                     <Route path="/" exact render={() => <Redirect to="/dashboard" />} />
                     <Route path="/dashboard" exact  render={() => <Dashboard to="/dashboard" Web3Ref={this.Web3Ref} />}/>
@@ -142,7 +174,8 @@ class Layout extends React.Component {
                     /> */}
 
                     <Route path="/profile" exact component={ProfilePage} />
-                    
+                    <Route path="/logout" exact component={LogoutPage} />
+
                     {/* <Route path="/dashboard/LastRewards" exact component={LastRewards} /> */}
 
                     {/* <Route path="/app/charts" exact component={Charts} /> */}
@@ -153,7 +186,7 @@ class Layout extends React.Component {
               </TransitionGroup>
               <footer className={s.contentFooter}></footer>
             </main>
-          </Hammer>
+      
         </div>
       </div>
     );

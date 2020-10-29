@@ -90,7 +90,7 @@ class Dashboard extends React.Component {
       });
 
       if (!isProfileLoaded) {
-        await this.loadProfile(props.user.id);
+        // await this.loadProfile(props.user.id);
       }
     }
   }
@@ -192,7 +192,7 @@ class Dashboard extends React.Component {
     return (
       <UserTree
         ref={this.userTreeRef}
-        tronRef={this.props.Web3Ref.current.getWrappedInstance()}
+        tronRef={this.props.Web3Ref&&this.props.Web3Ref.current?this.props.Web3Ref.current.getWrappedInstance():null}
         data={
           this.state.currentReferralTree[
           this.state.referralTreeHistory[
@@ -314,7 +314,7 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.income
                       ? this.props.user.income.directIncome
-                      : "-"
+                      : "0"
                   }
                   bgEndColor={"#b01ec6"}
                   bgStartColor={"#ed0bd7"}
@@ -329,12 +329,12 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.income
                       ? this.props.user.income.rewardIncome
-                      : "-"
+                      : "0"
                   }
                   bgStartColor={"#402493"}
                   bgEndColor={"#8c24ad"}
                   secondaryAmount={
-                    this.props.user ? this.props.user.totalWins : "-"
+                    this.props.user ? this.props.user.totalWins : "0"
                   }
                 />
                 <InfoTile
@@ -343,10 +343,10 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.income
                       ? this.props.user.income.upgradeIncome
-                      : "-"
+                      : "0"
                   }
                   secondaryAmount={
-                    this.props.user.loss ? this.props.user.loss / 1000000 : "-"
+                    this.props.user.loss ? this.props.user.loss / 1000000 : "0"
                   }
                   bgStartColor={"#4c28b5"}
                   bgEndColor={"#2198c1"}
@@ -359,11 +359,11 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.income
                       ? this.props.user.income.recycleIncome
-                      : "-"
+                      : "0"
                   }
                   secondaryAmount={
                     this.props.user && this.props.user.income ?
-                      this.props.user.income.totalRecyclesIn : "-"
+                      this.props.user.income.totalRecyclesIn : "0"
                   }
                   bgEndColor={"#b01ec6"}
                   bgStartColor={"#ed0bd7"}
@@ -375,10 +375,10 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.funds
                       ? this.props.user.funds.levelFund
-                      : "-"
+                      : "0"
                   }
                   secondaryAmount={
-                    this.props.user ? this.props.user.levelsPurchased : "-"
+                    this.props.user ? this.props.user.levelsPurchased : "0"
                   }
                   bgStartColor={"#402493"}
                   bgEndColor={"#8c24ad"}
@@ -390,10 +390,10 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.funds
                       ? this.props.user.funds.recycleFund
-                      : "-"
+                      : "0"
                   }
                   secondaryAmount={
-                    this.props.user ? this.props.user.totalRecycles : "-"
+                    this.props.user ? this.props.user.totalRecycles : "0"
                   }
                   bgStartColor={"#4c28b5"}
                   bgEndColor={"#2198c1"}
@@ -406,7 +406,7 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.income
                       ? this.props.user.income.levelIncome
-                      : "-"
+                      : "0"
                   }
                   secondaryAmount={""}
                   bgEndColor={"#b01ec6"}
@@ -421,7 +421,7 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.levelRewardWallet
                       ? this.props.user.levelRewardWallet
-                      : "-"}
+                      : "0"}
                   bgStartColor={"#402493"}
                   bgEndColor={"#8c24ad"}
                   secondaryAmount={
@@ -434,7 +434,7 @@ class Dashboard extends React.Component {
                   primaryAmount={
                     this.props.user.rewardWallet
                       ? this.props.user.rewardWallet
-                      : "-"}
+                      : "0"}
                   bgStartColor={"#4c28b5"}
                   bgEndColor={"#2198c1"}
                   secondaryAmount={

@@ -21,7 +21,7 @@ import MyRewards from "../../components/MyRewards/MyRewards";
 import Clipboard from 'react-clipboard.js';
 import SecondRewardWallet from "../../pages/SecondRewardWallet/SecondRewardWallet";
 import htmlToImage from 'html-to-image';
-
+import rewardExample from '../../images/rewardExample.png'
 let levelBadge = [
   require("../../images/level_badges/1.png"),
   require("../../images/level_badges/2.png"),
@@ -76,7 +76,6 @@ class Sidebar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("fdfdfdfddddf0", nextProps)
 
     if (nextProps.sidebarOpened !== this.props.sidebarOpened) {
       if (nextProps.sidebarOpened) {
@@ -168,52 +167,6 @@ class Sidebar extends React.Component {
 
             <hr className="solid" />
 
-            {this.props.profile.name ? (
-              <>
-                <div style={{ textAlign: "center", flexDirection: "column" }}>
-                  {this.props.profile ? (
-                    <div style={{
-                      // display: "inline-block"
-                      flexDirection: "column",
-                    }}>
-                      {this.props.profile.levelNumber ?
-                        <img src={levelBadge[this.props.profile.levelNumber - 1]}
-                          alt="..." style={
-                            {
-                              height: 80, width: 80,
-                              objectFit: "contain",
-                              marginRight: -10
-                              // position: "absolute",
-
-                            }} /> : null}
-
-                      <img src={this.props.profile.profile_pic ?
-                        this.props.profile.profile_pic : defaultAvatar} alt="..." style={
-                          {
-                            borderRadius: "50%", marginBottom: 5,
-                            height: 80, width: 80,
-                            objectFit: "cover",
-
-                          }} />
-
-
-
-
-                    </div>
-                  ) : null}
-
-                  <span className="avatar__name" style={{ fontSize: 22 }}>
-                    {this.props.profile
-                      ? this.props.profile.name
-                      : this.props.auth.userId}
-                  </span>
-
-
-
-                </div>
-              </>
-            ) : null}
-
 
 
 
@@ -269,14 +222,12 @@ class Sidebar extends React.Component {
             <LinksGroup
               onActiveSidebarItemChange={(activeItem) => {
                 this.props.dispatch(changeActiveSidebarItem(activeItem))
-
-                // this.doLogout()
-
               }}
               activeItem={this.props.activeItem}
               header="Logout"
               isHeader
-              link="#"
+              link="/logout"
+
 
               iconName="flaticon-exit"
               index="main"
@@ -286,301 +237,159 @@ class Sidebar extends React.Component {
 
 
 
+            <div style={{
+              padding: 0,
 
-            {/* <LinksGroup
-            // onActiveSidebarItemChange={(t) =>
-            //   // this.props.dispatch(changeActiveSidebarItem(t))
-            // }
-            activeItem={false}
-            header="Logout"
-            // isHeader
-            iconName="flaticon-exit"
-            onClick={()=>{
-              console.log("logioyci")
-              // this.doLogout()
-            }}
-            // index="tables"
-          /> */}
 
-            {/* <div style={{ padding: "13px 20px", fontSize: 18 }}>
+              color: "rgba(244, 244, 245, 0.6)",
+              display: "block",
+              position: "relative",
+              marginBottom: 40,
+              borderRadius: 10,
+              background: "rgba(0, 0, 0, 0.48)",
+              boxShadow: " 0 25px 20px -20px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.06)"
 
-              <span  className={`fi flaticon-exit`} style={{    color:"#ed0bd7"
-}}>
-              </span>
+            }}>
+              {this.props.profile.userId ? (
+                <>
+                  <div style={{ textAlign: "center", flexDirection: "column" }}>
+                    {this.props.profile ? (
+                      <div style={{
+                        // display: "inline-block"
+                        flexDirection: "column",
+                      }}>
+                        {this.props.profile.levelNumber ?
+                          <img src={levelBadge[this.props.profile.levelNumber - 1]}
+                            alt="..." style={
+                              {
+                                height: 80, width: 80,
+                                objectFit: "contain",
+                                marginRight: -10
+                                // position: "absolute",
 
-              <a onClick={() => {
-                console.log("logout")
+                              }} /> : null}
 
-                this.doLogout()
+                        <img src={this.props.profile.profile_pic ?
+                          this.props.profile.profile_pic : defaultAvatar} alt="..." style={
+                            {
+                              borderRadius: "50%", marginBottom: 5,
+                              height: 80, width: 80,
+                              objectFit: "cover",
 
-              }}> Log out</a>
-            </div> */}
+                            }} />
+
+
+
+
+                      </div>
+                    ) : null}
+
+                    <span className="avatar__name" style={{ fontSize: 22 }}>
+                      {this.props.profile
+                        ? this.props.profile.name
+                        : this.props.auth.userId}
+                    </span>
+
+
+
+                  </div>
+                </>
+              ) : null}
+
+
+              <div className="id">
+
+                <div className="eth">
+
+
+
+                  <Row>
+
+                    <Col>
+                      <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
+
+                        <span
+                          className="fa fa-id-card-o"
+                          style={{ marginRight: 5, color: "#2198c1" }}
+                        /></h4>
+
+
+                      <h4 style={{ fontWeight: "bold", fontSize: 26, marginTop: 10 }}>
+
+                        <span
+                          className="fa fa-group"
+                          style={{ marginRight: 5, color: "#2198c1" }}
+                        /></h4>
+
+
+                      <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
+
+                        <span
+                          className="fa fa-dollar"
+                          style={{ marginRight: 5, color: "#2198c1" }}
+                        /></h4>
+
+
+                    </Col>
+
+                    <Col>
+
+                      <h4 style={{ fontWeight: "bold", fontSize: 26, fontSize: "1.5rem" }}>
+
+                        {this.props.auth ? this.props.auth.userId : "0"}
+                      </h4>
+                      <h4 style={{ fontWeight: "bold", fontSize: 26, marginTop: 10, fontSize: "1.5rem" }}>
+
+
+                        {this.state.totalTeams}
+                      </h4>
+                      <h4 style={{ fontWeight: "bold", fontSize: 26, fontSize: "1.5rem" }}>
+
+
+
+                        {this.props.user.income
+                          ? Math.round(
+                            (this.props.user.income.directIncome +
+                              this.props.user.income.levelIncome +
+                              this.props.user.income.recycleIncome) *
+                            0.0236 *
+                            100
+                          ) / 100
+                          : 0}
+                      </h4>
+
+                    </Col>
+
+                  </Row>
+
+                </div>
+                <div className="id__btn">
+
+                  <h4 className={"fw-bold"} style={{ fontSize: 28, textAlign: "center", paddingRight: 8, paddingLeft: 8 }}>
+                    Trx{" "}
+                    {this.props.user.income
+                      ? this.props.user.income.directIncome +
+                      this.props.user.income.levelIncome +
+                      this.props.user.income.recycleIncome +
+                      this.props.user.income.rewardIncome +
+                      this.props.user.income.levelRewardIncome +
+                      this.props.user.income.upgradeIncome
+                      : 0}
+
+                  </h4>
+                </div>
+              </div>
+
+
+            </div>
+
 
 
             <hr className="solid" />
 
 
-            <div className="id">
-
-              <div className="eth">
-
-
-
-                <Row>
-
-                  <Col>
-                    <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
-
-                      <span
-                        className="fa fa-id-card-o"
-                        style={{ marginRight: 5, color: "#2198c1" }}
-                      /></h4>
-
-
-                    <h4 style={{ fontWeight: "bold", fontSize: 26, marginTop: 10 }}>
-
-                      <span
-                        className="fa fa-group"
-                        style={{ marginRight: 5, color: "#2198c1" }}
-                      /></h4>
-
-
-                    <h4 style={{ fontWeight: "bold", fontSize: 26 }}>
-
-                      <span
-                        className="fa fa-dollar"
-                        style={{ marginRight: 5, color: "#2198c1" }}
-                      /></h4>
-
-
-                  </Col>
-
-                  <Col>
-
-                    <h4 style={{ fontWeight: "bold", fontSize: 26 ,fontSize:"1.5rem"}}>
-
-                      {this.props.auth ? this.props.auth.userId : "0"}
-                    </h4>
-                    <h4 style={{ fontWeight: "bold", fontSize: 26, marginTop: 10,fontSize:"1.5rem" }}>
-
-
-                      {this.state.totalTeams}
-                    </h4>
-                    <h4 style={{ fontWeight: "bold", fontSize: 26 ,fontSize:"1.5rem"}}>
-
-
-
-                      {this.props.user.income
-                        ? Math.round(
-                          (this.props.user.income.directIncome +
-                            this.props.user.income.levelIncome +
-                            this.props.user.income.recycleIncome) *
-                          0.0236 *
-                          100
-                        ) / 100
-                        : 0}
-                    </h4>
-
-                  </Col>
-
-                </Row>
-                {/* 
-                <div className="value">
-                  <Row style={{ justifyContent: "space-between", }}>
-
-                    <h4>
-
-                      <span
-                        className="fa fa-id-card-o"
-                        style={{ marginRight: 5, color: "#2198c1" }}
-                      /></h4>
-
-                    <h4>
-
-                      {this.props.auth ? this.props.auth.userId : "0"}
-                    </h4>
-                  </Row>
-
-
-
-                  <Row style={{ justifyContent: "space-between", }}>
-
-                    <h4>
-
-                      <span
-                        className="fa fa-group"
-                        style={{ marginRight: 5, color: "#2198c1" }}
-                      /></h4>
-
-
-                    <h4>
-
-
-                      {this.state.totalTeams}
-                    </h4>
-                  </Row>
-
-                  <Row style={{ justifyContent: "space-between" }}>
-
-                    <h4>
-
-                      <span
-                        className="fa fa-dollar"
-                        style={{ marginRight: 5, color: "#2198c1" }}
-                      /></h4>
-
-
-                    <h4>
-
-
-
-                      {this.props.user.income
-                        ? Math.round(
-                          (this.props.user.income.directIncome +
-                            this.props.user.income.levelIncome +
-                            this.props.user.income.recycleIncome) *
-                          0.0236 *
-                          100
-                        ) / 100
-                        : 0}
-                    </h4>
-                  </Row>
-
-
-
-                </div>
-           
-            */}
-              </div>
-              <div className="id__btn">
-                {/* <img src={eth} style={{ height: 30, margin: 5 }}></img> */}
-
-                <h4 className={"fw-bold"} style={{ fontSize: 28, textAlign: "center", paddingRight: 8, paddingLeft: 8 }}>
-                  Trx{" "}
-                  {this.props.user.income
-                    ? this.props.user.income.directIncome +
-                    this.props.user.income.levelIncome +
-                    this.props.user.income.recycleIncome +
-                    this.props.user.income.rewardIncome +
-                    this.props.user.income.levelRewardIncome +
-                    this.props.user.income.upgradeIncome
-                    : 0}
-
-                </h4>
-              </div>
-            </div>
-
-
-            {/* <Widget style={{ textAlign: "center" }}>
-
-
-
-
-              <div
-                style={{
-                  position: "relative",
-                  marginTop: 10
-                }}>
-
-
-                <div
-
-                  ref={this.winnerPhoto}
-
-                  style={{
-                    background: "radial-gradient(farthest-side ellipse at 10% 0, #fdcb6e 20%, #bf8415)",
-                    // width: "100%",
-                    borderRadius: "8px",
-                    padding: "15px",
-                    textAlign: "center",
-                    marginTop: 0
-
-                  }}>
-                  <div className="image-crop" style={{
-                    display: "block",
-                    position: "relative",
-                    backgroundColor: "#E6EBEE",
-                    width: 100,
-                    height: 100,
-                    margin: "0 auto",
-                    overflow: "hidden",
-                    borderRadius: "50%",
-                    boxs: "1px 1px 5px #4069E2",
-                  }}>
-                    <img src={defaultAvatar} style={{
-                      width: 100,
-                      height: 100,
-                      objectFit: "contain",
-                      borderRadius: "50%"
-                    }} alt="" />
-                  </div>
-
-
-                  <div style={{ display: "inline-block" }}>
-
-                    <h2 style={{ color: "#fff", fontWeight: "bold" }} >Name</h2>
-
-                    <h4 style={{ color: "#fff" }}>Winning Date 22/May/2020</h4>
-
-
-
-                    <div style={{
-                      // background: "radial-gradient(farthest-side ellipse at 10% 0, #00b894 20%, #076e59)",
-                      // width: "100%",
-                      borderRadius: "8px",
-                      padding: "15px",
-                      // textAlign: "center",
-                      marginTop: 0
-                    }}>
-
-                      <Col style={{}}>
-                        <h4 style={{ color: "#fff", }} >WON 300 TRX</h4>
-
-                        <h4 style={{ color: "#fff" }} >ID 300 </h4>
-                        <div>&nbsp;</div>
-
-
-                        <h4 style={{ color: "#fff" }} >Directs 300 </h4>
-
-                      </Col>
-
-                    </div>
-                  </div>
-                </div>
-
-
-
-              </div>
-              <Button color="primary" style={{ width: "100%", marginTop: 10 }}
-                onClick={() => {
-                  htmlToImage.toPng(this.winnerPhoto.current, { quality: 0.95 })
-                    .then(function (dataUrl) {
-                      var link = document.createElement('a');
-                      link.download = 'winner.jpeg';
-                      link.href = dataUrl;
-                      link.click();
-                    });
-
-
-                }} >
-
-
-                Download Image
-              </Button>
-
-            </Widget>
-
- */}
-
 
             <Widget style={{ textAlign: "center" }}>
-              {/* <Button color="primary" style={{ marginBottom: 10, background: "#ed0bd7", borderWidth: 0,  fontWeight: "bold" }}>Level Fund Withdrawal</Button>{' '} */}
-              {/* <Button color="primary" style={{ background: "#2198c1",  borderWidth: 0, fontWeight: "bold", marginBottom: 10 }}>Recycle Fund Withdrawal</Button>{' '} */}
-              {/* <Button color="primary" style={{
-                background: "#ca9024", fontWeight: "bold", borderWidth: 0, color: "#000"
-                , width: "100%"
-              }}>Trx 1028</Button>{' '} */}
-
 
 
               {this.props.user.refPercent ?
@@ -596,7 +405,7 @@ class Sidebar extends React.Component {
 
                   <div style={{ marginTop: 10 }}>
 
-                 
+
                     <SecondRewardWallet
                       levelRewardWallet={
                         this.props.user.levelRewardWallet
@@ -616,8 +425,8 @@ class Sidebar extends React.Component {
                         this.props.user.refPercent ? this.props.user.refPercent : 0
                       }
                     />
-                       <Button color="primary" style={{
-                      marginBottom: 10,marginTop:10, width: "100%",
+                    <Button color="primary" style={{
+                      marginBottom: 10, marginTop: 10, width: "100%",
                       background: "#ed0bd7", borderWidth: 0, fontWeight: "bold"
                     }}>Trx {" "}
                       {this.props.user.income && this.props.user.income.levelRewardIncome
@@ -654,10 +463,7 @@ class Sidebar extends React.Component {
                 className="fw-semi-bold tile-hover"
                 onClick={(f) => {
                   console.log("clickedddddd", f);
-                  // this.copyToClipboard(
-                  //   "Affiliate Link",
-                  //   "http://dash.nexen.live/" + this.props.auth.userId
-                  // );
+
                 }}
               >
                 <Clipboard
@@ -669,25 +475,19 @@ class Sidebar extends React.Component {
                     borderColor: "transparent"
                   }}
                   onSuccess={this.onSuccessCopy}
-                  data-clipboard-text={"http://dash.nexen.live/" + this.props.auth.userId}>
-                  http://dash.nexen.live/{this.props.auth.userId}
+                  data-clipboard-text={"https://nexen.live/?ref=" + this.props.auth.userId}>
+                  https://nexen.live/?ref={this.props.auth.userId}
 
                 </Clipboard>
               </p>
             </Widget>
-            {/* 
-            <Widget title={"Share Us"}>
-              <div className="sharethis-inline-share-buttons"></div>
-            </Widget> */}
+
 
             <Widget title={"Smart Contract Address"}>
               <p
                 className="fw-semi-bold tile-hover"
                 onClick={(f) => {
-                  // this.copyToClipboard(
-                  //   "Smart Contract Address",
-                  //   this.props.user.contractAddress
-                  // );
+
                 }}
               >
 
@@ -713,10 +513,7 @@ class Sidebar extends React.Component {
               <p
                 className="fw-semi-bold tile-hover"
                 onClick={(f) => {
-                  // this.copyToClipboard(
-                  //   "Etherium Wallet Address",
-                  //   this.props.user.walletAddress
-                  // );
+
                 }}
               >
                 <Clipboard
@@ -742,7 +539,14 @@ class Sidebar extends React.Component {
 
 
 
-            {/* <MyRewards /> */}
+                    <span style={{textAlign:"center",fontWeight:"bold",fontSize:20}}>Click here to download your reward image</span>
+                    <a href="/market"  style={{width:"100%",heigth:"auto"}}>
+                    <img src={rewardExample} style={{width:"100%",height:"auto"}}/>
+
+                    </a>
+
+
+
 
 
           </ul>
